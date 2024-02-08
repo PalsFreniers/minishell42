@@ -6,11 +6,10 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 08:18:51 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/08 08:29:57 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/08 08:40:32 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
 #include "../../libft/libft.h"
 
 int	echo(int count, char **args)
@@ -34,5 +33,5 @@ int	echo(int count, char **args)
 	}
 	if (trailing)
 		ft_putchar_fd(trailing, 1);
-	exit(0);
+	return (0);
 }

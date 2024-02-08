@@ -6,13 +6,13 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 08:18:51 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/08 09:06:24 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/08 09:26:11 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../libft/libft.h"
 
-int	echo(int count, char **args, char **envp)
+int	b_echo(int count, char **args, char **envp)
 {
 	int		i;
 	char	trailing;

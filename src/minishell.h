@@ -10,6 +10,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <fcntl.h>
+#include <sys/types.h>
 
 typedef enum e_outkind{
     APPEND,
@@ -35,8 +37,11 @@ typedef struct s_command{
     char **here_doc_delimiter;
     bool is_input;
     char *input;
+    int fd_input;
     bool is_output;
     char *output;
+    int fd_output;
+    char *error;
     t_outkind outkind;
     t_entry entry;
     t_exit exit;

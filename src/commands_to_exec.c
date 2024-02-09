@@ -18,5 +18,10 @@ int	command_disection(char *command, t_com *comm)
 		last_heredoc_i = 0;
 	is_input(command, comm, last_heredoc_i);
 	is_output(command, comm);
+	if (comm->error)
+	{
+		printf("%s: No such file or directory\n", comm->error);
+		return (-1);
+	}
 	return (1);
 }

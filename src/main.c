@@ -170,6 +170,7 @@ t_com	**init_command_data(int command_c, char **commands)
 		commands_data[i] = malloc(sizeof(t_com));
 		command = commands_data[i];
 		command->command = commands[i];
+		command->error = NULL;
 		if (command_disection(commands[i], command) == -1)
 			return (NULL);
 		i++;

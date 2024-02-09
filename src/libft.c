@@ -10,6 +10,15 @@ int	ft_strlen(char *s)
 	return (i);
 }
 
+int ft_strbackslashn(char *s)
+{
+	int i;
+	i = 0;
+	while (s[i] != '\n')
+		i++;
+	return(i);
+}
+
 char	*ft_strdup(const char *s)
 {
 	int		l;
@@ -26,11 +35,11 @@ char	*ft_strdup(const char *s)
 		k[i] = s[i];
 		i++;
 	}
-	k[i] = 0;
+	k[i] = '\0';
 	return (k);
 }
 
-char	*ft_strdupi(char *original, int *index, size_t size)
+char	*ft_strdupi(char *original, int *index, int size)
 {
 	char	*copy;
 	int		i;
@@ -48,13 +57,14 @@ char	*ft_strdupi(char *original, int *index, size_t size)
 	if (!copy)
 		return (NULL);
 	i = 0;
-	while (size-- > 0)
+	while (i < size)
 	{
 		copy[i] = original[*index];
 		*index = *index + 1;
 		i++;
 	}
 	copy[i] = '\0';
+	//printf("sortidupi:'%s'\n", copy);
 	return (copy);
 }
 

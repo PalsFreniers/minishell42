@@ -7,14 +7,14 @@ int	check_for_empty(char *buffer, int i)
 	{
 		if (buffer[i] == '|')
 		{
-			printf("parse error near `|'\n");
+			//printf("parse error near `|'\n");
 			return (-1);
 		}
 		if (buffer[i] > 32 && buffer[i] < 127)
 			return (0);
 		i++;
 	}
-	printf("parse error near `|'\n");
+	//printf("parse error near `|'\n");
 	return (-1);
 }
 
@@ -35,14 +35,9 @@ int	get_command_number(char *buffer)
 				return (-1);
 			increment_c_and_i(&c, &i);
 		}
-		else if (buffer[i] == '\"')
+		else if (char_is_quote(buffer[i]) == 1)
 		{
-			if (find_next_quote(buffer, &i, '\"') == -1)
-				return (-1);
-		}
-		else if (buffer[i] == '\'')
-		{
-			if (find_next_quote(buffer, &i, '\'') == -1)
+			if (find_next_quote(buffer, &i, buffer[i]) == -1)
 				return (-1);
 		}
 		else if (char_is_alphanum(buffer[i]) == 1)
@@ -50,6 +45,8 @@ int	get_command_number(char *buffer)
 			while (buffer[i] && char_is_alphanum(buffer[i]) == 1)
 				i++;
 		}
+		else
+			i++;
 	}
 	return (c + 1);
 }
@@ -58,22 +55,26 @@ char	**scrap_input(int command_number, char *usr_input)
 {
 	int	i;
 	int	n;
-	int	input_length;
+	int	command_length;
 	char **commands;
 
-	input_length = 1;
+	command_length = 1;
 	commands = malloc((command_number + 1) * sizeof(char *));
 	commands[command_number] = NULL;
 	if (!commands)
 		return (NULL);
 	n = 0;
 	i = 0;
-	while (input_length && n < command_number)
+	while (command_length && n < command_number)
 	{
-		input_length = get_input_length(usr_input, i);
-		if (input_length)
+		if (usr_input[i] == '|')
+			++i;
+		while (char_is_whitespace(usr_input[i]) == 1)
+			i++;
+		command_length = get_command_length(usr_input, i);
+		if (command_length)
 		{
-			commands[n] = ft_strdupi(usr_input, &i, input_length);
+			commands[n] = ft_strdupi(usr_input, &i, command_length);
 			if (!commands[n])
 				return (NULL);
 			n++;
@@ -82,36 +83,27 @@ char	**scrap_input(int command_number, char *usr_input)
 	return (commands);
 }
 
-int	get_input_length(char *buffer, int start_index)
+int	get_command_length(char *buffer, int i)
 {
 	int	c;
+	int tempo;
 
 	c = 0;
-	if (buffer[start_index] == '|')
-		++start_index;
-	while (buffer[start_index] && buffer[start_index] != '|')
+	while (buffer[i] && buffer[i] != '|')
 	{
-		if (buffer[start_index] == '|')
-			return (c);
-		else if (buffer[start_index] == '\"')
+		if (char_is_quote(buffer[i]) == 1)
 		{
-			increment_c_and_i(&c, &start_index);
-			while (buffer[start_index] && buffer[start_index] != '\"')
-				increment_c_and_i(&c, &start_index);
-			if (buffer[start_index] == '\"')
-				increment_c_and_i(&c, &start_index);
-		}
-		else if (buffer[start_index] == '\'')
-		{
-			increment_c_and_i(&c, &start_index);
-			while (buffer[start_index] != '\'')
-				increment_c_and_i(&c, &start_index);
-			if (buffer[start_index] == '\'')
-				increment_c_and_i(&c, &start_index);
+			tempo = i;
+			find_next_quote(buffer, &i, buffer[i]);
+			c += i - tempo;
 		}
 		else
-			increment_c_and_i(&c, &start_index);
+		{
+			i++;
+			c++;
+		}
 	}
+	//printf("command length: %d\n", c);
 	return (c);
 }
 

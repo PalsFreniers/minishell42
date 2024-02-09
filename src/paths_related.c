@@ -31,7 +31,7 @@ char	*get_paths(char **envp)
 	}
 	if (!envp[i])
 	{
-		printf("Error, finding PATH env");
+		//printf("Error, finding PATH env");
 		return (NULL);
 	}
 	paths = ft_strdup(envp[i]);
@@ -46,7 +46,7 @@ char	**get_splitted_path(char **envp)
 	paths = get_paths(envp);
 	if (!paths)
 	{
-		printf("Error, no paths envp\n");
+		//printf("Error, no paths envp\n");
 		return (NULL);
 	}
 	splitted_paths = ft_split(paths, ':');
@@ -71,6 +71,6 @@ char	*find_executable_path(char *program_to_find, char **paths)
 			++i;
 		}
 	}
-	printf("Error, executable path not found\n");
+	//printf("Error, executable path not found\n");
 	return (NULL);
 }

@@ -4,9 +4,11 @@ int	char_is_alphanum(char c)
 {
 	if (c == '|')
 		return (-1);
-	else if (c == '\'')
+	else if (c == '\'' || c == '\"')
 		return (-1);
-	else if (c == '\"')
+	else if (c == '<' || c == '>')
+		return (-1);
+	else if (char_is_whitespace(c) == 1)
 		return (-1);
 	else if (c >= 32 && c < 127)
 		return (1);
@@ -26,7 +28,7 @@ int	char_is_whitespace(char c)
 int	find_next_quote(char *buffer, int *i, char quote_type)
 {
 	*i = *i + 1;
-	while (buffer[*i] && buffer[*i] != quote_type)
+	while (buffer[*i] && buffer[*i] != quote_type && buffer[*i - 1] != '\\')
 		*i = *i + 1;
 	if (!buffer[*i])
 	{

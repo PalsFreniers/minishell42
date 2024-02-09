@@ -28,7 +28,7 @@
 //     directory = opendir(name_of_starture_path);
 //     if (directory == NULL)
 //     {
-//         printf("Error opening directory\n");
+//         //printf("Error opening directory\n");
 //         return (-1);
 //     }
 //     read_dir = readdir(directory);
@@ -47,7 +47,7 @@
 //         }
 //         else if (ft_strcmp(program, read_dir->d_name) == 1)
 //         {
-//             printf("path du program: %s\n", current_path);
+//             //printf("path du program: %s\n", current_path);
 //             break ;
 //         }
 //         else
@@ -78,7 +78,7 @@
 //     {
 //         close(pipefd[1]);
 //         read(pipefd[0], buffer, 1024);
-//         printf("command : %s\n", buffer);
+//         //printf("command : %s\n", buffer);
 //         close(pipefd[0]);
 //         wait(NULL);
 //     }

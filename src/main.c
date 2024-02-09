@@ -15,14 +15,14 @@
 // 	command_disection(command, &program_name, &arguments);
 // 	if (program_name)
 // 	{
-// 		// printf("program = %s\n", program_name);
+// 		// //printf("program = %s\n", program_name);
 // 		executable_path = find_executable_path(program_name, paths);
-// 		// printf("path exec=%s\n", command);
+// 		// //printf("path exec=%s\n", command);
 // 		id2 = fork();
 // 		if (id2 == 0)
 // 		{
 // 			execve((const char *)executable_path, arguments, NULL);
-// 			printf("Execve failed\n");
+// 			//printf("Execve failed\n");
 // 			return (-1);
 // 		}
 // 		free(program_name);
@@ -37,7 +37,7 @@
 // 	{
 // 		while (arguments[i])
 // 		{
-// 			// printf("argument #%d: %s\n", i, arguments[i]);
+// 			// //printf("argument #%d: %s\n", i, arguments[i]);
 // 			free(arguments[i]);
 // 			++i;
 // 		}
@@ -56,7 +56,7 @@
 // 		return (-1);
 // 	while (n < command_number)
 // 	{
-// 		// printf("command: %s\n", commands[n]);
+// 		// //printf("command: %s\n", commands[n]);
 // 		*id = fork();
 // 		if (*id == 0)
 // 		{
@@ -107,6 +107,22 @@ void	deinit_commands_data(t_com **command_data)
 			free(command_data[i]->arguments[j]);
 			j++;
 		}
+		free(command_data[i]->arguments);
+		j = 0;
+		if (command_data[i]->is_heredoc)
+		{
+			while (command_data[i]->here_doc_delimiter[j])
+			{
+				free(command_data[i]->here_doc_delimiter[j]);
+				j++;
+			}
+			free(command_data[i]->here_doc_delimiter);
+		}
+		if (command_data[i]->is_input)
+			free(command_data[i]->input);
+		if (command_data[i]->is_output)
+			free(command_data[i]->output);
+		free(command_data[i]);
 		i++;
 	}
 	free(command_data);
@@ -165,13 +181,17 @@ t_com	**init_command_data(int command_c, char **commands)
 	return (commands_data);
 }
 
-t_main	*init_thgg(char **envp, char *usr_input)
+t_main	*init_thgg(char **envp, char *o_usr_input)
 {
 	t_main *thgg;
 
 	thgg = malloc(sizeof(t_main));
+	thgg->commands = NULL;
+	thgg->commands_data = NULL;
 	thgg->id = 1;
-	thgg->usr_input = usr_input;
+	thgg->usr_input = ft_strdup(o_usr_input);
+	add_history(o_usr_input);
+	free(o_usr_input);
 	thgg->envp = envp;
 	thgg->paths = get_splitted_path(envp);
 	thgg->command_c = get_command_number(thgg->usr_input);
@@ -186,25 +206,48 @@ t_main	*init_thgg(char **envp, char *usr_input)
 	return (thgg);
 }
 
+// char *primary_parse(char *usr_input)
+// {
+// 	int i;
+
+// 	i = 0;
+// 	while (usr_input[i])
+// 	{
+
+// 	}
+// }
+
 int	give_the_prompt(char **envp)
 {
 	t_main *thgg;
 	char *usr_input;
+	//char *first_parsed;
 
 	usr_input = readline("$> ");
+	//first_parsed = primary_parse(usr_input);
 	thgg = init_thgg(envp, usr_input);
 	if (!thgg)
+	{
+		//printf("prout\n");
 		return (0) ;
+	}
 	int i;
 	int j;
 	i = 0;
-	printf("usr:'%s'\nc:%d\n", thgg->usr_input, thgg->command_c);
 	while (thgg->commands_data[i])
 	{
 		j = 0;
 		printf("command #%d:'%s'\nprogram:%s\n", i, thgg->commands_data[i]->command, thgg->commands_data[i]->program);
-		if (thgg->commands_data[i]->input)
+		if (thgg->commands_data[i]->is_input)
 			printf("input:%s\n", thgg->commands_data[i]->input);
+		if (thgg->commands_data[i]->is_output)
+		{
+			printf("output:%s\n", thgg->commands_data[i]->output);
+			if (thgg->commands_data[i]->outkind == OVERWRITE)
+				printf("OVERWRITE\n");
+			else
+				printf("APPEND\n");
+		}
 		while (thgg->commands_data[i]->arguments[j])
 		{
 			printf("arguments #%d:'%s'\n", j, thgg->commands_data[i]->arguments[j]);
@@ -225,7 +268,7 @@ int	give_the_prompt(char **envp)
 	// i = 0;
 	// while (thgg->paths[i])
 	// {
-	// 	printf("path #%d:'%s'\n", i, thgg->paths[i]);
+	// 	//printf("path #%d:'%s'\n", i, thgg->paths[i]);
 	// 	i++;
 	// }
 	// if (scrap_input(buffer, &command_number, &commands) == -1)

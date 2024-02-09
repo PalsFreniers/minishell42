@@ -5,7 +5,7 @@ int	get_the_next_hd_length(char *command, int i)
 	int	length;
 
 	length = i;
-	if (char_is_quote(command[length]) == 1)
+	if (char_is_quote(command[length]))
 	{
 		++length;
 		if (command[length - 1] == '\'')
@@ -20,7 +20,7 @@ int	get_the_next_hd_length(char *command, int i)
 		}
 		return (length + 1 - i);
 	}
-	while (command[length] && (char_is_whitespace(command[length]) == -1))
+	while (command[length] && !(char_is_whitespace(command[length])))
     {
         if (command[length] == '<' && command[length + 1] == '<')
             return (length - i);
@@ -35,7 +35,7 @@ char	*get_the_next_heredoc(char *command, int *i)
 	int		length;
 	int		j;
 
-	while (command[*i] && (char_is_whitespace(command[*i]) == 1))
+	while (command[*i] && (char_is_whitespace(command[*i])))
 		*i = *i + 1;
 	length = get_the_next_hd_length(command, *i);
 	argument = malloc((length + 1) * sizeof(char));
@@ -59,7 +59,7 @@ int    here_doc_init(t_com *comm, char *command, int i)
     comm->here_doc_delimiter = malloc((comm->is_heredoc + 1) * sizeof(char*));
     while (command[i])
     {
-        if (char_is_quote(command[i]) == 1)
+        if (char_is_quote(command[i]))
             find_next_quote(command, &i, command[i]);
         if (command[i] == '<' && command[i + 1] == '<')
         {
@@ -81,7 +81,7 @@ void    is_heredoc(char *command, t_com *comm, int *i)
     comm->here_doc_delimiter = NULL;
     while (command[*i])
     {
-        if (char_is_quote(command[*i]) == 1)
+        if (char_is_quote(command[*i]))
             find_next_quote(command, i, command[*i]);
         else if (command[*i] == '<' && command[*i + 1] == '<')
         {       

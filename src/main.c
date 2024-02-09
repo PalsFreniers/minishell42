@@ -261,7 +261,7 @@ int	get_length_expanded(char *usr_input, char **envp)
 		}
 		else if (usr_input[i] == '$')
 		{
-			if (char_is_whitespace(usr_input[i + 1]) == 1)
+			if (char_is_whitespace(usr_input[i + 1]))
 			{
 				l += 2;
 				i++;
@@ -277,7 +277,7 @@ int	get_length_expanded(char *usr_input, char **envp)
 			{
 				j = ++i;
 				test_env_name = NULL;
-				while(usr_input[i] && char_is_quote(usr_input[i]) == -1 && char_is_whitespace(usr_input[i]) == -1 && char_is_parasit(usr_input[i]) == -1 && !char_is_delimiter(usr_input[i]))
+				while(usr_input[i] && !(char_is_quote(usr_input[i])) && !(char_is_whitespace(usr_input[i])) && !(char_is_parasit(usr_input[i])) && !char_is_delimiter(usr_input[i]))
 					i++;
 				test_env_name = ft_strdupi(usr_input, &j, i - j);
 				env_var = get_env(envp, test_env_name);
@@ -327,7 +327,7 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		}
 		else if (usr_input[i] == '$')
 		{
-			if (char_is_whitespace(usr_input[i + 1]) == 1)
+			if (char_is_whitespace(usr_input[i + 1]))
 			{
 				expanded[j++] = usr_input[i++];
 				continue ;
@@ -342,7 +342,7 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 			{
 				k = ++i;
 				test_env_name = NULL;
-				while(usr_input[i] && char_is_quote(usr_input[i]) == -1 && char_is_whitespace(usr_input[i]) == -1 && char_is_parasit(usr_input[i]) == -1 && !char_is_delimiter(usr_input[i]))
+				while(usr_input[i] && !(char_is_quote(usr_input[i])) && !(char_is_whitespace(usr_input[i])) && !(char_is_parasit(usr_input[i])) && !char_is_delimiter(usr_input[i]))
 					i++;
 				test_env_name = ft_strdupi(usr_input, &k, i - k);
 				env_var = get_env(envp, test_env_name);

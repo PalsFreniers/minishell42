@@ -1,19 +1,26 @@
 #include "minishell.h"
 
+int	char_is_parasit(char c)
+{
+	if (c == '<' || c == '>')
+		return (1);
+	return (0);
+}
+
 int	char_is_alphanum(char c)
 {
 	if (c == '|')
-		return (-1);
+		return (0);
 	else if (c == '\'' || c == '\"')
-		return (-1);
+		return (0);
 	else if (c == '<' || c == '>')
-		return (-1);
-	else if (char_is_whitespace(c) == 1)
-		return (-1);
+		return (0);
+	else if (char_is_whitespace(c))
+		return (0);
 	else if (c >= 32 && c < 127)
 		return (1);
 	else
-		return (-1);
+		return (0);
 }
 
 int	char_is_whitespace(char c)
@@ -22,7 +29,7 @@ int	char_is_whitespace(char c)
 		return (1);
 	if (c == '\n' || c == '\v' || c == '\f')
 		return (1);
-	return (-1);
+	return (0);
 }
 
 int	find_next_quote(char *buffer, int *i, char quote_type)
@@ -43,7 +50,7 @@ int	char_is_quote(char c)
 {
 	if (c == '\'' || c == '\"')
 		return (1);
-	return (-1);
+	return (0);
 }
 
 int char_is_delimiter(char c)

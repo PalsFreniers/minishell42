@@ -10,7 +10,7 @@ void    is_input(char *command, t_com *comm, int last_index_hd)
     comm->input = NULL;
     while (command[i])
     {
-        if (char_is_quote(command[i]) == 1)
+        if (char_is_quote(command[i]))
             find_next_quote(command, &i, command[i]);
         else if (command[i] == '<')
         {
@@ -46,7 +46,7 @@ void    is_output(char *command, t_com *comm)
     comm->output = NULL;
     while (command[i])
     {
-        if (char_is_quote(command[i]) == 1)
+        if (char_is_quote(command[i]))
             find_next_quote(command, &i, command[i]);
         else if (command[i] == '>')
         {

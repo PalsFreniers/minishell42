@@ -35,14 +35,14 @@ int	get_command_number(char *buffer)
 				return (-1);
 			increment_c_and_i(&c, &i);
 		}
-		else if (char_is_quote(buffer[i]) == 1)
+		else if (char_is_quote(buffer[i]))
 		{
 			if (find_next_quote(buffer, &i, buffer[i]) == -1)
 				return (-1);
 		}
-		else if (char_is_alphanum(buffer[i]) == 1)
+		else if (char_is_alphanum(buffer[i]))
 		{
-			while (buffer[i] && char_is_alphanum(buffer[i]) == 1)
+			while (buffer[i] && char_is_alphanum(buffer[i]))
 				i++;
 		}
 		else
@@ -69,7 +69,7 @@ char	**scrap_input(int command_number, char *usr_input)
 	{
 		if (usr_input[i] == '|')
 			++i;
-		while (char_is_whitespace(usr_input[i]) == 1)
+		while (char_is_whitespace(usr_input[i]))
 			i++;
 		command_length = get_command_length(usr_input, i);
 		if (command_length)
@@ -91,7 +91,7 @@ int	get_command_length(char *buffer, int i)
 	c = 0;
 	while (buffer[i] && buffer[i] != '|')
 	{
-		if (char_is_quote(buffer[i]) == 1)
+		if (char_is_quote(buffer[i]))
 		{
 			tempo = i;
 			find_next_quote(buffer, &i, buffer[i]);

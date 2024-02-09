@@ -95,10 +95,10 @@
 // 	length = 0;
 // 	if (command[*i] == '\n')
 // 		return (NULL);
-// 	while (command[*i] && (char_is_whitespace(command[*i]) == 1))
+// 	while (command[*i] && (char_is_whitespace(command[*i])))
 // 		*i = *i + 1;
 // 	j = *i;
-// 	while (command[j] && (char_is_whitespace(command[j]) == -1))
+// 	while (command[j] && !(char_is_whitespace(command[j])))
 // 	{
 // 		++length;
 // 		++j;

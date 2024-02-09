@@ -3,20 +3,20 @@
 int	command_disection(char *command, t_com *comm)
 {
 	int	i;
+	int last_heredoc_i;
 
 	i = 0;
 	comm->program = get_the_program(command, &i);
 	if (!comm->program)
 		return (-1);
-	//printf("index de sortie prog name:%d", i);
 	comm->arguments = get_the_arguments(command, &i, comm->program);
 	if (!comm->arguments)
 		return (-1);
-	i = 0;
-	is_heredoc(command, comm, &i);
+	last_heredoc_i = 0;
+	is_heredoc(command, comm, &last_heredoc_i);
 	if (!comm->is_heredoc)
-		i = 0;
-	is_input(command, comm, &i);
+		last_heredoc_i = 0;
+	is_input(command, comm, last_heredoc_i);
 	is_output(command, comm);
 	return (1);
 }

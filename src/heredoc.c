@@ -50,9 +50,10 @@ char	*get_the_next_heredoc(char *command, int *i)
 	return (argument);
 }
 
-void    here_doc_init(t_com *comm, char *command, int i)
+int    here_doc_init(t_com *comm, char *command, int i)
 {
     int j;
+    int index_last_hd;
 
     j = 0;
     comm->here_doc_delimiter = malloc((comm->is_heredoc + 1) * sizeof(char*));
@@ -63,15 +64,15 @@ void    here_doc_init(t_com *comm, char *command, int i)
         if (command[i] == '<' && command[i + 1] == '<')
         {
             i += 2;
-            //comm->here_doc_delimiter[j] = get_the_next_heredoc(command, &i);
-            skip_to_the_next_word(command, &i);
             comm->here_doc_delimiter[j] = get_the_next_arg(command, &i);
+            index_last_hd = i;
             ++j;
         }
         else
             ++i;
     }
     comm->here_doc_delimiter[j] = NULL;
+    return (index_last_hd);
 }
 
 void    is_heredoc(char *command, t_com *comm, int *i)
@@ -91,5 +92,8 @@ void    is_heredoc(char *command, t_com *comm, int *i)
             *i = *i + 1;
     }
     if (comm->is_heredoc)
-        here_doc_init(comm, command, 0);
+    {
+        comm->entry = ENTRY_HEREDOC;
+        *i = here_doc_init(comm, command, 0);
+    }
 }

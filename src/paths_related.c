@@ -15,6 +15,28 @@ int	ft_find_begin(char *modele, char *compared)
 	return (1);
 }
 
+char	*get_env(char **envp, char *extracted)
+{
+	int		i;
+	int		l;
+	char	*env_var;
+
+	i = 0;
+	l = 0;
+	while (envp[i])
+	{
+		if (ft_find_begin(extracted, envp[i]) == 1)
+			break ;
+		++i;
+	}
+	if (!envp[i])
+	{
+		return (NULL);
+	}
+	env_var = ft_strdup(envp[i]);
+	return (env_var);
+}
+
 char	*get_paths(char **envp)
 {
 	int		i;
@@ -31,7 +53,7 @@ char	*get_paths(char **envp)
 	}
 	if (!envp[i])
 	{
-		//printf("Error, finding PATH env");
+		printf("Error, finding PATH env");
 		return (NULL);
 	}
 	paths = ft_strdup(envp[i]);

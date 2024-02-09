@@ -87,7 +87,7 @@ void	skip_the_word(char *s, int *i);
 void	skip_the_next_word(char *s, int *i);
 
 void    is_heredoc(char *command, t_com *comm, int *i);
-void    is_input(char *command, t_com *comm, int *i);
+void    is_input(char *command, t_com *comm, int last_index_hd);
 void    is_output(char *command, t_com *comm);
 
 #endif

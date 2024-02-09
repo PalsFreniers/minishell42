@@ -206,25 +206,62 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 	return (thgg);
 }
 
-// char *primary_parse(char *usr_input)
-// {
-// 	int i;
 
-// 	i = 0;
-// 	while (usr_input[i])
-// 	{
 
-// 	}
-// }
+char *expansion(char *usr_input)
+{
+	int i;
+	int l;
+	int	input_length;
+	int env_name_length;
+	int tempo;
+	char *env_var;
+
+	l = 0;
+	i = 0;
+	env_name_length = 0;
+	while (usr_input[i])
+	{
+		if (usr_input[i] == '\'')
+		{
+			tempo = i;
+			find_next_quote(usr_input, &i, '\'');
+			l += i - tempo;
+		}
+		else if (usr_input[i] == '$')
+		{
+			++i;
+			while(usr_input[i] && char_is_quote(usr_input[i]) == -1 && char_is_whitespace(usr_input[i]) == -1 && char_is_parasit(usr_input[i]) == -1)
+			{
+				++env_name_length;
+				env_var = env_exist(usr_input, i, env_name_length);
+				if (env_var)
+				{
+					l += ft_strlen(env_var);
+					free(env_var);
+					++i;
+					break;
+				}
+				else
+
+			}
+		}
+	}
+}
+
+char *primary_parse(char *usr_input)
+{
+	return (expansion(usr_input));
+}
 
 int	give_the_prompt(char **envp)
 {
 	t_main *thgg;
 	char *usr_input;
-	//char *first_parsed;
+	char *first_parsed;
 
 	usr_input = readline("$> ");
-	//first_parsed = primary_parse(usr_input);
+	first_parsed = primary_parse(usr_input);
 	thgg = init_thgg(envp, usr_input);
 	if (!thgg)
 	{

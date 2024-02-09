@@ -45,3 +45,10 @@ int	char_is_quote(char c)
 		return (1);
 	return (-1);
 }
+
+int char_is_delimiter(char c)
+{
+	if (c == '$' || c == '|')
+		return (1);
+	return (0);
+}

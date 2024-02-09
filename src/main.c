@@ -130,9 +130,6 @@ void	deinit_commands_data(t_com **command_data)
 
 void	*deinit_thgg(t_main *thgg)
 {
-	int i;
-	
-	i = 0;
 	if (thgg->usr_input)
 		free(thgg->usr_input);
 	if (thgg->paths)
@@ -190,7 +187,6 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 	thgg->commands_data = NULL;
 	thgg->id = 1;
 	thgg->usr_input = ft_strdup(o_usr_input);
-	add_history(o_usr_input);
 	free(o_usr_input);
 	thgg->envp = envp;
 	thgg->paths = get_splitted_path(envp);
@@ -206,62 +202,201 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 	return (thgg);
 }
 
+char	*ft_strdup_and_add_char(char *s, char c)
+{
+	char *result;
+	int i;
+
+	i = 0;
+	result = malloc((ft_strlen(s) + 2) * sizeof(char));
+	if (!result)
+		return (NULL);
+	while (s[i])
+	{
+		result[i] = s[i];
+		i++;
+	}
+	result[i] = c;
+	i++;
+	result[i] = '\0';
+	return (result);
+}
 
 
-char *expansion(char *usr_input)
+
+char *get_test_env_name(char *test_env_name, char current_char)
+{
+	char *new_test_name;
+
+	if (!test_env_name)
+	{
+		new_test_name = malloc(2 * sizeof(char));
+		new_test_name[0] = current_char;
+		new_test_name[1] = '\0';
+		return (new_test_name);
+	}
+	new_test_name = ft_strdup_and_add_char(test_env_name, current_char);
+	free(test_env_name);
+	test_env_name = NULL;
+	return (new_test_name);
+}
+
+int	get_length_expanded(char *usr_input, char **envp)
 {
 	int i;
+	int j;
 	int l;
-	int	input_length;
-	int env_name_length;
-	int tempo;
 	char *env_var;
+	char *test_env_name;
 
 	l = 0;
 	i = 0;
-	env_name_length = 0;
 	while (usr_input[i])
 	{
 		if (usr_input[i] == '\'')
 		{
-			tempo = i;
+			j = i;
 			find_next_quote(usr_input, &i, '\'');
-			l += i - tempo;
+			l += i - j;
 		}
 		else if (usr_input[i] == '$')
 		{
-			++i;
-			while(usr_input[i] && char_is_quote(usr_input[i]) == -1 && char_is_whitespace(usr_input[i]) == -1 && char_is_parasit(usr_input[i]) == -1)
+			if (char_is_whitespace(usr_input[i + 1]) == 1)
 			{
-				++env_name_length;
-				env_var = env_exist(usr_input, i, env_name_length);
-				if (env_var)
-				{
-					l += ft_strlen(env_var);
-					free(env_var);
-					++i;
-					break;
-				}
-				else
-
+				l += 2;
+				i++;
+				continue ;
 			}
+			if (usr_input[i + 1] == '$')
+			{
+				test_env_name = NULL;
+				env_var = ft_itoa(getpid());
+				i += 2;
+			}
+			else
+			{
+				j = ++i;
+				test_env_name = NULL;
+				while(usr_input[i] && char_is_quote(usr_input[i]) == -1 && char_is_whitespace(usr_input[i]) == -1 && char_is_parasit(usr_input[i]) == -1 && !char_is_delimiter(usr_input[i]))
+					i++;
+				test_env_name = ft_strdupi(usr_input, &j, i - j);
+				env_var = get_env(envp, test_env_name);
+			}
+			if (env_var)
+			{
+				l += ft_strlen(env_var);
+				free(env_var);
+				if (test_env_name)
+					free(test_env_name);
+				continue ;
+			}
+			if (test_env_name)
+				free(test_env_name);
+		}
+		else
+		{
+			++l;
+			++i;
 		}
 	}
+	return (l);
 }
 
-char *primary_parse(char *usr_input)
+char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 {
-	return (expansion(usr_input));
+	char *expanded;
+	char *env_var;
+	char *test_env_name;
+	int i;
+	int	j;
+	int k;
+
+	expanded = malloc((expansion_l + 1) * sizeof(char));
+	i = 0;
+	while (i <= expansion_l)
+		expanded[i++] = '\0';
+	i = 0;
+	j = 0;
+	while (usr_input[i])
+	{
+		if (usr_input[i] == '\'')
+		{
+			while (usr_input[i] && usr_input[i] != '\'')
+				expanded[j++] = usr_input[i++];
+			expanded[j++] = usr_input[i++];
+		}
+		else if (usr_input[i] == '$')
+		{
+			if (char_is_whitespace(usr_input[i + 1]) == 1)
+			{
+				expanded[j++] = usr_input[i++];
+				continue ;
+			}
+			if (usr_input[i + 1] == '$')
+			{
+				test_env_name = NULL;
+				env_var = ft_itoa(getpid());
+				i += 2;
+			}
+			else
+			{
+				k = ++i;
+				test_env_name = NULL;
+				while(usr_input[i] && char_is_quote(usr_input[i]) == -1 && char_is_whitespace(usr_input[i]) == -1 && char_is_parasit(usr_input[i]) == -1 && !char_is_delimiter(usr_input[i]))
+					i++;
+				test_env_name = ft_strdupi(usr_input, &k, i - k);
+				env_var = get_env(envp, test_env_name);
+
+			}
+			if (env_var)
+			{
+				ft_str_append(&expanded, &j, env_var);
+				free(env_var);
+				if (test_env_name)
+					free(test_env_name);
+				continue ;
+			}
+			if (test_env_name)
+				free(test_env_name);
+		}
+		else
+			expanded[j++] = usr_input[i++];
+	}
+	return (expanded);
 }
+
+char *expansion(char *usr_input, char **envp)
+{
+	char *expanded_input;
+	int expanded_l;
+
+	expanded_l = get_length_expanded(usr_input, envp);
+	if (expanded_l == ft_strlen(usr_input))
+		return (usr_input);
+	expanded_input = get_expanded(usr_input, envp, expanded_l);
+	free(usr_input);
+	return (expanded_input);
+}
+
+// char *primary_parse(char *usr_input, char **envp)
+// {
+// 	// char *expanded_input;
+
+// 	// expanded_input = expansion(usr_input, envp);
+// 	// return (expanded_input);
+// 	//get_length_expanded(usr_input, envp);
+// 	return NULL;
+// }
 
 int	give_the_prompt(char **envp)
 {
 	t_main *thgg;
 	char *usr_input;
-	char *first_parsed;
 
 	usr_input = readline("$> ");
-	first_parsed = primary_parse(usr_input);
+	add_history(usr_input);
+	// first_parsed = primary_parse(usr_input, envp);
+	usr_input = expansion(usr_input, envp);
 	thgg = init_thgg(envp, usr_input);
 	if (!thgg)
 	{

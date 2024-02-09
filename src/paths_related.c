@@ -12,17 +12,17 @@ int	ft_find_begin(char *modele, char *compared)
 		else
 			return (-1);
 	}
-	return (1);
+	if (compared[i] && compared[i] == '=')
+		return (1);
+	return (-1);
 }
 
 char	*get_env(char **envp, char *extracted)
 {
 	int		i;
-	int		l;
 	char	*env_var;
 
 	i = 0;
-	l = 0;
 	while (envp[i])
 	{
 		if (ft_find_begin(extracted, envp[i]) == 1)
@@ -30,24 +30,20 @@ char	*get_env(char **envp, char *extracted)
 		++i;
 	}
 	if (!envp[i])
-	{
 		return (NULL);
-	}
-	env_var = ft_strdup(envp[i]);
+	env_var = ft_strdup_env(envp[i], extracted);
 	return (env_var);
 }
 
 char	*get_paths(char **envp)
 {
 	int		i;
-	int		l;
 	char	*paths;
 
 	i = 0;
-	l = 0;
 	while (envp[i])
 	{
-		if (ft_find_begin("PATH=", envp[i]) == 1)
+		if (ft_find_begin("PATH", envp[i]) == 1)
 			break ;
 		++i;
 	}
@@ -68,10 +64,10 @@ char	**get_splitted_path(char **envp)
 	paths = get_paths(envp);
 	if (!paths)
 	{
-		//printf("Error, no paths envp\n");
+		printf("Error, no paths envp\n");
 		return (NULL);
 	}
-	splitted_paths = ft_split(paths, ':');
+	splitted_paths = ft_split_path(paths, ':');
 	free(paths);
 	return (splitted_paths);
 }

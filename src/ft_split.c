@@ -81,7 +81,7 @@ static char	**creation_of_char_star_star(char const *s, char c, char **r)
 	return (r);
 }
 
-char	**ft_split(char const *s, char c)
+char	**ft_split_path(char const *s, char c)
 {
 	char	**r;
 

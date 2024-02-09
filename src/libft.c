@@ -39,6 +39,29 @@ char	*ft_strdup(const char *s)
 	return (k);
 }
 
+char	*ft_strdup_env(const char *s, char *cut)
+{
+	int		l;
+	int		i;
+	int		j;
+	char	*result;
+
+	i = 0;
+	j = 0;
+	l = ft_strlen((char *)s) - (ft_strlen(cut) + 1);
+	result = malloc((l + 1) * sizeof(char));
+	if (!result)
+		return (NULL);
+	while (s[i] && cut[i] && s[i] == cut[i])
+		i++;
+	if (s[i] == '=')
+		i++;
+	while (s[i])
+		result[j++] = s[i++];
+	result[j] = '\0';
+	return (result);
+}
+
 char	*ft_strdupi(char *original, int *index, int size)
 {
 	char	*copy;
@@ -64,7 +87,6 @@ char	*ft_strdupi(char *original, int *index, int size)
 		i++;
 	}
 	copy[i] = '\0';
-	//printf("sortidupi:'%s'\n", copy);
 	return (copy);
 }
 
@@ -103,4 +125,17 @@ char	*ft_strcatslash(char *begin, char *end)
 		result[j++] = end[i++];
 	result[j] = 0;
 	return (result);
+}
+
+void	ft_str_append(char **begin, int *j, char *end)
+{
+	int i;
+
+	i = 0;
+	while (end[i])
+	{
+		(*begin)[*j] = end[i];
+		i++;
+		*j = *j + 1;
+	}
 }

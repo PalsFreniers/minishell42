@@ -13,11 +13,11 @@ int	command_disection(char *command, t_com *comm)
 	if (!comm->arguments)
 		return (-1);
 	last_heredoc_i = 0;
-	is_heredoc(command, comm, &last_heredoc_i);
-	if (!comm->is_heredoc)
+	has_heredoc(command, comm, &last_heredoc_i);
+	if (!comm->has_heredoc)
 		last_heredoc_i = 0;
-	is_input(command, comm, last_heredoc_i);
-	is_output(command, comm);
+	has_input(command, comm, last_heredoc_i);
+	has_output(command, comm);
 	if (comm->error)
 	{
 		printf("%s: No such file or directory\n", comm->error);

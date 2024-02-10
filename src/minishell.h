@@ -33,12 +33,12 @@ typedef struct s_command{
     char *command;
     char *program;
     char **arguments;
-    int is_heredoc;
+    int has_heredoc;
     char **here_doc_delimiter;
-    bool is_input;
+    bool has_input;
     char *input;
     int fd_input;
-    bool is_output;
+    bool has_output;
     char *output;
     int fd_output;
     char *error;
@@ -98,8 +98,8 @@ void	skip_to_the_next_word(char *s, int *i);
 void	skip_the_word(char *s, int *i);
 void	skip_the_next_word(char *s, int *i);
 
-void    is_heredoc(char *command, t_com *comm, int *i);
-void    is_input(char *command, t_com *comm, int last_index_hd);
-void    is_output(char *command, t_com *comm);
+void    has_heredoc(char *command, t_com *comm, int *i);
+void    has_input(char *command, t_com *comm, int last_index_hd);
+void    has_output(char *command, t_com *comm);
 
 #endif

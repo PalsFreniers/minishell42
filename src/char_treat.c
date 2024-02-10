@@ -35,7 +35,7 @@ int	char_is_whitespace(char c)
 int	find_next_quote(char *buffer, int *i, char quote_type)
 {
 	*i = *i + 1;
-	while (buffer[*i] && buffer[*i] != quote_type && buffer[*i - 1] != '\\')
+	while (buffer[*i] && buffer[*i] != quote_type)
 		*i = *i + 1;
 	if (!buffer[*i])
 	{
@@ -55,7 +55,13 @@ int	char_is_quote(char c)
 
 int char_is_delimiter(char c)
 {
-	if (c == '$' || c == '|')
-		return (1);
-	return (0);
+	if (c == '_')
+		return (0);
+	if (c >= '0' && c <= '9')
+		return (0);
+	if (c >= 'a' && c <= 'z')
+		return (0);
+	if (c >= 'A' && c <= 'Z')
+		return (0);
+	return (1);
 }

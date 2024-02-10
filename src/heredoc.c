@@ -56,7 +56,7 @@ int    here_doc_init(t_com *comm, char *command, int i)
     int index_last_hd;
 
     j = 0;
-    comm->here_doc_delimiter = malloc((comm->is_heredoc + 1) * sizeof(char*));
+    comm->here_doc_delimiter = malloc((comm->has_heredoc + 1) * sizeof(char*));
     while (command[i])
     {
         if (char_is_quote(command[i]))
@@ -75,9 +75,9 @@ int    here_doc_init(t_com *comm, char *command, int i)
     return (index_last_hd);
 }
 
-void    is_heredoc(char *command, t_com *comm, int *i)
+void    has_heredoc(char *command, t_com *comm, int *i)
 {
-    comm->is_heredoc = 0;
+    comm->has_heredoc = 0;
     comm->here_doc_delimiter = NULL;
     while (command[*i])
     {
@@ -85,13 +85,13 @@ void    is_heredoc(char *command, t_com *comm, int *i)
             find_next_quote(command, i, command[*i]);
         else if (command[*i] == '<' && command[*i + 1] == '<')
         {       
-            comm->is_heredoc++;
+            comm->has_heredoc++;
             *i = *i + 2;
         }
         else
             *i = *i + 1;
     }
-    if (comm->is_heredoc)
+    if (comm->has_heredoc)
     {
         comm->entry = ENTRY_HEREDOC;
         *i = here_doc_init(comm, command, 0);

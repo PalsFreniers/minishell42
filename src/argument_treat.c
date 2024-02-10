@@ -75,16 +75,39 @@ char	*get_the_next_arg(char *command, int *i)
 {
 	char	*argument;
 	int		length;
+	bool	in_a_quote;
+	char	type_quote;
 	int		j;
 
 	skip_to_the_next_word(command, i);
 	length = get_the_next_arg_length(command, i);
 	argument = malloc((length + 1) * sizeof(char));
 	j = 0;
+	in_a_quote = false;
+	type_quote = 'a';
 	while (j < length)
 	{
 		if (char_is_quote(command[*i]))
-			*i = *i + 1;
+		{
+			if (in_a_quote && command[*i] == type_quote)
+			{
+				type_quote = 'a';
+				in_a_quote = false;
+				*i = *i + 1;
+			}
+			else if (!in_a_quote)
+			{
+				type_quote = command[*i];
+				in_a_quote = true;
+				*i = *i + 1;
+			}
+			else
+			{
+				argument[j] = command[*i];
+				*i = *i + 1;
+				j++;
+			}
+		}
 		else
 		{
 			argument[j] = command[*i];

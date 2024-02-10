@@ -109,7 +109,7 @@ void	deinit_commands_data(t_com **command_data)
 		}
 		free(command_data[i]->arguments);
 		j = 0;
-		if (command_data[i]->is_heredoc)
+		if (command_data[i]->has_heredoc)
 		{
 			while (command_data[i]->here_doc_delimiter[j])
 			{
@@ -118,9 +118,9 @@ void	deinit_commands_data(t_com **command_data)
 			}
 			free(command_data[i]->here_doc_delimiter);
 		}
-		if (command_data[i]->is_input)
+		if (command_data[i]->has_input)
 			free(command_data[i]->input);
-		if (command_data[i]->is_output)
+		if (command_data[i]->has_output)
 			free(command_data[i]->output);
 		free(command_data[i]);
 		i++;
@@ -249,16 +249,24 @@ int	get_length_expanded(char *usr_input, char **envp)
 	int l;
 	char *env_var;
 	char *test_env_name;
+	bool is_double_quote;
 
 	l = 0;
 	i = 0;
+	is_double_quote = false;
 	while (usr_input[i])
 	{
-		if (usr_input[i] == '\'')
+		if (usr_input[i] == '\'' && !is_double_quote)
 		{
 			j = i;
 			find_next_quote(usr_input, &i, '\'');
 			l += i - j;
+		}
+		else if (usr_input[i] == '\"')
+		{
+			is_double_quote = !is_double_quote;
+			++l;
+			++i;
 		}
 		else if (usr_input[i] == '$')
 		{
@@ -268,12 +276,12 @@ int	get_length_expanded(char *usr_input, char **envp)
 				i++;
 				continue ;
 			}
-			if (usr_input[i + 1] == '$')
-			{
-				test_env_name = NULL;
-				env_var = ft_itoa(getpid());
-				i += 2;
-			}
+			// if (usr_input[i + 1] == '?')
+			// {
+			// 	test_env_name = NULL;
+			// 	env_var = ft_itoa(getpid());
+			// 	i += 2;
+			// }
 			else
 			{
 				j = ++i;
@@ -308,6 +316,7 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 	char *expanded;
 	char *env_var;
 	char *test_env_name;
+	bool is_double_quote;
 	int i;
 	int	j;
 	int k;
@@ -320,10 +329,15 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 	j = 0;
 	while (usr_input[i])
 	{
-		if (usr_input[i] == '\'')
+		if (usr_input[i] == '\'' && !is_double_quote)
 		{
 			while (usr_input[i] && usr_input[i] != '\'')
 				expanded[j++] = usr_input[i++];
+			expanded[j++] = usr_input[i++];
+		}
+		else if (usr_input[i] == '\"')
+		{
+			is_double_quote = !is_double_quote;
 			expanded[j++] = usr_input[i++];
 		}
 		else if (usr_input[i] == '$')
@@ -333,12 +347,12 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 				expanded[j++] = usr_input[i++];
 				continue ;
 			}
-			if (usr_input[i + 1] == '$')
-			{
-				test_env_name = NULL;
-				env_var = ft_itoa(getpid());
-				i += 2;
-			}
+			// if (usr_input[i + 1] == '$')
+			// {
+			// 	test_env_name = NULL;
+			// 	env_var = ft_itoa(getpid());
+			// 	i += 2;
+			// }
 			else
 			{
 				k = ++i;
@@ -363,6 +377,7 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		else
 			expanded[j++] = usr_input[i++];
 	}
+	printf("%s\n", expanded);
 	return (expanded);
 }
 
@@ -411,9 +426,9 @@ int	give_the_prompt(char **envp)
 	{
 		j = 0;
 		printf("command #%d:'%s'\nprogram:%s\n", i, thgg->commands_data[i]->command, thgg->commands_data[i]->program);
-		if (thgg->commands_data[i]->is_input)
+		if (thgg->commands_data[i]->has_input)
 			printf("input:%s\n", thgg->commands_data[i]->input);
-		if (thgg->commands_data[i]->is_output)
+		if (thgg->commands_data[i]->has_output)
 		{
 			printf("output:%s\n", thgg->commands_data[i]->output);
 			if (thgg->commands_data[i]->outkind == OVERWRITE)
@@ -427,7 +442,7 @@ int	give_the_prompt(char **envp)
 			j++;
 		}
 		j = 0;
-		if (thgg->commands_data[i]->is_heredoc)
+		if (thgg->commands_data[i]->has_heredoc)
 		{
 			while (thgg->commands_data[i]->here_doc_delimiter[j])
 			{

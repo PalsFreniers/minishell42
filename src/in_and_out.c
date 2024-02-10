@@ -1,11 +1,11 @@
 #include "minishell.h"
 
-void    is_input(char *command, t_com *comm, int last_index_hd)
+void    has_input(char *command, t_com *comm, int last_index_hd)
 {
     int i;
 
     i = 0;
-    comm->is_input = false;
+    comm->has_input = false;
     comm->input = NULL;
     while (command[i])
     {
@@ -22,12 +22,12 @@ void    is_input(char *command, t_com *comm, int last_index_hd)
             else
             {
                 i = i + 1;
-                if (comm->is_input)
+                if (comm->has_input)
                 {
                     close(comm->fd_input);
                     free(comm->input);
                 }
-                comm->is_input = true;
+                comm->has_input = true;
                 if (i > last_index_hd)
                     comm->entry = ENTRY_INPUT;
                 comm->input = get_the_next_arg(command, &i);
@@ -41,13 +41,13 @@ void    is_input(char *command, t_com *comm, int last_index_hd)
     }
 }
 
-void    is_output(char *command, t_com *comm)
+void    has_output(char *command, t_com *comm)
 {
     int i;
 
     i = 0;
 
-    comm->is_output = false;
+    comm->has_output = false;
     comm->output = NULL;
     while (command[i])
     {
@@ -55,12 +55,12 @@ void    is_output(char *command, t_com *comm)
             find_next_quote(command, &i, command[i]);
         else if (command[i] == '>')
         {
-            if (comm->is_output)
+            if (comm->has_output)
             {
                 close(comm->fd_output);
                 free(comm->output);
             }
-            comm->is_output = true;
+            comm->has_output = true;
             if (command[i + 1] == '>')
             {
                 i += 2;

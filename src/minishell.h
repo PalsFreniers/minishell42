@@ -13,23 +13,28 @@
 #include <fcntl.h>
 #include <sys/types.h>
 
+
 typedef enum e_outkind{
     APPEND,
     OVERWRITE,
+    ERROR,
 }   t_outkind;
 
 typedef enum e_entry{
     ENTRY_HEREDOC,
     ENTRY_INPUT,
     ENTRY_PIPE,
+    NO_ENTRY,
 }   t_entry;
 
 typedef enum e_exit{
     EXIT_OUTPUT,
     EXIT_PIPE,
+    EXIT_STDOUT,
 }   t_exit;
 
 typedef struct s_command{
+    int command_id;
     char *command;
     char *program;
     char **arguments;
@@ -48,7 +53,6 @@ typedef struct s_command{
 }t_com;
 
 typedef struct s_main{
-    int id;
     char *usr_input;
     char **envp;
     char **paths;
@@ -76,7 +80,7 @@ char    *ft_itoa(int i);
 
 
 
-void	increment_c_and_i(int *counter, int *index);
+void	increment_both(int *counter, int *index);
 char	**scrap_input(int command_number, char *usr_input);
 void	free_all(char **commands);
 
@@ -101,5 +105,8 @@ void	skip_the_next_word(char *s, int *i);
 void    has_heredoc(char *command, t_com *comm, int *i);
 void    has_input(char *command, t_com *comm, int last_index_hd);
 void    has_output(char *command, t_com *comm);
+
+char *exit_to_text(t_exit exit);
+char *entry_to_text(t_entry entry);
 
 #endif

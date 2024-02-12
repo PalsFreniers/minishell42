@@ -1,82 +1,5 @@
 #include "minishell.h"
 
-// int	launch_task(char *command, int *pipefd, char **paths)
-// {
-// 	char	*program_name;
-// 	char	**arguments;
-// 	char	*executable_path;
-// 	int		id2;
-// 	int		i;
-
-// 	(void)pipefd;
-// 	arguments = NULL;
-// 	id2 = 0;
-// 	i = 0;
-// 	command_disection(command, &program_name, &arguments);
-// 	if (program_name)
-// 	{
-// 		// //printf("program = %s\n", program_name);
-// 		executable_path = find_executable_path(program_name, paths);
-// 		// //printf("path exec=%s\n", command);
-// 		id2 = fork();
-// 		if (id2 == 0)
-// 		{
-// 			execve((const char *)executable_path, arguments, NULL);
-// 			//printf("Execve failed\n");
-// 			return (-1);
-// 		}
-// 		free(program_name);
-// 		while (paths[i])
-// 			free(paths[i++]);
-// 		free(paths);
-// 		free(executable_path);
-// 		waitpid(id2, NULL, 0);
-// 	}
-// 	i = 0;
-// 	if (arguments)
-// 	{
-// 		while (arguments[i])
-// 		{
-// 			// //printf("argument #%d: %s\n", i, arguments[i]);
-// 			free(arguments[i]);
-// 			++i;
-// 		}
-// 		free(arguments);
-// 	}
-// 	return (1);
-// }
-
-// int	launch_programms(char **commands, int command_number, char **paths, int *id)
-// {
-// 	int	pipefd[2];
-// 	int	n;
-
-// 	n = 0;
-// 	if (pipe(pipefd) == -1)
-// 		return (-1);
-// 	while (n < command_number)
-// 	{
-// 		// //printf("command: %s\n", commands[n]);
-// 		*id = fork();
-// 		if (*id == 0)
-// 		{
-// 			launch_task(commands[n], pipefd, paths);
-// 			// return (-1);
-// 			// break ;
-// 			close(pipefd[0]);
-// 			close(pipefd[1]);
-// 			free_all(commands);
-// 			return (-1);
-// 		}
-// 		else
-// 			waitpid(*id, NULL, 0);
-// 		++n;
-// 	}
-// 	close(pipefd[0]);
-// 	close(pipefd[1]);
-// 	return (1);
-// }
-
 void	free_double_char(char **to_free)
 {
 	int i;
@@ -92,37 +15,54 @@ void	free_double_char(char **to_free)
 	free(to_free);
 }
 
+void	deinit_cd_first(t_com *comm)
+{
+	int	j;
+
+	j = 0;
+	if (comm->program)
+		free(comm->program);
+	if (comm->program)
+	{
+		while (comm->arguments[j])
+		{
+			free(comm->arguments[j]);
+			j++;
+		}
+		free(comm->arguments);
+	}
+	j = 0;
+	if (comm->has_heredoc)
+	{
+		while (comm->here_doc_delimiter[j])
+		{
+			free(comm->here_doc_delimiter[j]);
+			j++;
+		}
+		free(comm->here_doc_delimiter);
+	}
+}
+
+void	deinit_cd_second(t_com *comm)
+{
+	if (comm->has_input)
+		free(comm->input);
+	if (comm->has_output)
+		free(comm->output);
+	if (comm->error)
+		free(comm->error);
+	free(comm);
+}
+
 void	deinit_commands_data(t_com **command_data)
 {
 	int	i;
-	int	j;
 
 	i = 0;
 	while (command_data[i])
 	{
-		j = 0;
-		free(command_data[i]->program);
-		while (command_data[i]->arguments[j])
-		{
-			free(command_data[i]->arguments[j]);
-			j++;
-		}
-		free(command_data[i]->arguments);
-		j = 0;
-		if (command_data[i]->has_heredoc)
-		{
-			while (command_data[i]->here_doc_delimiter[j])
-			{
-				free(command_data[i]->here_doc_delimiter[j]);
-				j++;
-			}
-			free(command_data[i]->here_doc_delimiter);
-		}
-		if (command_data[i]->has_input)
-			free(command_data[i]->input);
-		if (command_data[i]->has_output)
-			free(command_data[i]->output);
-		free(command_data[i]);
+		deinit_cd_first(command_data[i]);
+		deinit_cd_second(command_data[i]);
 		i++;
 	}
 	free(command_data);
@@ -139,28 +79,34 @@ void	*deinit_thgg(t_main *thgg)
 	if (thgg->commands_data)
 		deinit_commands_data(thgg->commands_data);
 	free(thgg);
+	thgg = NULL;
 	return (NULL);
 }
 
-// char **get_programms(int command_c, char **commands)
-// {
-// 	char **programs;
-// 	int	j;
-
-// 	programs = malloc((command_c + 1) * sizeof(char *));
-// 	if (!programs)
-// 		return (NULL);
-// 	j = 0;
-// 	while (j < command_c)
-// 	{
-// 		program[j] = get_the_program(commands[j])
-// 	}
-// }
+int	init_cd_first(t_com *command, char **commands, int i, int command_c)
+{
+	command->command_id = i + 1;
+	command->entry = ENTRY_PIPE;
+	command->exit = EXIT_PIPE;
+	command->command = commands[i];
+	command->error = NULL;
+	command->arguments = NULL;
+	command->program = NULL;
+	if (command_disection(commands[i], command) == -1)
+		return (1);
+	if (command->command_id == command_c)
+	{
+		if (command->exit == EXIT_PIPE)
+			command->exit = EXIT_STDOUT;
+	}
+	if (command->command_id == 1 && command->entry == ENTRY_PIPE)
+		command->entry = NO_ENTRY;
+	return (0);
+}
 
 t_com	**init_command_data(int command_c, char **commands)
 {
 	t_com **commands_data;
-	t_com *command;
 	int	i;
 
 	commands_data = malloc((command_c + 1) * sizeof(t_com*));
@@ -168,10 +114,7 @@ t_com	**init_command_data(int command_c, char **commands)
 	while (i < command_c)
 	{
 		commands_data[i] = malloc(sizeof(t_com));
-		command = commands_data[i];
-		command->command = commands[i];
-		command->error = NULL;
-		if (command_disection(commands[i], command) == -1)
+		if (init_cd_first(commands_data[i], commands, i, command_c))
 			return (NULL);
 		i++;
 	}
@@ -182,11 +125,11 @@ t_com	**init_command_data(int command_c, char **commands)
 t_main	*init_thgg(char **envp, char *o_usr_input)
 {
 	t_main *thgg;
+	int i;
 
 	thgg = malloc(sizeof(t_main));
 	thgg->commands = NULL;
 	thgg->commands_data = NULL;
-	thgg->id = 1;
 	thgg->usr_input = ft_strdup(o_usr_input);
 	free(o_usr_input);
 	thgg->envp = envp;
@@ -200,6 +143,7 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 	thgg->commands_data = init_command_data(thgg->command_c, thgg->commands);
 	if (!thgg->commands_data)
 		return (deinit_thgg(thgg));
+	i = 0;
 	return (thgg);
 }
 
@@ -242,13 +186,64 @@ char *get_test_env_name(char *test_env_name, char current_char)
 	return (new_test_name);
 }
 
+int	primary_exception_cancel(char *usr_input, int *i, int *l)
+{
+	if (char_is_whitespace(usr_input[*i + 1]))
+	{
+		*l = *l + 2;
+		*i = *i + 1;
+		return (1);
+	}
+	// if (usr_input[i + 1] == '?')
+	// {
+	// 	test_env_name = NULL;
+	// 	env_var = ft_itoa(getpid());
+	// 	i += 2;
+	//	return (1)
+	// }
+	return (0);
+}
+
+void get_length_dollar(char *usr_input, char **envp, int *i, int *l)
+{
+	int j;
+	char *env_var;
+	char *test_env_name;
+
+	if (primary_exception_cancel(usr_input, i, l))
+		return ;
+	*i = *i + 1;
+	j = *i;
+	test_env_name = NULL;
+	while(usr_input[*i] && !(char_is_quote(usr_input[*i])) && !(char_is_whitespace(usr_input[*i])) && !(char_is_parasit(usr_input[*i])) && !char_is_delimiter(usr_input[*i]))
+		*i = *i + 1;
+	test_env_name = ft_strdupi(usr_input, &j, *i - j);
+	env_var = get_env(envp, test_env_name);
+	if (env_var)
+	{
+		*l = *l + ft_strlen(env_var);
+		free(env_var);
+		if (test_env_name)
+			free(test_env_name);
+		return ;
+	}
+	if (test_env_name)
+		free(test_env_name);
+}
+
+void	single_quote_expansion(char *usr_input, int *i, int *l)
+{
+	int j;
+
+	j = *i;
+	find_next_quote(usr_input, i, '\'');
+	*l = *l + (*i - j);
+}
+
 int	get_length_expanded(char *usr_input, char **envp)
 {
 	int i;
-	int j;
 	int l;
-	char *env_var;
-	char *test_env_name;
 	bool is_double_quote;
 
 	l = 0;
@@ -257,59 +252,28 @@ int	get_length_expanded(char *usr_input, char **envp)
 	while (usr_input[i])
 	{
 		if (usr_input[i] == '\'' && !is_double_quote)
-		{
-			j = i;
-			find_next_quote(usr_input, &i, '\'');
-			l += i - j;
-		}
+			single_quote_expansion(usr_input, &i, &l);
 		else if (usr_input[i] == '\"')
 		{
 			is_double_quote = !is_double_quote;
-			++l;
-			++i;
+			increment_both(&i, &l);
 		}
 		else if (usr_input[i] == '$')
 		{
-			if (char_is_whitespace(usr_input[i + 1]))
+			if (usr_input[i + 1] == '$')
 			{
-				l += 2;
-				i++;
-				continue ;
+				i += 2;
+				continue;
 			}
-			// if (usr_input[i + 1] == '?')
-			// {
-			// 	test_env_name = NULL;
-			// 	env_var = ft_itoa(getpid());
-			// 	i += 2;
-			// }
-			else
-			{
-				j = ++i;
-				test_env_name = NULL;
-				while(usr_input[i] && !(char_is_quote(usr_input[i])) && !(char_is_whitespace(usr_input[i])) && !(char_is_parasit(usr_input[i])) && !char_is_delimiter(usr_input[i]))
-					i++;
-				test_env_name = ft_strdupi(usr_input, &j, i - j);
-				env_var = get_env(envp, test_env_name);
-			}
-			if (env_var)
-			{
-				l += ft_strlen(env_var);
-				free(env_var);
-				if (test_env_name)
-					free(test_env_name);
-				continue ;
-			}
-			if (test_env_name)
-				free(test_env_name);
+			get_length_dollar(usr_input, envp, &i, &l);
 		}
 		else
-		{
-			++l;
-			++i;
-		}
+			increment_both(&i, &l);
 	}
 	return (l);
 }
+
+// void	get_expanded_found_dollar(char *usr_input, char **envp,)
 
 char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 {
@@ -353,6 +317,11 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 			// 	env_var = ft_itoa(getpid());
 			// 	i += 2;
 			// }
+			if (usr_input[i + 1] == '$')
+			{
+				i += 2;
+				continue;
+			}
 			else
 			{
 				k = ++i;
@@ -377,7 +346,6 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		else
 			expanded[j++] = usr_input[i++];
 	}
-	printf("%s\n", expanded);
 	return (expanded);
 }
 
@@ -422,6 +390,8 @@ int	give_the_prompt(char **envp)
 	int i;
 	int j;
 	i = 0;
+	if (!thgg)
+		return (-1);
 	while (thgg->commands_data[i])
 	{
 		j = 0;
@@ -433,15 +403,20 @@ int	give_the_prompt(char **envp)
 			printf("output:%s\n", thgg->commands_data[i]->output);
 			if (thgg->commands_data[i]->outkind == OVERWRITE)
 				printf("OVERWRITE\n");
-			else
+			if (thgg->commands_data[i]->outkind == APPEND)
 				printf("APPEND\n");
+			if (thgg->commands_data[i]->outkind == ERROR)
+				printf("ERROR\n");
 		}
-		while (thgg->commands_data[i]->arguments[j])
+		if (thgg->commands_data[i]->arguments)
 		{
-			printf("arguments #%d:'%s'\n", j, thgg->commands_data[i]->arguments[j]);
-			j++;
+			while (thgg->commands_data[i]->arguments[j])
+			{
+				printf("arguments #%d:'%s'\n", j, thgg->commands_data[i]->arguments[j]);
+				j++;
+			}
+			j = 0;
 		}
-		j = 0;
 		if (thgg->commands_data[i]->has_heredoc)
 		{
 			while (thgg->commands_data[i]->here_doc_delimiter[j])
@@ -450,7 +425,28 @@ int	give_the_prompt(char **envp)
 				j++;
 			}
 		}
+		printf("ENTRY: %s   EXIT: %s\n", entry_to_text(thgg->commands_data[i]->entry), exit_to_text(thgg->commands_data[i]->exit));
 		printf("\n");
+		i++;
+	}
+	i = 0;
+	while(thgg->commands_data[i])
+	{
+		if (thgg->commands_data[i]->has_input && thgg->commands_data[i]->fd_input > 0)
+			close(thgg->commands_data[i]->fd_input);
+		if (thgg->commands_data[i]->has_output && thgg->commands_data[i]->fd_output > 0)
+			close(thgg->commands_data[i]->fd_output);
+		i++;
+	}
+	i = 0;
+	while(thgg->commands_data[i])
+	{
+		if (thgg->commands_data[i]->error)
+		{
+			printf("No such file or directory: %s\n", thgg->commands_data[i]->error);
+			deinit_thgg(thgg);
+			return (0);
+		}
 		i++;
 	}
 	// i = 0;

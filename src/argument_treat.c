@@ -71,48 +71,49 @@ int	get_the_next_arg_length(char *command, int *i)
 	return (length);
 }
 
+void	gtna_quote_case(char *command, int *i, char *argument, int *j)
+{
+	static bool in_a_quote = false;
+	static char type_quote = 'a';
+
+	if (in_a_quote && command[*i] == type_quote)
+	{
+		type_quote = 'a';
+		in_a_quote = false;
+		*i = *i + 1;
+	}
+	else if (!in_a_quote)
+	{
+		type_quote = command[*i];
+		in_a_quote = true;
+		*i = *i + 1;
+	}
+	else
+	{
+		argument[*j] = command[*i];
+		*i = *i + 1;
+		*j = *j + 1;
+	}
+}
+
 char	*get_the_next_arg(char *command, int *i)
 {
 	char	*argument;
 	int		length;
-	bool	in_a_quote;
-	char	type_quote;
 	int		j;
 
 	skip_to_the_next_word(command, i);
 	length = get_the_next_arg_length(command, i);
 	argument = malloc((length + 1) * sizeof(char));
 	j = 0;
-	in_a_quote = false;
-	type_quote = 'a';
 	while (j < length)
 	{
 		if (char_is_quote(command[*i]))
-		{
-			if (in_a_quote && command[*i] == type_quote)
-			{
-				type_quote = 'a';
-				in_a_quote = false;
-				*i = *i + 1;
-			}
-			else if (!in_a_quote)
-			{
-				type_quote = command[*i];
-				in_a_quote = true;
-				*i = *i + 1;
-			}
-			else
-			{
-				argument[j] = command[*i];
-				*i = *i + 1;
-				j++;
-			}
-		}
+			gtna_quote_case(command, i, argument, &j);
 		else
 		{
 			argument[j] = command[*i];
-			*i = *i + 1;
-			j++;
+			increment_both(&j, i);
 		}
 	}
 	argument[j] = '\0';
@@ -131,13 +132,11 @@ char	**get_the_arguments(char *command, int *i, char *program_name)
 	j = 0;
 	c = get_argc(command, *i);
 	arguments = malloc((c + 2) * sizeof(char *));
-	arguments[j] = ft_strdup(program_name);
-	j++;
+	arguments[j++] = ft_strdup(program_name);
 	while (j < c + 1)
 	{
 		if (char_is_whitespace(command[*i]))
-			while (command[*i] && char_is_whitespace(command[*i]))
-				*i = *i + 1;
+			*i = *i + 1;
 		else if (char_is_parasit(command[*i]))
 		{
 			while (command[*i] && char_is_parasit(command[*i]))
@@ -145,10 +144,7 @@ char	**get_the_arguments(char *command, int *i, char *program_name)
 			skip_the_next_word(command, i);
 		}
 		else
-		{
-			arguments[j] = get_the_next_arg(command, i);
-			++j;
-		}
+			arguments[j++] = get_the_next_arg(command, i);
 	}
 	arguments[j] = NULL;
 	return (arguments);

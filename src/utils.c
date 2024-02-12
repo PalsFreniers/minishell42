@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	increment_c_and_i(int *counter, int *index)
+void	increment_both(int *counter, int *index)
 {
 	*counter = *counter + 1;
 	*index = *index + 1;
@@ -20,4 +20,25 @@ void	free_all(char **commands)
 		}
 		free(commands);
 	}
+}
+
+char *entry_to_text(t_entry entry)
+{
+	static char *table[] = {
+		"ENTRY_HEREDOC",
+		"ENTRY_INPUT",
+		"ENTRY_PIPE",
+		"NO_ENTRY",
+	};
+	return(table[entry]);
+}
+
+char *exit_to_text(t_exit exit)
+{
+	static char *table[] = {
+		"EXIT_OUTPUT",
+		"EXIT_PIPE",
+		"EXIT_STDOUT",
+	};
+	return(table[exit]);
 }

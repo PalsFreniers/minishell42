@@ -33,7 +33,7 @@ int	get_command_number(char *buffer)
 		{
 			if (check_for_empty(buffer, i) == -1)
 				return (-1);
-			increment_c_and_i(&c, &i);
+			increment_both(&c, &i);
 		}
 		else if (char_is_quote(buffer[i]))
 		{

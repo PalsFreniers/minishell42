@@ -24,7 +24,8 @@ void    has_input(char *command, t_com *comm, int last_index_hd)
                 i = i + 1;
                 if (comm->has_input)
                 {
-                    close(comm->fd_input);
+                    if (comm->fd_input > 0)
+                        close(comm->fd_input);
                     free(comm->input);
                 }
                 comm->has_input = true;
@@ -33,7 +34,10 @@ void    has_input(char *command, t_com *comm, int last_index_hd)
                 comm->input = get_the_next_arg(command, &i);
                 comm->fd_input = open(comm->input, O_RDONLY);
                 if (comm->fd_input < 0 && !comm->error)
+                {
                     comm->error = ft_strdup((const char*)comm->input);
+                    break ;
+                }
             }
         }
         else
@@ -57,16 +61,30 @@ void    has_output(char *command, t_com *comm)
         {
             if (comm->has_output)
             {
-                close(comm->fd_output);
+                if (comm->fd_output > 0)
+                    close(comm->fd_output);
                 free(comm->output);
             }
             comm->has_output = true;
             if (command[i + 1] == '>')
             {
-                i += 2;
-                comm->outkind = APPEND;
-                comm->output = get_the_next_arg(command, &i);
-                comm->fd_output = open(comm->output, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                if (command[i + 2] == '>')
+                {
+                    comm->has_output = false;
+                    if (comm->outkind != ERROR)
+                    {
+                        comm->outkind = ERROR;
+                        printf("syntax error near unexpected token `>'\n");
+                    }
+                    i += 3;
+                }
+                else
+                {
+                    i += 2;
+                    comm->outkind = APPEND;
+                    comm->output = get_the_next_arg(command, &i);
+                    comm->fd_output = open(comm->output, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                }
             }
             else
             {
@@ -75,8 +93,9 @@ void    has_output(char *command, t_com *comm)
                 comm->output = get_the_next_arg(command, &i);
                 comm->fd_output = open(comm->output, O_CREAT | O_WRONLY,  S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
             }
+            comm->exit = EXIT_OUTPUT;
         }
         else
-            i = i + 1;
+            ++i;
     }
 }

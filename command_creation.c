@@ -52,7 +52,7 @@ int	get_command_number(char *buffer)
 	return (c + 1);
 }
 
-int	create_the_com_table(char *usr_input, char ***commands, int command_number)
+int	create_the_com_table(char *usr_input, char **commands, int command_number)
 {
 	int	i;
 	int	n;
@@ -61,20 +61,19 @@ int	create_the_com_table(char *usr_input, char ***commands, int command_number)
 	command_length = 1;
 	i = 0;
 	n = 0;
-	while (command_length && n < command_number)
+	while (n < command_number)
 	{
-		if (usr_input[i] == '|')
+		if (i != 0 && usr_input[i] == '|')
 			++i;
 		while (char_is_whitespace(usr_input[i]))
 			++i;
 		command_length = get_command_length(usr_input, i);
-		if (command_length)
-		{
-			(*commands)[n] = ft_strdupi(usr_input, &i, command_length);
-			if (!(*commands)[n])
-				return (1);
-			n++;
-		}
+		commands[n] = ft_strdupi(usr_input, &i, command_length);
+		if (!commands[n])
+			return (1);
+		n++;
+		if (usr_input[i] == '|')
+			++i;
 	}
 	return (0);
 }

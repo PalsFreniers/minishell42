@@ -80,12 +80,19 @@ int	here_doc_init(t_com *comm, char *command, int i)
 			find_next_quote(command, &i, command[i]);
 		if (command[i] == '<' && command[i + 1] == '<')
 		{
-			if (check_for_error_hd(command, i))
-				return (-1);
-			i += 2;
-			comm->here_doc_delimiter[j] = get_the_next_arg(command, &i);
-			index_last_hd = i;
-			++j;
+			if (check_for_error_hd(command, i + 2, comm))
+			{
+				skip_to_the_next_word(command, &i);
+				while (command[i] == '<')
+					++i;
+			}
+			else
+			{
+				i += 2;
+				comm->here_doc_delimiter[j] = get_the_next_arg(command, &i);
+				index_last_hd = i;
+				++j;
+			}
 		}
 		else
 			++i;
@@ -94,27 +101,40 @@ int	here_doc_init(t_com *comm, char *command, int i)
 	return (index_last_hd);
 }
 
-void	has_heredoc(char *command, t_com *comm, int *i)
+int	has_heredoc(char *command, t_com *comm)
 {
+	int		i;
+
+	i = 0;
 	comm->has_heredoc = 0;
 	comm->here_doc_delimiter = NULL;
-	while (command[*i])
+	while (command[i])
 	{
-		if (char_is_quote(command[*i]))
-			find_next_quote(command, i, command[*i]);
-		else if (command[*i] == '<' && command[*i + 1] == '<')
+		if (char_is_quote(command[i]))
+			find_next_quote(command, &i, command[i]);
+		else if (command[i] == '<' && command[i + 1] == '<')
 		{
-			comm->has_heredoc++;
-			*i = *i + 2;
+			if (check_for_error_hd(command, i + 2, comm))
+			{
+				skip_to_the_next_word(command, &i);
+				while (command[i] == '<')
+					++i;
+			}
+			else
+			{
+				comm->has_heredoc++;
+				i += 2;
+			}
 		}
 		else
-			*i = *i + 1;
+			++i;
 	}
 	if (comm->has_heredoc)
 	{
 		comm->entry = ENTRY_HEREDOC;
-		*i = here_doc_init(comm, command, 0);
-        if (*i == -1)
+		i = here_doc_init(comm, command, 0);
+        if (i == -1)
             comm->entry = HD_ERROR;
 	}
+	return (i);
 }

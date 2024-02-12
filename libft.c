@@ -80,15 +80,13 @@ char	*ft_strdupi(char *original, int *index, int size)
 	char	*copy;
 	int		i;
 
-	if (original[*index] == '|')
+	if (*index != 0 && original[*index] == '|')
 		*index = *index + 1;
-	while (original[*index] == ' ')
+	while (char_is_whitespace(original[*index]))
 	{
 		*index = *index + 1;
 		--size;
 	}
-	if (size < 1)
-		return (NULL);
 	copy = malloc((size + 1) * sizeof(char));
 	if (!copy)
 		return (NULL);

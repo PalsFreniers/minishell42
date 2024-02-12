@@ -39,6 +39,7 @@ typedef enum e_entry
 	ENTRY_PIPE,
 	NO_ENTRY,
     HD_ERROR,
+    INPUT_ERROR,
 }				t_entry;
 
 typedef enum e_exit
@@ -120,15 +121,17 @@ void			skip_to_the_next_word(char *s, int *i);
 void			skip_the_word(char *s, int *i);
 void			skip_the_next_word(char *s, int *i);
 
-void			has_heredoc(char *command, t_com *comm, int *i);
+int				has_heredoc(char *command, t_com *comm);
 void			has_input(char *command, t_com *comm, int last_index_hd);
 void			has_output(char *command, t_com *comm);
 
 char			*exit_to_text(t_exit exit);
 char			*entry_to_text(t_entry entry);
 
-int				create_the_com_table(char *usr_input, char ***commands,
+int				create_the_com_table(char *usr_input, char **commands,
 					int command_number);
-int				check_for_error_hd(char *command, int i);
+int				check_for_error_hd(char *command, int i, t_com *comm);
+int             check_for_error_output(char *command, int i);
+char             check_for_next_char(char *command, int i);
 
 #endif

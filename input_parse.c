@@ -38,7 +38,7 @@ char	**scrap_input(int command_number, char *usr_input)
 	commands[command_number] = NULL;
 	if (!commands)
 		return (NULL);
-	if (create_the_com_table(usr_input, &commands, command_number))
+	if (create_the_com_table(usr_input, commands, command_number))
 		return (NULL);
 	return (commands);
 }

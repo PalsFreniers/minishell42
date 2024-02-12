@@ -63,6 +63,7 @@ void	deinit_cd_second(t_com *comm)
 		free(comm->output);
 	if (comm->error)
 		free(comm->error);
+	comm->outkind = APPEND;
 	free(comm);
 }
 
@@ -150,6 +151,16 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 	if (thgg->command_c < 1)
 		return (deinit_thgg(thgg));
 	thgg->commands = scrap_input(thgg->command_c, thgg->usr_input);
+	i = 0;
+	while (i < thgg->command_c)
+	{
+		if (!(thgg->commands[i]))
+		{
+			printf("syntax error near unexpected token `|'\n");
+			return (deinit_thgg(thgg));
+		}
+		++i;
+	}
 	if (!thgg->commands)
 		return (deinit_thgg(thgg));
 	thgg->commands_data = init_command_data(thgg->command_c, thgg->commands);
@@ -468,7 +479,7 @@ int	give_the_prompt(char **envp)
 	i = 0;
 	while (thgg->commands_data[i])
 	{
-		if (thgg->commands_data[i]->error)
+		if (thgg->commands_data[i]->error && ft_strlen(thgg->commands_data[i]->error))
 		{
 			printf("No such file or directory: %s\n",
 				thgg->commands_data[i]->error);

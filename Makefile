@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 NAME = minishell
-SRCS = element_treat.c command_creation.c libft_bis.c skipper.c tempo_utils.c ft_itoa.c heredoc.c in_and_out.c main.c argument_treat.c char_treat.c commands_to_exec.c ft_split.c input_parse.c libft.c paths_related.c utils.c
+SRCS = error_manager.c element_treat.c command_creation.c libft_bis.c skipper.c tempo_utils.c ft_itoa.c heredoc.c in_and_out.c main.c argument_treat.c char_treat.c commands_to_exec.c ft_split.c input_parse.c libft.c paths_related.c utils.c
 OBJS = $(SRCS:.c=.o)
 HEADER = minishell.h
 FLAGS = -Wall -Werror -Wextra -g

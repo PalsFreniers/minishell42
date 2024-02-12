@@ -114,6 +114,8 @@ int	init_cd_first(t_com *command, char **commands, int i, int command_c)
 	}
 	if (command->command_id == 1 && command->entry == ENTRY_PIPE)
 		command->entry = NO_ENTRY;
+	command->has_input = false;
+	command->input = NULL;
 	return (0);
 }
 

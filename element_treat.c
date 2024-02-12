@@ -12,11 +12,8 @@
 
 #include "minishell.h"
 
-int	check_for_error_hd(char *command, int i, t_com *comm)
+int	check_for_error_hd(char *command, int i, t_com *comm, int c)
 {
-	int c;
-
-	c = 0;
 	skip_to_the_next_word(command, &i);
 	while (command[i] == '<')
 		increment_both(&i, &c);
@@ -42,7 +39,7 @@ int	check_for_error_hd(char *command, int i, t_com *comm)
 	return (0);
 }
 
-int check_for_error_output(char *command, int i)
+int	check_for_error_output(char *command, int i)
 {
 	skip_to_the_next_word(command, &i);
 	if (!command[i])

@@ -24,7 +24,7 @@ int	command_disection(char *command, t_com *comm)
 	last_heredoc_i = has_heredoc(command, comm);
 	if (!comm->has_heredoc)
 		last_heredoc_i = -1;
-	has_input(command, comm, last_heredoc_i);
+	has_input(command, comm, last_heredoc_i, 0);
 	has_output(command, comm);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:47:18 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/02/12 17:50:15 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,72 +69,32 @@ char	*get_the_next_heredoc(char *command, int *i)
 
 int	here_doc_init(t_com *comm, char *command, int i)
 {
-	int	j;
 	int	index_last_hd;
+	int	j;
 
 	j = 0;
 	comm->here_doc_delimiter = malloc((comm->has_heredoc + 1) * sizeof(char *));
 	while (command[i])
-	{
-		if (char_is_quote(command[i]))
-			find_next_quote(command, &i, command[i]);
-		if (command[i] == '<' && command[i + 1] == '<')
-		{
-			if (check_for_error_hd(command, i + 2, comm))
-			{
-				skip_to_the_next_word(command, &i);
-				while (command[i] == '<')
-					++i;
-			}
-			else
-			{
-				i += 2;
-				comm->here_doc_delimiter[j] = get_the_next_arg(command, &i);
-				index_last_hd = i;
-				++j;
-			}
-		}
-		else
-			++i;
-	}
+		index_last_hd = get_heredocs(command, &i, comm, &j);
 	comm->here_doc_delimiter[j] = NULL;
 	return (index_last_hd);
 }
 
 int	has_heredoc(char *command, t_com *comm)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	comm->has_heredoc = 0;
 	comm->here_doc_delimiter = NULL;
 	while (command[i])
-	{
-		if (char_is_quote(command[i]))
-			find_next_quote(command, &i, command[i]);
-		else if (command[i] == '<' && command[i + 1] == '<')
-		{
-			if (check_for_error_hd(command, i + 2, comm))
-			{
-				skip_to_the_next_word(command, &i);
-				while (command[i] == '<')
-					++i;
-			}
-			else
-			{
-				comm->has_heredoc++;
-				i += 2;
-			}
-		}
-		else
-			++i;
-	}
+		look_for_heredoc(command, &i, comm);
 	if (comm->has_heredoc)
 	{
 		comm->entry = ENTRY_HEREDOC;
 		i = here_doc_init(comm, command, 0);
-        if (i == -1)
-            comm->entry = HD_ERROR;
+		if (i == -1)
+			comm->entry = HD_ERROR;
 	}
 	return (i);
 }

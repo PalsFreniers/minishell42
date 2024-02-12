@@ -122,7 +122,7 @@ void			skip_the_word(char *s, int *i);
 void			skip_the_next_word(char *s, int *i);
 
 int				has_heredoc(char *command, t_com *comm);
-void			has_input(char *command, t_com *comm, int last_index_hd);
+void			has_input(char *command, t_com *comm, int last_index_hd, int i);
 void			has_output(char *command, t_com *comm);
 
 char			*exit_to_text(t_exit exit);
@@ -130,8 +130,13 @@ char			*entry_to_text(t_entry entry);
 
 int				create_the_com_table(char *usr_input, char **commands,
 					int command_number);
-int				check_for_error_hd(char *command, int i, t_com *comm);
+int				check_for_error_hd(char *command, int i, t_com *comm, int c);
 int             check_for_error_output(char *command, int i);
-char             check_for_next_char(char *command, int i);
+char            check_for_next_char(char *command, int i);
+void			look_for_heredoc(char *command, int *i, t_com *comm);
+int				get_heredocs(char *command, int *i, t_com *comm, int *j);
+int    			manage_errored_output(char *command, int *i, int *c, t_com *comm);
+void    		manage_bracketed_input(char *command, int *i, int *c, t_com *comm);
+void    		manage_empty_input(int *i, t_com *comm);
 
 #endif

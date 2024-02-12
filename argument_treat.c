@@ -1,36 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   argument_treat.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
+/*   Updated: 2024/02/12 11:06:32 by dosokin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	get_argc(char *command, int i)
 {
-	int	c;
-	int reset;
+	int		c;
+	int		reset;
+	char	ch;
 
 	reset = 1;
 	c = 0;
 	while (command[i])
 	{
-		if (char_is_whitespace(command[i]))
-		{
-			reset = 1;
-			while (command[i] && char_is_whitespace(command[i]))
-				++i;
-		}
-		else if (char_is_parasit(command[i]))
-		{
-			while (char_is_parasit(command[i]))
-				++i;
-			skip_the_next_word(command, &i);
-		}
-		else if (char_is_quote(command[i]))
-		{
-			if (reset == 1)
-			{
-				c++;
-				reset = 0;
-			}
-			find_next_quote(command, &i, command[i]);
-		}
-		else if (char_is_alphanum(command[i]))
+		ch = command[i];
+		if (char_is_whitespace(ch) || char_is_parasit(ch) || char_is_quote(ch))
+			skip_undesired(command, &i, &reset, &c);
+		else if (char_is_alphanum(ch))
 		{
 			if (reset == 1)
 			{
@@ -47,8 +42,8 @@ int	get_argc(char *command, int i)
 int	get_the_next_arg_length(char *command, int *i)
 {
 	int	length;
-	int j;
-	int tempo;
+	int	j;
+	int	tempo;
 
 	j = *i;
 	length = 0;
@@ -61,7 +56,8 @@ int	get_the_next_arg_length(char *command, int *i)
 			return (length + get_the_next_arg_length(command, &j));
 		return (length);
 	}
-	while (command[j] && !(char_is_whitespace(command[j])) && !(char_is_parasit(command[j])))
+	while (command[j] && !(char_is_whitespace(command[j]))
+		&& !(char_is_parasit(command[j])))
 	{
 		if (char_is_quote(command[j]))
 			return (length + get_the_next_arg_length(command, &j));
@@ -71,37 +67,31 @@ int	get_the_next_arg_length(char *command, int *i)
 	return (length);
 }
 
-void	gtna_quote_case(char *command, int *i, char *argument, int *j)
+int	gtna_quote_case(char *command, int *i, char *type_quote)
 {
-	static bool in_a_quote = false;
-	static char type_quote = 'a';
-
-	if (in_a_quote && command[*i] == type_quote)
+	if (*type_quote != 'a' && command[*i] == *type_quote)
 	{
-		type_quote = 'a';
-		in_a_quote = false;
+		*type_quote = 'a';
 		*i = *i + 1;
+		return (1);
 	}
-	else if (!in_a_quote)
+	else if (*type_quote == 'a')
 	{
-		type_quote = command[*i];
-		in_a_quote = true;
+		*type_quote = command[*i];
 		*i = *i + 1;
+		return (1);
 	}
-	else
-	{
-		argument[*j] = command[*i];
-		*i = *i + 1;
-		*j = *j + 1;
-	}
+	return (0);
 }
 
 char	*get_the_next_arg(char *command, int *i)
 {
 	char	*argument;
 	int		length;
+	char	type_quote;
 	int		j;
 
+	type_quote = 'a';
 	skip_to_the_next_word(command, i);
 	length = get_the_next_arg_length(command, i);
 	argument = malloc((length + 1) * sizeof(char));
@@ -109,12 +99,12 @@ char	*get_the_next_arg(char *command, int *i)
 	while (j < length)
 	{
 		if (char_is_quote(command[*i]))
-			gtna_quote_case(command, i, argument, &j);
-		else
 		{
-			argument[j] = command[*i];
-			increment_both(&j, i);
+			if (!(gtna_quote_case(command, i, &type_quote)))
+				dup_and_get_next(&command, i, &argument, &j);
 		}
+		else
+			dup_and_get_next(&command, i, &argument, &j);
 	}
 	argument[j] = '\0';
 	if (char_is_quote(command[*i]))

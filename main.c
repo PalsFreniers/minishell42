@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
+/*   Updated: 2024/02/12 11:09:45 by dosokin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	free_double_char(char **to_free)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!to_free)
@@ -106,10 +118,10 @@ int	init_cd_first(t_com *command, char **commands, int i, int command_c)
 
 t_com	**init_command_data(int command_c, char **commands)
 {
-	t_com **commands_data;
-	int	i;
+	t_com	**commands_data;
+	int		i;
 
-	commands_data = malloc((command_c + 1) * sizeof(t_com*));
+	commands_data = malloc((command_c + 1) * sizeof(t_com *));
 	i = 0;
 	while (i < command_c)
 	{
@@ -124,8 +136,8 @@ t_com	**init_command_data(int command_c, char **commands)
 
 t_main	*init_thgg(char **envp, char *o_usr_input)
 {
-	t_main *thgg;
-	int i;
+	t_main	*thgg;
+	int		i;
 
 	thgg = malloc(sizeof(t_main));
 	thgg->commands = NULL;
@@ -149,8 +161,8 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 
 char	*ft_strdup_and_add_char(char *s, char c)
 {
-	char *result;
-	int i;
+	char	*result;
+	int		i;
 
 	i = 0;
 	result = malloc((ft_strlen(s) + 2) * sizeof(char));
@@ -167,11 +179,9 @@ char	*ft_strdup_and_add_char(char *s, char c)
 	return (result);
 }
 
-
-
-char *get_test_env_name(char *test_env_name, char current_char)
+char	*get_test_env_name(char *test_env_name, char current_char)
 {
-	char *new_test_name;
+	char	*new_test_name;
 
 	if (!test_env_name)
 	{
@@ -204,18 +214,21 @@ int	primary_exception_cancel(char *usr_input, int *i, int *l)
 	return (0);
 }
 
-void get_length_dollar(char *usr_input, char **envp, int *i, int *l)
+void	get_length_dollar(char *usr_input, char **envp, int *i, int *l)
 {
-	int j;
-	char *env_var;
-	char *test_env_name;
+	int		j;
+	char	*env_var;
+	char	*test_env_name;
 
 	if (primary_exception_cancel(usr_input, i, l))
 		return ;
 	*i = *i + 1;
 	j = *i;
 	test_env_name = NULL;
-	while(usr_input[*i] && !(char_is_quote(usr_input[*i])) && !(char_is_whitespace(usr_input[*i])) && !(char_is_parasit(usr_input[*i])) && !char_is_delimiter(usr_input[*i]))
+	while (usr_input[*i] && !(char_is_quote(usr_input[*i]))
+		&& !(char_is_whitespace(usr_input[*i]))
+		&& !(char_is_parasit(usr_input[*i]))
+		&& !char_is_delimiter(usr_input[*i]))
 		*i = *i + 1;
 	test_env_name = ft_strdupi(usr_input, &j, *i - j);
 	env_var = get_env(envp, test_env_name);
@@ -233,7 +246,7 @@ void get_length_dollar(char *usr_input, char **envp, int *i, int *l)
 
 void	single_quote_expansion(char *usr_input, int *i, int *l)
 {
-	int j;
+	int	j;
 
 	j = *i;
 	find_next_quote(usr_input, i, '\'');
@@ -242,9 +255,9 @@ void	single_quote_expansion(char *usr_input, int *i, int *l)
 
 int	get_length_expanded(char *usr_input, char **envp)
 {
-	int i;
-	int l;
-	bool is_double_quote;
+	int		i;
+	int		l;
+	bool	is_double_quote;
 
 	l = 0;
 	i = 0;
@@ -263,7 +276,7 @@ int	get_length_expanded(char *usr_input, char **envp)
 			if (usr_input[i + 1] == '$')
 			{
 				i += 2;
-				continue;
+				continue ;
 			}
 			get_length_dollar(usr_input, envp, &i, &l);
 		}
@@ -277,14 +290,15 @@ int	get_length_expanded(char *usr_input, char **envp)
 
 char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 {
-	char *expanded;
-	char *env_var;
-	char *test_env_name;
-	bool is_double_quote;
-	int i;
-	int	j;
-	int k;
+	char	*expanded;
+	char	*env_var;
+	char	*test_env_name;
+	bool	is_double_quote;
+	int		i;
+	int		j;
+	int		k;
 
+	is_double_quote = false;
 	expanded = malloc((expansion_l + 1) * sizeof(char));
 	i = 0;
 	while (i <= expansion_l)
@@ -295,6 +309,7 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 	{
 		if (usr_input[i] == '\'' && !is_double_quote)
 		{
+			expanded[j++] = usr_input[i++];
 			while (usr_input[i] && usr_input[i] != '\'')
 				expanded[j++] = usr_input[i++];
 			expanded[j++] = usr_input[i++];
@@ -320,17 +335,19 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 			if (usr_input[i + 1] == '$')
 			{
 				i += 2;
-				continue;
+				continue ;
 			}
 			else
 			{
 				k = ++i;
 				test_env_name = NULL;
-				while(usr_input[i] && !(char_is_quote(usr_input[i])) && !(char_is_whitespace(usr_input[i])) && !(char_is_parasit(usr_input[i])) && !char_is_delimiter(usr_input[i]))
+				while (usr_input[i] && !(char_is_quote(usr_input[i]))
+					&& !(char_is_whitespace(usr_input[i]))
+					&& !(char_is_parasit(usr_input[i]))
+					&& !char_is_delimiter(usr_input[i]))
 					i++;
 				test_env_name = ft_strdupi(usr_input, &k, i - k);
 				env_var = get_env(envp, test_env_name);
-
 			}
 			if (env_var)
 			{
@@ -346,13 +363,14 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		else
 			expanded[j++] = usr_input[i++];
 	}
+	printf("%s\n", expanded);
 	return (expanded);
 }
 
-char *expansion(char *usr_input, char **envp)
+char	*expansion(char *usr_input, char **envp)
 {
-	char *expanded_input;
-	int expanded_l;
+	char	*expanded_input;
+	int		expanded_l;
 
 	expanded_l = get_length_expanded(usr_input, envp);
 	if (expanded_l == ft_strlen(usr_input))
@@ -369,33 +387,36 @@ char *expansion(char *usr_input, char **envp)
 // 	// expanded_input = expansion(usr_input, envp);
 // 	// return (expanded_input);
 // 	//get_length_expanded(usr_input, envp);
-// 	return NULL;
+// 	return (NULL);
 // }
 
 int	give_the_prompt(char **envp)
 {
-	t_main *thgg;
-	char *usr_input;
+	t_main	*thgg;
+	char	*usr_input;
+	int		i;
+	int		j;
 
 	usr_input = readline("$> ");
+	if (!usr_input)
+		return (0);
 	add_history(usr_input);
 	// first_parsed = primary_parse(usr_input, envp);
 	usr_input = expansion(usr_input, envp);
 	thgg = init_thgg(envp, usr_input);
 	if (!thgg)
 	{
-		//printf("prout\n");
-		return (0) ;
+		// printf("prout\n");
+		return (0);
 	}
-	int i;
-	int j;
 	i = 0;
 	if (!thgg)
 		return (-1);
 	while (thgg->commands_data[i])
 	{
 		j = 0;
-		printf("command #%d:'%s'\nprogram:%s\n", i, thgg->commands_data[i]->command, thgg->commands_data[i]->program);
+		printf("command #%d:'%s'\nprogram:%s\n", i,
+			thgg->commands_data[i]->command, thgg->commands_data[i]->program);
 		if (thgg->commands_data[i]->has_input)
 			printf("input:%s\n", thgg->commands_data[i]->input);
 		if (thgg->commands_data[i]->has_output)
@@ -405,14 +426,15 @@ int	give_the_prompt(char **envp)
 				printf("OVERWRITE\n");
 			if (thgg->commands_data[i]->outkind == APPEND)
 				printf("APPEND\n");
-			if (thgg->commands_data[i]->outkind == ERROR)
-				printf("ERROR\n");
+			if (thgg->commands_data[i]->outkind == FILE_ERROR)
+				printf("FILE_ERROR\n");
 		}
 		if (thgg->commands_data[i]->arguments)
 		{
 			while (thgg->commands_data[i]->arguments[j])
 			{
-				printf("arguments #%d:'%s'\n", j, thgg->commands_data[i]->arguments[j]);
+				printf("arguments #%d:'%s'\n", j,
+					thgg->commands_data[i]->arguments[j]);
 				j++;
 			}
 			j = 0;
@@ -421,29 +443,35 @@ int	give_the_prompt(char **envp)
 		{
 			while (thgg->commands_data[i]->here_doc_delimiter[j])
 			{
-				printf("heredoc #%d:'%s'\n", j, thgg->commands_data[i]->here_doc_delimiter[j]);
+				printf("heredoc #%d:'%s'\n", j,
+					thgg->commands_data[i]->here_doc_delimiter[j]);
 				j++;
 			}
 		}
-		printf("ENTRY: %s   EXIT: %s\n", entry_to_text(thgg->commands_data[i]->entry), exit_to_text(thgg->commands_data[i]->exit));
+		printf("ENTRY: %s   EXIT: %s\n",
+			entry_to_text(thgg->commands_data[i]->entry),
+			exit_to_text(thgg->commands_data[i]->exit));
 		printf("\n");
 		i++;
 	}
 	i = 0;
-	while(thgg->commands_data[i])
+	while (thgg->commands_data[i])
 	{
-		if (thgg->commands_data[i]->has_input && thgg->commands_data[i]->fd_input > 0)
+		if (thgg->commands_data[i]->has_input
+			&& thgg->commands_data[i]->fd_input > 0)
 			close(thgg->commands_data[i]->fd_input);
-		if (thgg->commands_data[i]->has_output && thgg->commands_data[i]->fd_output > 0)
+		if (thgg->commands_data[i]->has_output
+			&& thgg->commands_data[i]->fd_output > 0)
 			close(thgg->commands_data[i]->fd_output);
 		i++;
 	}
 	i = 0;
-	while(thgg->commands_data[i])
+	while (thgg->commands_data[i])
 	{
 		if (thgg->commands_data[i]->error)
 		{
-			printf("No such file or directory: %s\n", thgg->commands_data[i]->error);
+			printf("No such file or directory: %s\n",
+				thgg->commands_data[i]->error);
 			deinit_thgg(thgg);
 			return (0);
 		}

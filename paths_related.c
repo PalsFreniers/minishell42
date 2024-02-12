@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   paths_related.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
+/*   Updated: 2024/02/12 11:10:02 by dosokin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_find_begin(char *modele, char *compared)
@@ -89,6 +101,6 @@ char	*find_executable_path(char *program_to_find, char **paths)
 			++i;
 		}
 	}
-	//printf("Error, executable path not found\n");
+	printf("Error, executable path not found\n");
 	return (NULL);
 }

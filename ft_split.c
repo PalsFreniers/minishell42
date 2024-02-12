@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
+/*   Updated: 2024/02/12 11:09:06 by dosokin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	count_split(char const *s, char c)
@@ -36,7 +48,7 @@ static char	*creation_of_char_star(char const *s, char c, int i)
 	return (r);
 }
 
-static void	caseofexit(char **r, int j)
+void	*caseofexit(char **r, int j)
 {
 	int	i;
 
@@ -47,7 +59,7 @@ static void	caseofexit(char **r, int j)
 		i++;
 	}
 	free(r);
-	return ;
+	return (NULL);
 }
 
 static char	**creation_of_char_star_star(char const *s, char c, char **r)
@@ -67,10 +79,7 @@ static char	**creation_of_char_star_star(char const *s, char c, char **r)
 		{
 			r[j] = creation_of_char_star(s, c, i);
 			if (!r[j])
-			{
-				(caseofexit(r, j));
-				return (NULL);
-			}
+				return (caseofexit(r, j));
 			while (s[i] != c && s[i])
 				r[j][k++] = s[i++];
 			r[j][k] = 0;

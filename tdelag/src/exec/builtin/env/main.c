@@ -6,11 +6,11 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 09:27:42 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/12 13:24:26 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 14:48:58 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../../../libft/libft.h"
+#include "../../../../libft/libft.h"
 
 int	b_env(int argc, char **argv, char **envp)
 {

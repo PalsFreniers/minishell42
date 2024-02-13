@@ -6,11 +6,11 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 08:18:51 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/12 13:24:45 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 14:48:52 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../../../libft/libft.h"
+#include "../../../../libft/libft.h"
 
 int	b_echo(int count, char **args, char **envp)
 {

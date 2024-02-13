@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 13:40:39 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 16:44:28 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -416,7 +416,8 @@ int	give_the_prompt(char ***envp)
 		return (0);
 	else if (!usr_input)
 		return (-1);
-	add_history(usr_input);
+	if (ft_strlen(usr_input))
+		add_history(usr_input);
 	usr_input = expansion(usr_input, *envp);
 	thgg = init_thgg(*envp, usr_input);
 	if (!thgg)
@@ -434,11 +435,6 @@ int	give_the_prompt(char ***envp)
 		}
 		else
 			forks(thgg);
-	}
-	else if (thgg->command_c == 0)
-	{
-		deinit_thgg(thgg);
-		return (0);
 	}
 	else
 		ret = 0;
@@ -483,7 +479,7 @@ void	catch_int(int sn)
 void	catch_quit(int sn)
 {
 	(void)sn;
-	printf("  ");
+	printf("  \b\b");
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -507,6 +503,7 @@ int	main(int argc, char **argv, char **envp)
 			g_signum = 0;
 		}
 	}
+	free_double_char(envp_cpy);
 	printf("exit\n");
 	return (0);
 }

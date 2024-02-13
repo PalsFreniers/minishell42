@@ -511,8 +511,38 @@ int	give_the_prompt(char **envp)
 	return (1);
 }
 
+int	ft_strlen_char_ss(char **s)
+{
+	int i;
+
+	i = 0;
+	while (s[i])
+		++i;
+	return (i);
+}
+
+char **ft_strdup_char_star_star(char **to_dup)
+{
+	char **copy;
+	int l;
+	int i;
+
+	l = ft_strlen_char_ss(to_dup);
+	copy = malloc((l + 1) * sizeof (char *));
+	i = 0;
+	while (i < l)
+	{
+		copy[i] = ft_strdup(to_dup);
+		i++;
+	}
+	copy[i] = NULL;
+	return (copy);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
+	char *envp_bis;
+
 	(void)argc;
 	(void)argv;
 	if (!envp)
@@ -520,8 +550,9 @@ int	main(int argc, char **argv, char **envp)
 		printf("Error, no envp\n");
 		return (-1);
 	}
+	envp_bis = ft_strdup_char_star(envp);
 	while (1)
-		if (give_the_prompt(envp) == -1)
+		if (give_the_prompt(envp_bis) == -1)
 			break ;
 	return (0);
 }

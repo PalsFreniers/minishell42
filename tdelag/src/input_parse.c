@@ -22,7 +22,7 @@ int	check_for_empty(char *buffer, int i)
 			printf("parse error near `|'\n");
 			return (-1);
 		}
-		if (buffer[i] > 32 && buffer[i] < 127)
+		if (!char_is_parasit(buffer[i]) && !char_is_whitespace(buffer[i]))
 			return (0);
 		i++;
 	}

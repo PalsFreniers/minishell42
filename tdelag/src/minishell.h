@@ -129,7 +129,7 @@ char			**get_the_arguments(char *command, int *i, char *program_name);
 char			**get_splitted_path(char **envp);
 int				get_command_length(char *buffer, int i);
 char			*get_the_prog_name(char *command, int *i);
-int				get_the_next_arg_length(char *command, int *i);
+int				get_the_next_arg_length(char *command, int i);
 char			*get_env(char **envp, char *extracted);
 
 int				find_next_quote(char *buffer, int *i, char quote_type);

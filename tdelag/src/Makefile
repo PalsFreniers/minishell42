@@ -48,7 +48,7 @@ endif
 all: $(NAME)
 
 $(NAME) : $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) ../../libft/libft.a -lreadline -o $(NAME)
+	$(CC) $(FLAGS) $(OBJS) ../libft/libft.a -lreadline -o $(NAME)
 
 %.o : %.c $(HEADER)
 	$(CC) $(FLAGS) -c $< -o $@

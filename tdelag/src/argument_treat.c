@@ -39,13 +39,11 @@ int	get_argc(char *command, int i)
 	return (c);
 }
 
-int	get_the_next_arg_length(char *command, int *i)
+int	get_the_next_arg_length(char *command, int j)
 {
 	int	length;
-	int	j;
 	int	tempo;
 
-	j = *i;
 	length = 0;
 	if (char_is_quote(command[j]))
 	{
@@ -53,14 +51,14 @@ int	get_the_next_arg_length(char *command, int *i)
 		find_next_quote(command, &j, command[j]);
 		length = length + (j - tempo - 2);
 		if (!char_is_whitespace(command[j]))
-			return (length + get_the_next_arg_length(command, &j));
+			return (length + get_the_next_arg_length(command, j));
 		return (length);
 	}
 	while (command[j] && !(char_is_whitespace(command[j]))
 		&& !(char_is_parasit(command[j])))
 	{
 		if (char_is_quote(command[j]))
-			return (length + get_the_next_arg_length(command, &j));
+			return (length + get_the_next_arg_length(command, j));
 		++length;
 		++j;
 	}
@@ -93,7 +91,7 @@ char	*get_the_next_arg(char *command, int *i)
 
 	type_quote = 'a';
 	skip_to_the_next_word(command, i);
-	length = get_the_next_arg_length(command, i);
+	length = get_the_next_arg_length(command, *i);
 	argument = malloc((length + 1) * sizeof(char));
 	j = 0;
 	while (j < length)
@@ -107,8 +105,8 @@ char	*get_the_next_arg(char *command, int *i)
 			dup_and_get_next(&command, i, &argument, &j);
 	}
 	argument[j] = '\0';
-	if (char_is_quote(command[*i]))
-		*i = *i + 1;
+	if (length == 0 && char_is_quote(command[*i]))
+		*i = *i + 2;
 	return (argument);
 }
 

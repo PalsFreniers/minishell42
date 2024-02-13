@@ -14,11 +14,6 @@
 
 int	cross_and_count(char *buffer, int *c, int *i)
 {
-	if (*i == 0 && buffer[*i] == '|')
-	{
-		printf("parse error near `|'\n");
-		return (-1);
-	}
 	if (buffer[*i] == '|')
 	{
 		if (check_for_empty(buffer, *i) == -1)
@@ -40,6 +35,27 @@ int	cross_and_count(char *buffer, int *c, int *i)
 	return (0);
 }
 
+int	is_first_command_valid(char *buffer)
+{
+	int j;
+	bool empty;
+
+	j = 0;
+	empty = true;
+	while (buffer[j] && buffer[j] != '|')
+	{
+		if (!char_is_parasit(buffer[j]) && !char_is_whitespace(buffer[j]))
+			empty = false;
+		++j;
+	}
+	if (empty)
+	{
+		printf("parse error near `|'\n");
+		return (-1);
+	}
+	return (0);
+}
+
 int	get_command_number(char *buffer)
 {
 	int	i;
@@ -49,6 +65,8 @@ int	get_command_number(char *buffer)
 	i = 0;
 	if (ft_strlen(buffer) == 0)
 		return (0);
+	if (is_first_command_valid(buffer))
+		return (-1);
 	while (buffer[i])
 	{
 		if (cross_and_count(buffer, &c, &i))

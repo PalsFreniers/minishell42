@@ -75,17 +75,8 @@ void	look_for_heredoc(char *command, int *i, t_com *comm)
 		find_next_quote(command, i, command[*i], 1);
 	else if (command[*i] == '<' && command[*i + 1] == '<')
 	{
-		if (check_for_error_hd(command, *i + 2, comm, 0))
-		{
-			skip_to_the_next_word(command, i);
-			while (command[*i] == '<')
-				*i = *i + 1;
-		}
-		else
-		{
-			comm->has_heredoc++;
-			*i = *i + 2;
-		}
+		comm->has_heredoc++;
+		*i = *i + 2;
 	}
 	else
 		*i = *i + 1;

@@ -162,7 +162,7 @@ char			*entry_to_text(t_entry entry);
 
 int				create_the_com_table(char *usr_input, char **commands,
 					int command_number);
-int				check_for_error_hd(char *command, int i, t_com *comm, int c);
+//int				check_for_error_hd(char *command, int i, t_com *comm, int c);
 int				check_for_error_output(char *command, int i);
 char			check_for_next_char(char *command, int i);
 void			look_for_heredoc(char *command, int *i, t_com *comm);
@@ -188,6 +188,6 @@ int				forks(t_main *data);
 t_u8			is_builtin(char *exec);
 int				manage_shit(char *command, int i, char ch);
 void	free_double_char(char **to_free);
-int	is_first_command_valid(char *buffer);
+int	first_command_valid(char *buffer);
 
 #endif

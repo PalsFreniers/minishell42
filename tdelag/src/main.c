@@ -398,7 +398,7 @@ int	check_usr_input_for_errors(char *input)
 
 	i = 0;
 	ch = 'a';
-	if (is_first_command_valid(input) == -1)
+	if (!first_command_valid(input))
 		return (1);
 	while (input[i])
 	{
@@ -435,15 +435,17 @@ int	check_usr_input_for_errors(char *input)
 	return (0);
 }
 
-// char *primary_parse(char *usr_input, char **envp)
-// {
-// 	// char *expanded_input;
+int	is_usr_input_blank(char *usr_input)
+{
+	int i;
 
-// 	// expanded_input = expansion(usr_input, envp);
-// 	// return (expanded_input);
-// 	//get_length_expanded(usr_input, envp);
-// 	return (NULL);
-// }
+	i = 0;
+	skip_to_the_next_word(usr_input, &i);
+	if (!usr_input[i])
+		return (1);
+	return (0);
+}
+
 int					g_signum = 0;
 
 struct				s_mainloop
@@ -458,17 +460,16 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 	char	*usr_input;
 	int		ret;
 
-	ret = 0;
+	ret = 1;
 	usr_input = readline("$> ");
 	if (g_signum == SIGINT)
 		return ((struct s_mainloop){.cont = 1, .last = 130});
 	else if (!usr_input)
 		return ((struct s_mainloop){.cont = 0, .last = 1});
-	skip_to_the_next_word(usr_input, &ret);
-	if (!usr_input[ret])
+	if (ft_strlen(usr_input))
+		add_history(usr_input);
+	if (is_usr_input_blank(usr_input))
 		return ((struct s_mainloop){.cont = 1, .last = last});
-	ret = 1;
-	add_history(usr_input);
 	usr_input = expansion(usr_input, *envp);
 	if (check_usr_input_for_errors(usr_input))
 	{

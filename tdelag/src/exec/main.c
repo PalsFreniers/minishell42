@@ -194,6 +194,7 @@ int	resolve_heredoc(char **hdd, t_bool all_dum)
 	int	ret;
 
 	ret = -1;
+	printf("hdd:%s\n", hdd[0]);
 	resolve_dum_heredoc(hdd, all_dum);
 	if (!all_dum)
 		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1]);
@@ -205,9 +206,10 @@ int	resolve_entry(t_com *self, int (*pipes)[2], int id)
 	int	ret;
 	int	hd;
 
+	printf("has_HD : %d, %d\n", self->has_heredoc, self->entry == ENTRY_HEREDOC);
 	if (self->has_heredoc)
 		hd = resolve_heredoc(self->here_doc_delimiter,
-				self->entry == ENTRY_HEREDOC);
+				self->entry != ENTRY_HEREDOC);
 	if (self->entry == ENTRY_PIPE)
 		ret = pipes[id - 1][0];
 	else if (self->entry == ENTRY_INPUT)

@@ -91,6 +91,13 @@ char	*get_the_next_arg(char *command, int *i)
 
 	type_quote = 'a';
 	skip_to_the_next_word(command, i);
+	while (char_is_parasit(command[*i]))
+	{
+		while (char_is_parasit(command[*i]))
+			*i = *i + 1;
+		skip_the_next_word(command, i);
+		skip_to_the_next_word(command, i);
+	}
 	length = get_the_next_arg_length(command, *i);
 	argument = malloc((length + 1) * sizeof(char));
 	j = 0;

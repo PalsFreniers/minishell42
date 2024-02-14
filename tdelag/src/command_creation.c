@@ -84,6 +84,7 @@ int	parasit_only_treat(char *buffer)
 		if (ch == '|')
 		{
 			printf("syntax error near unexpected token `|'\n");
+			return (1);
 		}
 		if (char_is_parasit(ch))
 		{
@@ -95,7 +96,7 @@ int	parasit_only_treat(char *buffer)
 	return (0);
 }
 
-int	is_first_command_valid(char *buffer)
+int	first_command_valid(char *buffer)
 {
 	int j;
 	bool empty;
@@ -113,7 +114,7 @@ int	is_first_command_valid(char *buffer)
 		{
 			empty = false;
 			if (find_next_quote(buffer, &j, buffer[j], 2) == -1)
-				return (-1);
+				return (0);
 		}
 		else if (!char_is_parasit(buffer[j]) && !char_is_whitespace(buffer[j]))
 		{
@@ -132,12 +133,13 @@ int	is_first_command_valid(char *buffer)
 	{
 		if (parasit && !buffer[j])
 		{
-			return (parasit_only_treat(buffer));
+			parasit_only_treat(buffer);
+			return (0);
 		}
 		printf("syntax error near unexpected token `|'\n");
-		return (-1);
+		return (0);
 	}
-	return (0);
+	return (1);
 }
 
 int	get_command_number(char *buffer)

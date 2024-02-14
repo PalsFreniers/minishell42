@@ -109,7 +109,7 @@ void	write_heredoc(int fd, char *limiter)
 	while (1)
 	{
 		ft_printf("%s ", limiter);
-		c = readline("here_doc> ");
+		c = readline("here_doc> "); // t'es pas cense avoir de texte avant > debilos -kiroussa
 		if (!c)
 			continue ;
 		c[ft_strlenc(c, '\n') + 1] = 0;

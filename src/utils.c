@@ -61,6 +61,6 @@ void	skip_undesired(char *command, int *i, int *reset, int *c)
 			*c = *c + 1;
 			*reset = 0;
 		}
-		find_next_quote(command, i, command[*i]);
+		find_next_quote(command, i, command[*i], 1);
 	}
 }

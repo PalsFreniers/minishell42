@@ -105,8 +105,7 @@ int	init_cd_first(t_com *command, char **commands, int i, int command_c)
 	command->error = NULL;
 	command->arguments = NULL;
 	command->program = NULL;
-	if (command_disection(commands[i], command) == -1)
-		return (1);
+	command_disection(commands[i], command);
 	if (command->command_id == command_c)
 	{
 		if (command->exit == EXIT_PIPE)
@@ -262,7 +261,7 @@ void	single_quote_expansion(char *usr_input, int *i, int *l)
 	int	j;
 
 	j = *i;
-	find_next_quote(usr_input, i, '\'');
+	find_next_quote(usr_input, i, '\'', 1);
 	*l = *l + (*i - j);
 }
 
@@ -376,7 +375,6 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		else
 			expanded[j++] = usr_input[i++];
 	}
-	printf("%s\n", expanded);
 	return (expanded);
 }
 
@@ -391,6 +389,50 @@ char	*expansion(char *usr_input, char **envp)
 	expanded_input = get_expanded(usr_input, envp, expanded_l);
 	free(usr_input);
 	return (expanded_input);
+}
+
+int	check_usr_input_for_errors(char *input)
+{
+	int i;
+	char ch;
+
+	i = 0;
+	ch = 'a';
+	if (is_first_command_valid(input) == -1)
+		return (1);
+	while (input[i])
+	{
+		if (char_is_quote(input[i]))
+		{
+			if (find_next_quote(input, &i, input[i], 2) == -1)
+				return (1);
+		}
+		else if (char_is_parasit(input[i]))
+		{
+			if (char_is_parasit(input[i + 1]) && input[i] == input[i + 1])
+				++i;
+			ch = check_for_next_char(input, i);
+			if (!ch)
+			{
+				printf("syntax error near unexpected token `newline'\n");
+				return (1);
+			}
+			if (ch == '|')
+			{
+				printf("syntax error near unexpected token `|'\n");
+				return (1);
+			}
+			if (char_is_parasit(ch))
+			{
+				manage_shit(input, i, ch);
+				return (1);
+			}
+			++i;
+		}
+		else
+			++i;
+	}
+	return (0);
 }
 
 // char *primary_parse(char *usr_input, char **envp)
@@ -422,6 +464,11 @@ int	give_the_prompt(char ***envp)
 	ret = 0;
 	add_history(usr_input);
 	usr_input = expansion(usr_input, *envp);
+	if (check_usr_input_for_errors(usr_input))
+	{
+		free(usr_input);
+		return (0);
+	}
 	thgg = init_thgg(*envp, usr_input);
 	if (!thgg)
 		return (-1);

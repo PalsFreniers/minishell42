@@ -18,6 +18,7 @@
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -35,6 +36,7 @@ typedef enum e_first_error
 	L2Q,
 	L3Q,
 }				t_first_error;
+
 
 typedef enum e_outkind
 {
@@ -142,7 +144,7 @@ char			*get_the_prog_name(char *command, int *i);
 int				get_the_next_arg_length(char *command, int i);
 char			*get_env(char **envp, char *extracted);
 
-int				find_next_quote(char *buffer, int *i, char quote_type);
+int				find_next_quote(char *buffer, int *i, char quote_type, int x);
 char			*find_executable_path(char *program_to_find, char **paths);
 
 int				command_disection(char *command, t_com *comm);
@@ -183,7 +185,8 @@ int				b_env(int argc, char **argv, char **envp);
 int				b_echo(int count, char **args, char **envp);
 int				forks(t_main *data);
 t_u8			is_builtin(char *exec);
-int				manage_shit(char *command, int i);
+int				manage_shit(char *command, int i, char ch);
 void	free_double_char(char **to_free);
+int	is_first_command_valid(char *buffer);
 
 #endif

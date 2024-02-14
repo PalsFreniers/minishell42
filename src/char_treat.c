@@ -37,12 +37,12 @@ int	char_is_whitespace(char c)
 	return (0);
 }
 
-int	find_next_quote(char *buffer, int *i, char quote_type)
+int	find_next_quote(char *buffer, int *i, char quote_type, int x)
 {
 	*i = *i + 1;
 	while (buffer[*i] && buffer[*i] != quote_type)
 		*i = *i + 1;
-	if (!buffer[*i])
+	if (!buffer[*i] && x == 2)
 	{
 		printf("unclosed quotes\n");
 		return (-1);

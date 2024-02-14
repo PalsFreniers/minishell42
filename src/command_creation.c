@@ -22,7 +22,7 @@ int	cross_and_count(char *buffer, int *c, int *i)
 	}
 	else if (char_is_quote(buffer[*i]))
 	{
-		if (find_next_quote(buffer, i, buffer[*i]) == -1)
+		if (find_next_quote(buffer, i, buffer[*i], 1) == -1)
 			return (-1);
 	}
 	else if (char_is_alphanum(buffer[*i]))
@@ -35,18 +35,14 @@ int	cross_and_count(char *buffer, int *c, int *i)
 	return (0);
 }
 
-int	manage_shit(char *command, int i)
+int	manage_shit(char *command, int i, char ch)
 {
 	int c;
-	char ch;
 
 	c = 0;
-	ch = 'a';
-	while (char_is_parasit(command[i]))
-		i++;
-	skip_to_the_next_word(command, &i);
-	if (char_is_parasit(command[i]))
-		ch = command[i];
+	++i;
+	while (command[i] && char_is_whitespace(command[i]))
+		++i;
 	while (command[i] == ch)
 		increment_both(&i, &c);
 	if (ch == '<' && c >= 3)
@@ -71,14 +67,28 @@ int	manage_shit(char *command, int i)
 int	parasit_only_treat(char *buffer)
 {
 	int i;
+	char ch;
 
+	ch = 'a';
 	i = 0;
 	while (buffer[i])
 	{
-		if (char_is_parasit(buffer[i]))
+		if (char_is_parasit(buffer[i + 1]))
+			++i;
+		ch = check_for_next_char(buffer, i);
+		if (!ch)
 		{
-			manage_shit(buffer, i);
-			return (-1);
+			printf("syntax error near unexpected token `newline'\n");
+			return (1);
+		}
+		if (ch == '|')
+		{
+			printf("syntax error near unexpected token `|'\n");
+		}
+		if (char_is_parasit(ch))
+		{
+			manage_shit(buffer, i, ch);
+			return (1);
 		}
 		++i;
 	}
@@ -99,16 +109,31 @@ int	is_first_command_valid(char *buffer)
 		return (0);
 	while (buffer[j] && buffer[j] != '|')
 	{
-		if (!char_is_parasit(buffer[j]) && !char_is_whitespace(buffer[j]))
+		if (char_is_quote(buffer[j]))
+		{
 			empty = false;
+			if (find_next_quote(buffer, &j, buffer[j], 2) == -1)
+				return (-1);
+		}
+		else if (!char_is_parasit(buffer[j]) && !char_is_whitespace(buffer[j]))
+		{
+			++j;
+			empty = false;
+		}
 		else if (char_is_parasit(buffer[j]))
+		{
+			++j;
 			parasit = true;
-		++j;
+		}
+		else
+			++j;
 	}
 	if (empty)
 	{
 		if (parasit && !buffer[j])
+		{
 			return (parasit_only_treat(buffer));
+		}
 		printf("syntax error near unexpected token `|'\n");
 		return (-1);
 	}
@@ -124,8 +149,6 @@ int	get_command_number(char *buffer)
 	i = 0;
 	if (ft_strlen(buffer) == 0)
 		return (0);
-	if (is_first_command_valid(buffer))
-		return (-1);
 	while (buffer[i])
 	{
 		if (cross_and_count(buffer, &c, &i))
@@ -171,7 +194,7 @@ int	get_command_length(char *buffer, int i)
 		if (char_is_quote(buffer[i]))
 		{
 			tempo = i;
-			find_next_quote(buffer, &i, buffer[i]);
+			find_next_quote(buffer, &i, buffer[i], 1);
 			c += i - tempo;
 		}
 		else

@@ -567,6 +567,7 @@ int	main(int argc, char **argv, char **envp)
 			g_signum = 0;
 		}
 	}
+	free_double_char(envp_cpy);
 	printf("exit\n");
 	return (0);
 }

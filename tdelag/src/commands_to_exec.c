@@ -18,7 +18,6 @@ int	command_disection(char *command, t_com *comm)
 	int	last_heredoc_i;
 
 	i = 0;
-	printf("%s\n", command);
 	comm->program = get_the_next_arg(command, &i);
 	comm->arguments = get_the_arguments(command, &i, comm->program);
 	last_heredoc_i = has_heredoc(command, comm);

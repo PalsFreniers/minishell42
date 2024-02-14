@@ -20,7 +20,7 @@ int	get_argc(char *command, int i)
 
 	reset = 1;
 	c = 0;
-	while (command[i] && i < (int)ft_strlen(command))
+	while (command[i])
 	{
 		ch = command[i];
 		if (char_is_whitespace(ch) || char_is_parasit(ch) || char_is_quote(ch))
@@ -113,7 +113,11 @@ char	*get_the_next_arg(char *command, int *i)
 	}
 	argument[j] = '\0';
 	if (char_is_quote(command[*i]))
+	{
 		*i = *i + 1;
+		if (length == 0)
+			*i = *i + 1;
+	}
 	return (argument);
 }
 

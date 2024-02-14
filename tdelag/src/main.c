@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 16:44:28 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 17:15:51 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -479,7 +479,7 @@ void	catch_int(int sn)
 void	catch_quit(int sn)
 {
 	(void)sn;
-	printf("  \b\b");
+	printf("$>   ");
 }
 
 int	main(int argc, char **argv, char **envp)

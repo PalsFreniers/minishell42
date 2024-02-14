@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/13 17:02:03 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 17:11:17 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,8 +212,8 @@ int	resolve_entry(t_com *self, int (*pipes)[2], int id)
 		ret = pipes[id - 1][0];
 	else if (self->entry == ENTRY_INPUT)
 		ret = self->fd_input;
-        else if (self->entry == NO_ENTRY)
-                ret = STDIN;
+	else if (self->entry == NO_ENTRY)
+		ret = STDIN;
 	else if (self->entry == ENTRY_HEREDOC)
 		ret = hd;
 	else
@@ -229,8 +229,8 @@ int	resolve_out(t_com *self, int (*pipes)[2], int id)
 		ret = pipes[id][1];
 	else if (self->exit == EXIT_OUTPUT)
 		ret = self->fd_output;
-        else if (self->exit == EXIT_STDOUT)
-                ret = STDOUT;
+	else if (self->exit == EXIT_STDOUT)
+		ret = STDOUT;
 	else
 		ret = -1;
 	return (ret);
@@ -304,8 +304,8 @@ void	free_cmds(struct s_cmds_piped piped, int skip)
 
 void	exec_cmd(struct s_cmd *cmd)
 {
-	char	*arg1;
-        struct stat buf;
+	char		*arg1;
+	struct stat	buf;
 
 	if (!cmd->exec)
 		ft_fprintf(STDERR, "minishell: null command (internal problem)\n");
@@ -314,13 +314,13 @@ void	exec_cmd(struct s_cmd *cmd)
 	else
 	{
 		arg1 = cmd->args[0];
-                printf("ARG1 : %s\n", arg1);
 		if (arg1[0] == '.' || arg1[0] == '/')
 		{
-                        if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
+			if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
 				ft_fprintf(STDERR, "minishell: '%s': is a directory\n", arg1);
-                        else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-				ft_fprintf(STDERR, "minishell: '%s': %s\n", arg1, strerror(errno));
+			else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
+				ft_fprintf(STDERR, "minishell: '%s': %s\n", arg1,
+					strerror(errno));
 		}
 		else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
 			ft_fprintf(STDERR, "minishell: '%s': unknown command\n", arg1);
@@ -347,7 +347,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id)
 	cmd = cmds.cmds[id];
 	dup2(cmd->infd, STDIN);
 	dup2(cmd->outfd, STDOUT);
-        free_dt((void **)data->envp);
+	free_dt((void **)data->envp);
 	deinit_thgg(data);
 	free_cmds(cmds, id);
 	if (cmd->infd != STDIN)
@@ -381,8 +381,10 @@ int	forks(t_main *data)
 			exec(data, cmds, i);
 		else
 		{
-			m_close(cmds.cmds[i]->infd);
-			m_close(cmds.cmds[i]->outfd);
+			if (cmds.cmds[i]->infd != 0)
+				m_close(cmds.cmds[i]->infd);
+			if (cmds.cmds[i]->outfd != 1)
+				m_close(cmds.cmds[i]->outfd);
 		}
 	}
 	close_all_pipes(cmds.pipes, cmds.count - 1);

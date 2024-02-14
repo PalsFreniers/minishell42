@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 15:58:19 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 13:38:36 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 # define MINISHELL_H
 
 # include "../libft/libft.h"
-# include <errno.h>
 # include <dirent.h>
 # include <fcntl.h>
+# include <errno.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <signal.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -26,6 +27,17 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+
+typedef enum e_first_error
+{
+	ENEWLINE,
+	R1Q,
+	R2Q,
+	L1Q,
+	L2Q,
+	L3Q,
+}				t_first_error;
+
 
 typedef enum e_outkind
 {
@@ -133,7 +145,7 @@ char			*get_the_prog_name(char *command, int *i);
 int				get_the_next_arg_length(char *command, int i);
 char			*get_env(char **envp, char *extracted);
 
-int				find_next_quote(char *buffer, int *i, char quote_type);
+int				find_next_quote(char *buffer, int *i, char quote_type, int x);
 char			*find_executable_path(char *program_to_find, char **paths);
 
 int				command_disection(char *command, t_com *comm);
@@ -155,10 +167,8 @@ int				check_for_error_output(char *command, int i);
 char			check_for_next_char(char *command, int i);
 void			look_for_heredoc(char *command, int *i, t_com *comm);
 int				get_heredocs(char *command, int *i, t_com *comm, int *j);
-int				manage_errored_output(char *command, int *i, int *c,
-					t_com *comm);
-void			manage_bracketed_input(char *command, int *i, int *c,
-					t_com *comm);
+int				manage_errored_output(char *command, int *i, t_com *comm, char ch);
+void			manage_bracketed_input(char *command, int *i, t_com *comm, char ch);
 void			manage_empty_input(int *i, t_com *comm);
 
 size_t			ft_dt_len(void **s);
@@ -175,6 +185,9 @@ int				b_exit(int argc, char **argv, char **envp);
 int				b_env(int argc, char **argv, char **envp);
 int				b_echo(int count, char **args, char **envp);
 int				forks(t_main *data);
-t_u8	is_builtin(char *exec);
+t_u8			is_builtin(char *exec);
+int				manage_shit(char *command, int i, char ch);
+void	free_double_char(char **to_free);
+int	is_first_command_valid(char *buffer);
 
 #endif

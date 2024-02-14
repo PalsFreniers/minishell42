@@ -381,9 +381,9 @@ int	forks(t_main *data)
 			exec(data, cmds, i);
 		else
 		{
-			if (cmds.cmds[i]->infd != 0)
+			if (cmds.cmds[i]->infd < 0)
 				m_close(cmds.cmds[i]->infd);
-			if (cmds.cmds[i]->outfd != 1)
+			if (cmds.cmds[i]->outfd < 1)
 				m_close(cmds.cmds[i]->outfd);
 		}
 	}
@@ -394,35 +394,4 @@ int	forks(t_main *data)
 	free_cmds(cmds, -1);
 	free(pids);
 	return ((ret & 0xff00) >> 8);
-}
-
-int	one_cmd(t_main *data)
-{
-	t_com			*cmdd;
-	struct s_cmd	cmd;
-	int				hd;
-	int				ret;
-	t_builtin_f		builtin;
-
-	cmdd = data->commands_data[0];
-	if (!is_builtin(cmdd->program))
-		return (forks(data));
-	if (cmdd->has_heredoc)
-		hd = resolve_heredoc(cmdd->here_doc_delimiter,
-				cmdd->entry == ENTRY_HEREDOC);
-	if (cmdd->entry == ENTRY_INPUT)
-		ret = cmdd->fd_input;
-	else if (cmdd->entry == ENTRY_HEREDOC)
-		ret = hd;
-	else
-		ret = -1;
-	dup2(ret, STDIN);
-	dup2(cmdd->fd_output, STDOUT);
-	if (cmd.infd != STDIN)
-		m_close(cmd.infd);
-	if (cmd.outfd != STDOUT)
-		m_close(cmd.outfd);
-	builtin = get_builtin(cmdd->program);
-	return (builtin(ft_dt_len((void **)cmdd->arguments), cmdd->arguments,
-			data->envp));
 }

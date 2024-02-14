@@ -19,8 +19,7 @@ int	command_disection(char *command, t_com *comm)
 
 	i = 0;
 	comm->program = get_the_next_arg(command, &i);
-	if (comm->program)
-		comm->arguments = get_the_arguments(command, &i, comm->program);
+	comm->arguments = get_the_arguments(command, &i, comm->program);
 	last_heredoc_i = has_heredoc(command, comm);
 	if (!comm->has_heredoc)
 		last_heredoc_i = -1;

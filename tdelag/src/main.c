@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 17:15:51 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 13:40:39 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,7 @@ int	init_cd_first(t_com *command, char **commands, int i, int command_c)
 	command->error = NULL;
 	command->arguments = NULL;
 	command->program = NULL;
-	if (command_disection(commands[i], command) == -1)
-		return (1);
+	command_disection(commands[i], command);
 	if (command->command_id == command_c)
 	{
 		if (command->exit == EXIT_PIPE)
@@ -262,7 +261,7 @@ void	single_quote_expansion(char *usr_input, int *i, int *l)
 	int	j;
 
 	j = *i;
-	find_next_quote(usr_input, i, '\'');
+	find_next_quote(usr_input, i, '\'', 1);
 	*l = *l + (*i - j);
 }
 
@@ -376,7 +375,6 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		else
 			expanded[j++] = usr_input[i++];
 	}
-	printf("%s\n", expanded);
 	return (expanded);
 }
 
@@ -393,6 +391,50 @@ char	*expansion(char *usr_input, char **envp)
 	return (expanded_input);
 }
 
+int	check_usr_input_for_errors(char *input)
+{
+	int		i;
+	char	ch;
+
+	i = 0;
+	ch = 'a';
+	if (is_first_command_valid(input) == -1)
+		return (1);
+	while (input[i])
+	{
+		if (char_is_quote(input[i]))
+		{
+			if (find_next_quote(input, &i, input[i], 2) == -1)
+				return (1);
+		}
+		else if (char_is_parasit(input[i]))
+		{
+			if (char_is_parasit(input[i + 1]) && input[i] == input[i + 1])
+				++i;
+			ch = check_for_next_char(input, i);
+			if (!ch)
+			{
+				printf("syntax error near unexpected token `newline'\n");
+				return (1);
+			}
+			if (ch == '|')
+			{
+				printf("syntax error near unexpected token `|'\n");
+				return (1);
+			}
+			if (char_is_parasit(ch))
+			{
+				manage_shit(input, i, ch);
+				return (1);
+			}
+			++i;
+		}
+		else
+			++i;
+	}
+	return (0);
+}
+
 // char *primary_parse(char *usr_input, char **envp)
 // {
 // 	// char *expanded_input;
@@ -402,9 +444,15 @@ char	*expansion(char *usr_input, char **envp)
 // 	//get_length_expanded(usr_input, envp);
 // 	return (NULL);
 // }
-int		g_signum = 0;
+int					g_signum = 0;
 
-int	give_the_prompt(char ***envp)
+struct				s_mainloop
+{
+	t_bool			cont;
+	int				last;
+};
+
+struct s_mainloop	give_the_prompt(char ***envp, int last)
 {
 	t_main	*thgg;
 	char	*usr_input;
@@ -413,33 +461,44 @@ int	give_the_prompt(char ***envp)
 	ret = 0;
 	usr_input = readline("$> ");
 	if (g_signum == SIGINT)
-		return (0);
+		return ((struct s_mainloop){.cont = 1, .last = 130});
 	else if (!usr_input)
-		return (-1);
-	if (ft_strlen(usr_input))
-		add_history(usr_input);
+		return ((struct s_mainloop){.cont = 0, .last = 1});
+	skip_to_the_next_word(usr_input, &ret);
+	if (!usr_input[ret])
+		return ((struct s_mainloop){.cont = 1, .last = last});
+	ret = 1;
+	add_history(usr_input);
 	usr_input = expansion(usr_input, *envp);
+	if (check_usr_input_for_errors(usr_input))
+	{
+		free(usr_input);
+		return ((struct s_mainloop){.cont = 1, .last = 2});
+	}
 	thgg = init_thgg(*envp, usr_input);
 	if (!thgg)
-		return (-1);
+		return ((struct s_mainloop){.cont = 0, .last = 1});
 	if (thgg->command_c > 1)
 	{
-		forks(thgg);
+		last = forks(thgg);
 	}
 	else if (thgg->command_c == 1)
 	{
 		if (is_builtin(thgg->commands_data[0]->program))
 		{
 			if (ft_strequ(thgg->commands_data[0]->program, "exit"))
-				ret = -1;
+				ret = 0;
 		}
 		else
-			forks(thgg);
+			last = forks(thgg);
 	}
-	else
-		ret = 0;
+	else if (thgg->command_c == 0)
+	{
+		deinit_thgg(thgg);
+		return ((struct s_mainloop){.cont = 1, .last = 0});
+	}
 	deinit_thgg(thgg);
-	return (ret);
+	return ((struct s_mainloop){.cont = ret, .last = last});
 }
 
 int	ft_strlen_char_ss(char **s)
@@ -479,23 +538,27 @@ void	catch_int(int sn)
 void	catch_quit(int sn)
 {
 	(void)sn;
-	printf("$>   ");
+	printf("  ");
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		cpy;
-	char	**envp_cpy;
+	int					cpy;
+	char				**envp_cpy;
+	struct s_mainloop	ret;
 
 	(void)argc;
 	(void)argv;
 	cpy = dup(0);
-	signal(SIGINT, catch_int);
+	// 	signal(SIGINT, catch_int);
 	signal(SIGQUIT, catch_quit);
 	envp_cpy = ft_strdup_char_star(envp);
+        ret.last = 0;
+        ret.cont = 1;
 	while (1)
 	{
-		if (give_the_prompt(&envp_cpy) == -1)
+		ret = give_the_prompt(&envp_cpy, ret.last);
+		if (!ret.cont)
 			break ;
 		if (g_signum == SIGINT)
 		{
@@ -503,7 +566,6 @@ int	main(int argc, char **argv, char **envp)
 			g_signum = 0;
 		}
 	}
-	free_double_char(envp_cpy);
 	printf("exit\n");
 	return (0);
 }

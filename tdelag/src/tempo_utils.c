@@ -42,7 +42,7 @@ int	get_heredocs(char *command, int *i, t_com *comm, int *j)
 
 	index_last_hd = 0;
 	if (char_is_quote(command[*i]))
-		find_next_quote(command, i, command[*i]);
+		find_next_quote(command, i, command[*i], 1);
 	if (command[*i] == '<' && command[*i + 1] == '<')
 	{
 		if (check_for_error_hd(command, *i + 2, comm, 0))

@@ -20,7 +20,7 @@ int	get_argc(char *command, int i)
 
 	reset = 1;
 	c = 0;
-	while (command[i])
+	while (command[i] && i < (int)ft_strlen(command))
 	{
 		ch = command[i];
 		if (char_is_whitespace(ch) || char_is_parasit(ch) || char_is_quote(ch))
@@ -48,7 +48,7 @@ int	get_the_next_arg_length(char *command, int j)
 	if (char_is_quote(command[j]))
 	{
 		tempo = j;
-		find_next_quote(command, &j, command[j]);
+		find_next_quote(command, &j, command[j], 1);
 		length = length + (j - tempo - 2);
 		if (!char_is_whitespace(command[j]))
 			return (length + get_the_next_arg_length(command, j));
@@ -105,8 +105,8 @@ char	*get_the_next_arg(char *command, int *i)
 			dup_and_get_next(&command, i, &argument, &j);
 	}
 	argument[j] = '\0';
-	if (length == 0 && char_is_quote(command[*i]))
-		*i = *i + 2;
+	if (char_is_quote(command[*i]))
+		*i = *i + 1;
 	return (argument);
 }
 

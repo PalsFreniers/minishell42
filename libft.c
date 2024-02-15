@@ -6,21 +6,11 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:09:36 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/02/13 10:41:20 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	ft_strlen(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
 
 int	ft_strbackslashn(char *s)
 {
@@ -82,7 +72,7 @@ char	*ft_strdupi(char *original, int *index, int size)
 
 	if (*index != 0 && original[*index] == '|')
 		*index = *index + 1;
-	while (char_is_whitespace(original[*index]))
+	while (is_whitespace(original[*index]))
 	{
 		*index = *index + 1;
 		--size;

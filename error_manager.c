@@ -11,48 +11,54 @@
 /* ************************************************************************** */
 #include "minishell.h"
 
-int	manage_errored_output(char *command, int *i, int *c, t_com *comm)
+int	manage_errored_output(char *command, int *i, t_com *comm, char ch)
 {
+	int c;
+
+	c = 0;
 	*i = *i + 2;
 	skip_to_the_next_word(command, i);
-	while (command[*i] == '>')
-		increment_both(i, c);
-	if (*c > 2)
-		*c = 2;
+	while (command[*i] == ch)
+		increment_both(i, &c);
+	if (c > 2)
+		c = 2;
 	if (comm->outkind != FILE_ERROR)
 	{
 		comm->outkind = FILE_ERROR;
-		if (!command[*i] && *c == 0)
+		if (!command[*i] && c == 0)
 		{
 			printf("syntax error near unexpected token `newline'\n");
 			return (1);
 		}
 		printf("syntax error near unexpected token `");
-		while (*c > 0)
+		while (c > 0)
 		{
-			*c = *c - 1;
-			printf(">");
+			c = c - 1;
+			printf("%c", ch);
 		}
 		printf("\'\n");
 	}
 	return (0);
 }
 
-void	manage_bracketed_input(char *command, int *i, int *c, t_com *comm)
+void	manage_bracketed_input(char *command, int *i, t_com *comm, char ch)
 {
+	int c;
+
+	c = 0;
 	skip_to_the_next_word(command, i);
-	while (command[*i] == '<')
-		increment_both(i, c);
-	if (*c > 3)
-		*c = 3;
+	while (command[*i] == ch)
+		increment_both(i, &c);
+	if (c > 3)
+		c = 3;
 	if (comm->entry != INPUT_ERROR)
 	{
 		comm->entry = INPUT_ERROR;
 		printf("syntax error near unexpected token `");
-		while (*c > 0)
+		while (c > 0)
 		{
-			*c = *c - 1;
-			printf("<");
+			c = c - 1;
+			printf("%c", ch);
 		}
 		printf("\'\n");
 	}

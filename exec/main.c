@@ -6,10 +6,11 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/13 13:51:07 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/13 17:11:17 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <string.h>
 #include "../minishell.h"
 #define MAX_FILE_TRIES 100
 
@@ -109,7 +110,7 @@ void	write_heredoc(int fd, char *limiter)
 	while (1)
 	{
 		ft_printf("%s ", limiter);
-		c = readline("here_doc> "); // t'es pas cense avoir de texte avant > debilos -kiroussa
+		c = readline("here_doc> ");
 		if (!c)
 			continue ;
 		c[ft_strlenc(c, '\n') + 1] = 0;
@@ -178,11 +179,10 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 {
 	struct s_cmd	command;
 
-	if (!is_builtin(data->commands_data[id]->program))
-	{
+	if (!is_builtin(data->commands_data[id]->program)
+		&& ft_strlen(data->commands_data[id]->program) > 0)
 		command.exec = ft_find_path(data->commands_data[id]->program,
 				data->paths);
-	}
 	else
 		command.exec = ft_strdup(data->commands_data[id]->program);
 	command.args = dup_char_dt(data->commands_data[id]->arguments);
@@ -195,6 +195,7 @@ int	resolve_heredoc(char **hdd, t_bool all_dum)
 	int	ret;
 
 	ret = -1;
+	printf("hdd:%s\n", hdd[0]);
 	resolve_dum_heredoc(hdd, all_dum);
 	if (!all_dum)
 		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1]);
@@ -206,13 +207,16 @@ int	resolve_entry(t_com *self, int (*pipes)[2], int id)
 	int	ret;
 	int	hd;
 
+	printf("has_HD : %d, %d\n", self->has_heredoc, self->entry == ENTRY_HEREDOC);
 	if (self->has_heredoc)
 		hd = resolve_heredoc(self->here_doc_delimiter,
-				self->entry == ENTRY_HEREDOC);
+				self->entry != ENTRY_HEREDOC);
 	if (self->entry == ENTRY_PIPE)
 		ret = pipes[id - 1][0];
 	else if (self->entry == ENTRY_INPUT)
 		ret = self->fd_input;
+	else if (self->entry == NO_ENTRY)
+		ret = STDIN;
 	else if (self->entry == ENTRY_HEREDOC)
 		ret = hd;
 	else
@@ -228,6 +232,8 @@ int	resolve_out(t_com *self, int (*pipes)[2], int id)
 		ret = pipes[id][1];
 	else if (self->exit == EXIT_OUTPUT)
 		ret = self->fd_output;
+	else if (self->exit == EXIT_STDOUT)
+		ret = STDOUT;
 	else
 		ret = -1;
 	return (ret);
@@ -274,12 +280,12 @@ void	free_cmd(struct s_cmd *cmd)
 	free_dt((void **)cmd->args);
 	free_dt((void **)cmd->env);
 	free(cmd->exec);
-        free(cmd);
+	free(cmd);
 }
 
 void	free_cmds(struct s_cmds_piped piped, int skip)
 {
-	int				i;
+	int	i;
 
 	i = -1;
 	if (piped.pipes)
@@ -293,7 +299,7 @@ void	free_cmds(struct s_cmds_piped piped, int skip)
 		{
 			if (i == skip)
 				continue ;
-                        free_cmd(piped.cmds[i]);
+			free_cmd(piped.cmds[i]);
 		}
 		free(piped.cmds);
 	}
@@ -301,7 +307,8 @@ void	free_cmds(struct s_cmds_piped piped, int skip)
 
 void	exec_cmd(struct s_cmd *cmd)
 {
-	char	*arg1;
+	char		*arg1;
+	struct stat	buf;
 
 	if (!cmd->exec)
 		ft_fprintf(STDERR, "minishell: null command (internal problem)\n");
@@ -312,16 +319,14 @@ void	exec_cmd(struct s_cmd *cmd)
 		arg1 = cmd->args[0];
 		if (arg1[0] == '.' || arg1[0] == '/')
 		{
-			if (!(access(cmd->exec, F_OK) == 0))
-				ft_fprintf(STDERR, "minishell: %s: no such file or directory\n",
-					arg1);
-			else if (!(access(cmd->exec, X_OK) == 0))
-				ft_fprintf(STDERR, "minishell: %s: permission denied\n", arg1);
+			if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
+				ft_fprintf(STDERR, "minishell: '%s': is a directory\n", arg1);
 			else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-				ft_fprintf(STDERR, "minishell: %s: unknown command\n", arg1);
+				ft_fprintf(STDERR, "minishell: '%s': %s\n", arg1,
+					strerror(errno));
 		}
 		else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-			ft_fprintf(STDERR, "minishell: %s: unknown command\n", arg1);
+			ft_fprintf(STDERR, "minishell: '%s': unknown command\n", arg1);
 	}
 	free_cmd(cmd);
 	exit(127);
@@ -334,7 +339,7 @@ void	exec_builtin(struct s_cmd *cmd)
 
 	builtin = get_builtin(cmd->exec);
 	ret = builtin(ft_dt_len((void **)cmd->args), cmd->args, cmd->env);
-        free_cmd(cmd);
+	free_cmd(cmd);
 	exit(ret);
 }
 
@@ -345,6 +350,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id)
 	cmd = cmds.cmds[id];
 	dup2(cmd->infd, STDIN);
 	dup2(cmd->outfd, STDOUT);
+	free_dt((void **)data->envp);
 	deinit_thgg(data);
 	free_cmds(cmds, id);
 	if (cmd->infd != STDIN)
@@ -378,8 +384,10 @@ int	forks(t_main *data)
 			exec(data, cmds, i);
 		else
 		{
-			m_close(cmds.cmds[i]->infd);
-			m_close(cmds.cmds[i]->outfd);
+			if (cmds.cmds[i]->infd < 0)
+				m_close(cmds.cmds[i]->infd);
+			if (cmds.cmds[i]->outfd < 1)
+				m_close(cmds.cmds[i]->outfd);
 		}
 	}
 	close_all_pipes(cmds.pipes, cmds.count - 1);
@@ -389,55 +397,4 @@ int	forks(t_main *data)
 	free_cmds(cmds, -1);
 	free(pids);
 	return ((ret & 0xff00) >> 8);
-}
-
-int	one_cmd(t_main *data)
-{
-	t_com			*cmdd;
-	struct s_cmd	cmd;
-	int				hd;
-	int				ret;
-	t_builtin_f		builtin;
-
-	cmdd = data->commands_data[0];
-	if (!is_builtin(cmdd->program))
-		return (forks(data));
-	if (cmdd->has_heredoc)
-		hd = resolve_heredoc(cmdd->here_doc_delimiter,
-				cmdd->entry == ENTRY_HEREDOC);
-	if (cmdd->entry == ENTRY_INPUT)
-		ret = cmdd->fd_input;
-	else if (cmdd->entry == ENTRY_HEREDOC)
-		ret = hd;
-	else
-		ret = -1;
-	dup2(ret, STDIN);
-	dup2(cmdd->fd_output, STDOUT);
-	if (cmd.infd != STDIN)
-		m_close(cmd.infd);
-	if (cmd.outfd != STDOUT)
-		m_close(cmd.outfd);
-	builtin = get_builtin(cmdd->program);
-	return (builtin(ft_dt_len((void **)cmdd->arguments), cmdd->arguments,
-			data->envp));
-}
-
-char	*ft_slurp(int fd)
-{
-	struct stat	buf;
-	char		*end;
-
-	if (fd < 0)
-		return (NULL);
-	if (fstat(fd, &buf) < 0)
-		return (NULL);
-	end = ft_calloc(buf.st_size + 1, sizeof(char));
-	if (!end)
-		return (NULL);
-	if (read(fd, end, buf.st_size) < 0)
-	{
-		free(end);
-		return (NULL);
-	}
-	return (end);
 }

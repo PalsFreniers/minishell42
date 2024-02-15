@@ -32,12 +32,12 @@ int	get_the_next_hd_length(char *command, int i)
 	int	length;
 
 	length = i;
-	if (char_is_quote(command[length]))
+	if (is_quote(command[length]))
 	{
 		gtnhl(command, &length);
 		return (length + 1 - i);
 	}
-	while (command[length] && !(char_is_whitespace(command[length])))
+	while (command[length] && !(is_whitespace(command[length])))
 	{
 		if (command[length] == '<' && command[length + 1] == '<')
 			return (length - i);
@@ -52,7 +52,7 @@ char	*get_the_next_heredoc(char *command, int *i)
 	int		length;
 	int		j;
 
-	while (command[*i] && (char_is_whitespace(command[*i])))
+	while (command[*i] && (is_whitespace(command[*i])))
 		*i = *i + 1;
 	length = get_the_next_hd_length(command, *i);
 	argument = malloc((length + 1) * sizeof(char));

@@ -14,15 +14,15 @@
 
 void	skip_the_word(char *s, int *i)
 {
-	while (s[*i] && !(char_is_whitespace(s[*i])))
+	while (s[*i] && !(is_whitespace(s[*i])))
 	{
-		if (char_is_quote(s[*i]))
-			find_next_quote(s, i, s[*i]);
-		else if (char_is_parasit(s[*i]))
+		if (is_quote(s[*i]))
+			find_next_quote(s, i, s[*i], 1);
+		else if (is_parasit(s[*i]))
 			return ;
 		else
 		{
-			while (char_is_alphanum(s[*i]))
+			while (is_alphanum(s[*i]))
 				*i = *i + 1;
 		}
 		return (skip_the_word(s, i));
@@ -31,7 +31,7 @@ void	skip_the_word(char *s, int *i)
 
 void	skip_to_the_next_word(char *s, int *i)
 {
-	while (s[*i] && (char_is_whitespace(s[*i])))
+	while (s[*i] && (is_whitespace(s[*i])))
 		*i = *i + 1;
 }
 

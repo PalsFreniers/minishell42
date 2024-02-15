@@ -36,13 +36,10 @@ int	treat_input(char *command, t_com *comm, int *i, int last_index_hd)
 
 void	has_input(char *command, t_com *comm, int last_index_hd, int i)
 {
-	int	c;
-
-	c = 0;
 	while (command[i])
 	{
-		if (char_is_quote(command[i]))
-			find_next_quote(command, &i, command[i]);
+		if (is_quote(command[i]))
+			find_next_quote(command, &i, command[i], 1);
 		else if (command[i] == '<')
 		{
 			if (command[i + 1] == '<')
@@ -50,37 +47,12 @@ void	has_input(char *command, t_com *comm, int last_index_hd, int i)
 				i += 2;
 				skip_the_next_word(command, &i);
 			}
-			else if (check_for_next_char(command, i) == '<')
-				manage_bracketed_input(command, &i, &c, comm);
-			else if (check_for_next_char(command, i) == '\0')
-				manage_empty_input(&i, comm);
 			else if (treat_input(command, comm, &i, last_index_hd))
 				break ;
 		}
 		else
 			i = i + 1;
 	}
-}
-
-int	treat_output_second(char *command, t_com *comm, int *i)
-{
-	int	c;
-
-	c = 0;
-	if (check_for_error_output(command, *i + 2))
-	{
-		if (manage_errored_output(command, i, &c, comm))
-			return (1);
-	}
-	else
-	{
-		*i = *i + 2;
-		comm->outkind = APPEND;
-		comm->output = get_the_next_arg(command, i);
-		comm->fd_output = open(comm->output, O_CREAT | O_RDWR | O_APPEND,
-				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-	}
-	return (0);
 }
 
 void	treat_output_first(char *command, t_com *comm, int *i)
@@ -94,8 +66,11 @@ void	treat_output_first(char *command, t_com *comm, int *i)
 	comm->has_output = true;
 	if (command[*i + 1] == '>')
 	{
-		if (treat_output_second(command, comm, i))
-			return ;
+		*i = *i + 2;
+		comm->outkind = APPEND;
+		comm->output = get_the_next_arg(command, i);
+		comm->fd_output = open(comm->output, O_CREAT | O_RDWR | O_APPEND,
+				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	}
 	else
 	{
@@ -117,8 +92,8 @@ void	has_output(char *command, t_com *comm)
 	comm->output = NULL;
 	while (command[i])
 	{
-		if (char_is_quote(command[i]))
-			find_next_quote(command, &i, command[i]);
+		if (is_quote(command[i]))
+			find_next_quote(command, &i, command[i], 1);
 		else if (command[i] == '>')
 		{
 			treat_output_first(command, comm, &i);

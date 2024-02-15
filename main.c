@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:09:45 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/02/13 13:40:39 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,7 @@ int	init_cd_first(t_com *command, char **commands, int i, int command_c)
 	command->error = NULL;
 	command->arguments = NULL;
 	command->program = NULL;
-	if (command_disection(commands[i], command) == -1)
-		return (1);
+	command_disection(commands[i], command);
 	if (command->command_id == command_c)
 	{
 		if (command->exit == EXIT_PIPE)
@@ -151,7 +150,7 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 	thgg->paths = get_splitted_path(envp);
 	thgg->command_c = get_command_number(thgg->usr_input);
 	if (thgg->command_c < 1)
-		return (deinit_thgg(thgg));
+		return (thgg);
 	thgg->commands = scrap_input(thgg->command_c, thgg->usr_input);
 	i = 0;
 	while (i < thgg->command_c)
@@ -211,7 +210,7 @@ char	*get_test_env_name(char *test_env_name, char current_char)
 
 int	primary_exception_cancel(char *usr_input, int *i, int *l)
 {
-	if (char_is_whitespace(usr_input[*i + 1]))
+	if (is_whitespace(usr_input[*i + 1]))
 	{
 		*l = *l + 2;
 		*i = *i + 1;
@@ -238,10 +237,10 @@ void	get_length_dollar(char *usr_input, char **envp, int *i, int *l)
 	*i = *i + 1;
 	j = *i;
 	test_env_name = NULL;
-	while (usr_input[*i] && !(char_is_quote(usr_input[*i]))
-		&& !(char_is_whitespace(usr_input[*i]))
-		&& !(char_is_parasit(usr_input[*i]))
-		&& !char_is_delimiter(usr_input[*i]))
+	while (usr_input[*i] && !(is_quote(usr_input[*i]))
+		&& !(is_whitespace(usr_input[*i]))
+		&& !(is_parasit(usr_input[*i]))
+		&& !is_delimiter(usr_input[*i]))
 		*i = *i + 1;
 	test_env_name = ft_strdupi(usr_input, &j, *i - j);
 	env_var = get_env(envp, test_env_name);
@@ -262,7 +261,7 @@ void	single_quote_expansion(char *usr_input, int *i, int *l)
 	int	j;
 
 	j = *i;
-	find_next_quote(usr_input, i, '\'');
+	find_next_quote(usr_input, i, '\'', 1);
 	*l = *l + (*i - j);
 }
 
@@ -299,8 +298,6 @@ int	get_length_expanded(char *usr_input, char **envp)
 	return (l);
 }
 
-// void	get_expanded_found_dollar(char *usr_input, char **envp,)
-
 char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 {
 	char	*expanded;
@@ -334,7 +331,7 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		}
 		else if (usr_input[i] == '$')
 		{
-			if (char_is_whitespace(usr_input[i + 1]))
+			if (is_whitespace(usr_input[i + 1]))
 			{
 				expanded[j++] = usr_input[i++];
 				continue ;
@@ -354,10 +351,10 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 			{
 				k = ++i;
 				test_env_name = NULL;
-				while (usr_input[i] && !(char_is_quote(usr_input[i]))
-					&& !(char_is_whitespace(usr_input[i]))
-					&& !(char_is_parasit(usr_input[i]))
-					&& !char_is_delimiter(usr_input[i]))
+				while (usr_input[i] && !(is_quote(usr_input[i]))
+					&& !(is_whitespace(usr_input[i]))
+					&& !(is_parasit(usr_input[i]))
+					&& !is_delimiter(usr_input[i]))
 					i++;
 				test_env_name = ft_strdupi(usr_input, &k, i - k);
 				env_var = get_env(envp, test_env_name);
@@ -376,14 +373,13 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		else
 			expanded[j++] = usr_input[i++];
 	}
-	printf("%s\n", expanded);
 	return (expanded);
 }
 
 char	*expansion(char *usr_input, char **envp)
 {
 	char	*expanded_input;
-	int		expanded_l;
+	size_t	expanded_l;
 
 	expanded_l = get_length_expanded(usr_input, envp);
 	if (expanded_l == ft_strlen(usr_input))
@@ -393,127 +389,172 @@ char	*expansion(char *usr_input, char **envp)
 	return (expanded_input);
 }
 
-// char *primary_parse(char *usr_input, char **envp)
-// {
-// 	// char *expanded_input;
+void	ask_for_dum_hd(char *input, int *j)
+{
+	char *s;
+	char *c;
 
-// 	// expanded_input = expansion(usr_input, envp);
-// 	// return (expanded_input);
-// 	//get_length_expanded(usr_input, envp);
-// 	return (NULL);
-// }
+	s = get_the_next_arg(input, j);
+	while (1)
+	{
+		c = readline("here_doc> ");
+		if (!c)
+			continue ;
+		c[ft_strlenc(c, '\n') + 1] = 0;
+		if (ft_strequ(c, s))
+		{
+			free(c);
+			break ;
+		}
+		free(c);
+	}
+}
 
-int	give_the_prompt(char **envp)
+void	error_exit_hd(char *input, int i)
+{
+	int j;
+
+	j = 0;
+	if (i == 1)
+		return ;
+	while (j < i)
+	{
+		if (is_quote(input[j]))
+			find_next_quote(input, &j, input[j], 1);
+		else if (input[j] == '<' && input[j + 1] == '<')
+		{
+			j += 2;
+			ask_for_dum_hd(input, &j);
+		}
+		else
+			j++;
+	}
+}
+
+int	check_next_char_errority(char *input, int i)
+{
+	char ch;
+
+	ch = check_for_next_char(input, i);
+	if (!ch)
+	{
+		error_exit_hd(input, i);
+		printf("syntax error near unexpected token `newline'\n");
+		return (1);
+	}
+	if (ch == '|')
+	{
+		error_exit_hd(input, i);
+		printf("syntax error near unexpected token `|'\n");
+		return (1);
+	}
+	if (is_parasit(ch))
+	{
+		error_exit_hd(input, i);
+		manage_shit(input, i, ch);
+		return (1);
+	}
+	return (0);
+}
+
+int	check_usr_input_for_errors(char *input)
+{
+	int		i;
+
+	i = 0;
+	if (!first_command_valid(input))
+		return (1);
+	while (input[i])
+	{
+		if (is_quote(input[i]))
+		{
+			if (find_next_quote(input, &i, input[i], 2) == -1)
+				return (1);
+		}
+		else if (is_parasit(input[i]))
+		{
+			if (is_parasit(input[i + 1]) && input[i] == input[i + 1])
+				++i;
+			if (check_next_char_errority(input, i))
+				return (1);
+			++i;
+		}
+		else
+			++i;
+	}
+	return (0);
+}
+
+int	is_usr_input_blank(char *usr_input)
+{
+	int i;
+
+	i = 0;
+	skip_to_the_next_word(usr_input, &i);
+	if (!usr_input[i])
+		return (1);
+	return (0);
+}
+
+int					g_signum = 0;
+
+struct				s_mainloop
+{
+	t_bool			cont;
+	int				last;
+};
+
+struct s_mainloop	give_the_prompt(char ***envp, int last)
 {
 	t_main	*thgg;
 	char	*usr_input;
-	int		i;
-	int		j;
+	int		ret;
 
+	ret = 1;
 	usr_input = readline("$> ");
-	if (!usr_input)
-		return (0);
-	add_history(usr_input);
-	// first_parsed = primary_parse(usr_input, envp);
-	usr_input = expansion(usr_input, envp);
-	thgg = init_thgg(envp, usr_input);
+	if (g_signum == SIGINT)
+		return ((struct s_mainloop){.cont = 1, .last = 130});
+	else if (!usr_input)
+		return ((struct s_mainloop){.cont = 0, .last = 1});
+	if (ft_strlen(usr_input))
+		add_history(usr_input);
+	if (is_usr_input_blank(usr_input))
+		return ((struct s_mainloop){.cont = 1, .last = last});
+	usr_input = expansion(usr_input, *envp);
+	if (check_usr_input_for_errors(usr_input))
+	{
+		free(usr_input);
+		return ((struct s_mainloop){.cont = 1, .last = 2});
+	}
+	thgg = init_thgg(*envp, usr_input);
 	if (!thgg)
+		return ((struct s_mainloop){.cont = 0, .last = 1});
+	if (thgg->command_c > 1)
 	{
-		// printf("prout\n");
-		return (0);
+		last = forks(thgg);
 	}
-	i = 0;
-	if (!thgg)
-		return (-1);
-	while (thgg->commands_data[i])
+	else if (thgg->command_c == 1)
 	{
-		j = 0;
-		printf("command #%d:'%s'\nprogram:%s\n", i,
-			thgg->commands_data[i]->command, thgg->commands_data[i]->program);
-		if (thgg->commands_data[i]->has_input)
-			printf("input:%s\n", thgg->commands_data[i]->input);
-		if (thgg->commands_data[i]->has_output)
+		if (is_builtin(thgg->commands_data[0]->program))
 		{
-			printf("output:%s\n", thgg->commands_data[i]->output);
-			if (thgg->commands_data[i]->outkind == OVERWRITE)
-				printf("OVERWRITE\n");
-			if (thgg->commands_data[i]->outkind == APPEND)
-				printf("APPEND\n");
-			if (thgg->commands_data[i]->outkind == FILE_ERROR)
-				printf("FILE_ERROR\n");
+			if (ft_strequ(thgg->commands_data[0]->program, "exit"))
+				ret = 0;
 		}
-		if (thgg->commands_data[i]->arguments)
-		{
-			while (thgg->commands_data[i]->arguments[j])
-			{
-				printf("arguments #%d:'%s'\n", j,
-					thgg->commands_data[i]->arguments[j]);
-				j++;
-			}
-			j = 0;
-		}
-		if (thgg->commands_data[i]->has_heredoc)
-		{
-			while (thgg->commands_data[i]->here_doc_delimiter[j])
-			{
-				printf("heredoc #%d:'%s'\n", j,
-					thgg->commands_data[i]->here_doc_delimiter[j]);
-				j++;
-			}
-		}
-		printf("ENTRY: %s   EXIT: %s\n",
-			entry_to_text(thgg->commands_data[i]->entry),
-			exit_to_text(thgg->commands_data[i]->exit));
-		printf("\n");
-		i++;
+		else
+			last = forks(thgg);
 	}
-	i = 0;
-	while (thgg->commands_data[i])
+	else if (thgg->command_c == 0)
 	{
-		if (thgg->commands_data[i]->has_input
-			&& thgg->commands_data[i]->fd_input > 0)
-			close(thgg->commands_data[i]->fd_input);
-		if (thgg->commands_data[i]->has_output
-			&& thgg->commands_data[i]->fd_output > 0)
-			close(thgg->commands_data[i]->fd_output);
-		i++;
+		deinit_thgg(thgg);
+		return ((struct s_mainloop){.cont = 1, .last = 0});
 	}
-	i = 0;
-	while (thgg->commands_data[i])
-	{
-		if (thgg->commands_data[i]->error && ft_strlen(thgg->commands_data[i]->error))
-		{
-			printf("No such file or directory: %s\n",
-				thgg->commands_data[i]->error);
-			deinit_thgg(thgg);
-			return (0);
-		}
-		i++;
-	}
-	// i = 0;
-	// while (thgg->paths[i])
-	// {
-	// 	//printf("path #%d:'%s'\n", i, thgg->paths[i]);
-	// 	i++;
-	// }
-	// if (scrap_input(buffer, &command_number, &commands) == -1)
-	// 	commands = NULL;
-	// else if (command_number > 0)
-	// 	if (launch_programms(commands, command_number, paths, id) == -1)
-	// 		return (-1);
-	// free_all(commands);
-	// if (buffer)
-	// 	free(buffer);
-	// if (*id == 0)
-	// 	return (-1);
-	// return (1);
 	deinit_thgg(thgg);
-	return (1);
+	return ((struct s_mainloop){.cont = ret, .last = last});
 }
 
 int	ft_strlen_char_ss(char **s)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s[i])
@@ -521,38 +562,62 @@ int	ft_strlen_char_ss(char **s)
 	return (i);
 }
 
-char **ft_strdup_char_star_star(char **to_dup)
+char	**ft_strdup_char_star(char **to_dup)
 {
-	char **copy;
-	int l;
-	int i;
+	char	**copy;
+	int		l;
+	int		i;
 
 	l = ft_strlen_char_ss(to_dup);
-	copy = malloc((l + 1) * sizeof (char *));
+	copy = malloc((l + 1) * sizeof(char *));
 	i = 0;
 	while (i < l)
 	{
-		copy[i] = ft_strdup(to_dup);
+		copy[i] = ft_strdup(to_dup[i]);
 		i++;
 	}
 	copy[i] = NULL;
 	return (copy);
 }
 
+void	catch_int(int sn)
+{
+	g_signum = sn;
+	close(0);
+}
+
+void	catch_quit(int sn)
+{
+	(void)sn;
+	printf("  ");
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	char *envp_bis;
+	int					cpy;
+	char				**envp_cpy;
+	struct s_mainloop	ret;
 
 	(void)argc;
 	(void)argv;
-	if (!envp)
-	{
-		printf("Error, no envp\n");
-		return (-1);
-	}
-	envp_bis = ft_strdup_char_star(envp);
+	cpy = dup(0);
+	// 	signal(SIGINT, catch_int);
+	signal(SIGQUIT, catch_quit);
+	envp_cpy = ft_strdup_char_star(envp);
+        ret.last = 0;
+        ret.cont = 1;
 	while (1)
-		if (give_the_prompt(envp_bis) == -1)
+	{
+		ret = give_the_prompt(&envp_cpy, ret.last);
+		if (!ret.cont)
 			break ;
+		if (g_signum == SIGINT)
+		{
+			dup2(cpy, 0);
+			g_signum = 0;
+		}
+	}
+	free_double_char(envp_cpy);
+	printf("exit\n");
 	return (0);
 }

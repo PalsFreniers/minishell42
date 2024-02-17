@@ -460,8 +460,8 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 	char	*usr_input;
 	int		ret;
 
-	ret = 1;
-	usr_input = readline("$> ");
+	ret = 0;
+	usr_input = readline("minishell $> ");
 	if (g_signum == SIGINT)
 		return ((struct s_mainloop){.cont = 1, .last = 130});
 	else if (!usr_input)
@@ -530,9 +530,17 @@ char	**ft_strdup_char_star(char **to_dup)
 	return (copy);
 }
 
+void	catch_int2(int sn)
+{
+	g_signum = sn;
+	close(0);
+}
+
 void	catch_int(int sn)
 {
 	g_signum = sn;
+        printf("\n");
+        signal(SIGINT, catch_int2);
 	close(0);
 }
 
@@ -551,7 +559,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	cpy = dup(0);
-	// 	signal(SIGINT, catch_int);
+ 	signal(SIGINT, catch_int);
 	signal(SIGQUIT, catch_quit);
 	envp_cpy = ft_strdup_char_star(envp);
         ret.last = 0;

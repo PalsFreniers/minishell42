@@ -12,8 +12,9 @@
 
 NAME = minishell
 SRCS = error_manager.c \
-       element_treat.c \
-       command_creation.c \
+       error_utils.c \
+       light_utils.c \
+       comm_creat.c \
        libft_bis.c \
        skipper.c \
        tempo_utils.c \
@@ -25,11 +26,17 @@ SRCS = error_manager.c \
        arg_utils.c \
        char_treat.c \
        commands_to_exec.c \
+       hd_exit.c \
+       expansion_bis.c \
+       expansion_exec.c \
        ft_split.c \
        input_parse.c \
        libft.c \
        paths_related.c \
        utils.c \
+       init.c \
+       deinit.c \
+       expansion.c \
        exec/funcs.c \
        exec/main.c \
        exec/resolve.c \

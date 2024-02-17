@@ -90,3 +90,18 @@ char	*ft_strdupi(char *original, int *index, int size)
 	copy[i] = '\0';
 	return (copy);
 }
+
+void	free_double_char(char **to_free)
+{
+	int	i;
+
+	i = 0;
+	if (!to_free)
+		return ;
+	while (to_free[i])
+	{
+		free(to_free[i]);
+		i++;
+	}
+	free(to_free);
+}

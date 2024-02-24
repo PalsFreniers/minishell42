@@ -38,27 +38,3 @@ void	resolve_dum_heredoc(char **here_docs, t_bool is_heredoc)
 		}
 	}
 }
-
-char	*resolve_path_to_abs(char *exec)
-{
-	char	*ret;
-	char	*pwd;
-	char	*tmp;
-	t_bool	need_free;
-
-	if (!exec || exec[0] == '/')
-		return (exec);
-	need_free = FALSE;
-	pwd = getenv("PWD");
-	if (pwd == NULL)
-	{
-		pwd = getcwd(NULL, 0);
-		need_free = TRUE;
-	}
-	ret = ft_strjoin(pwd, "/");
-	if (need_free)
-		free(pwd);
-	tmp = ft_strjoin(ret, exec);
-	free(ret);
-	return (tmp);
-}

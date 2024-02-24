@@ -36,7 +36,7 @@ char	*ft_find_path(char *exec, char **paths)
 
 	c = exec[0];
 	i = 0;
-	while (paths && c != '.' && c != '/' && paths[i])
+	while (paths && (c != '.' || exec[1] != '/') && c != '/' && paths[i])
 	{
 		tmp = ft_strjoin(paths[i], "/");
 		ret = ft_strjoin(tmp, exec);
@@ -46,11 +46,6 @@ char	*ft_find_path(char *exec, char **paths)
 		free(ret);
 		i++;
 	}
-	ret = resolve_path_to_abs(exec);
-	if (access(ret, F_OK) == 0)
-		return (ret);
-	if (ret != exec)
-		free(ret);
 	return (ft_strdup(exec));
 }
 
@@ -314,13 +309,13 @@ void	exec_cmd(struct s_cmd *cmd)
 	else
 	{
 		arg1 = cmd->args[0];
-		if (arg1[0] == '.' || arg1[0] == '/')
+		if ((arg1[0] == '.' && arg1[1] == '/') || arg1[0] == '/')
 		{
 			if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
 				ft_fprintf(STDERR, "minishell: '%s': is a directory\n", arg1);
 			else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-				ft_fprintf(STDERR, "minishell: '%s': %s\n", arg1,
-					strerror(errno));
+				ft_fprintf(STDERR, "minishell: '%s': %s => %s\n", arg1,
+					cmd->exec, strerror(errno));
 		}
 		else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
 			ft_fprintf(STDERR, "minishell: '%s': unknown command\n", arg1);

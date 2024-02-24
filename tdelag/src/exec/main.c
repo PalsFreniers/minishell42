@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <string.h>
 #include "../minishell.h"
 #define MAX_FILE_TRIES 100
 
@@ -189,6 +190,7 @@ int	resolve_heredoc(char **hdd, t_bool all_dum)
 	int	ret;
 
 	ret = -1;
+	printf("hdd:%s\n", hdd[0]);
 	resolve_dum_heredoc(hdd, all_dum);
 	if (!all_dum)
 		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1]);
@@ -200,6 +202,7 @@ int	resolve_entry(t_com *self, int (*pipes)[2], int id)
 	int	ret;
 	int	hd;
 
+	printf("has_HD : %d, %d\n", self->has_heredoc, self->entry == ENTRY_HEREDOC);
 	if (self->has_heredoc)
 		hd = resolve_heredoc(self->here_doc_delimiter,
 			self->entry != ENTRY_HEREDOC);
@@ -314,8 +317,8 @@ void	exec_cmd(struct s_cmd *cmd)
 			if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
 				ft_fprintf(STDERR, "minishell: '%s': is a directory\n", arg1);
 			else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-				ft_fprintf(STDERR, "minishell: '%s': %s => %s\n", arg1,
-					cmd->exec, strerror(errno));
+				ft_fprintf(STDERR, "minishell: '%s': %s\n", arg1,
+					strerror(errno));
 		}
 		else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
 			ft_fprintf(STDERR, "minishell: '%s': unknown command\n", arg1);

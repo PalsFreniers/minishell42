@@ -1,42 +1,55 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   program_treat.c                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:10:08 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/02/13 13:40:39 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	skip_the_word(char *s, int *i)
+static void	ask_for_dum_hd(char *input, int *j)
 {
-	while (s[*i] && !(is_whitespace(s[*i])))
+	char	*s;
+	char	*c;
+
+	s = get_the_next_arg(input, j);
+	while (1)
 	{
-		if (is_quote(s[*i]))
-			find_next_quote(s, i, s[*i], 1);
-		else if (is_parasit(s[*i]))
-			return ;
-		else
+		c = readline("here_doc> ");
+		if (!c)
+			continue ;
+		c[ft_strlenc(c, '\n') + 1] = 0;
+		if (ft_strequ(c, s))
 		{
-			while (is_alphanum(s[*i]))
-				*i = *i + 1;
+			free(c);
+			break ;
 		}
-		return (skip_the_word(s, i));
+		free(c);
 	}
 }
 
-void	skip_to_the_next_word(char *s, int *i)
+void	error_exit_hd(char *input, int i)
 {
-	while (s[*i] && (is_whitespace(s[*i])))
-		*i = *i + 1;
-}
+	int	j;
 
-void	skip_the_next_word(char *s, int *i)
-{
-	skip_to_the_next_word(s, i);
-	skip_the_word(s, i);
+	j = 0;
+	if (i == 1)
+		return ;
+	while (j < i)
+	{
+		if (is_quote(input[j]))
+			find_next_quote(input, &j, input[j], 1);
+		else if (input[j] == '<' && input[j + 1] == '<')
+		{
+			j += 2;
+			ask_for_dum_hd(input, &j);
+		}
+		else
+			j++;
+	}
 }

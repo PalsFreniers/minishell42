@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	char_is_alphanum(char c)
+int	is_alphanum(char c)
 {
 	if (c == '|')
 		return (0);
@@ -20,7 +20,7 @@ int	char_is_alphanum(char c)
 		return (0);
 	else if (c == '<' || c == '>')
 		return (0);
-	else if (char_is_whitespace(c))
+	else if (is_whitespace(c))
 		return (0);
 	else if (c >= 32 && c < 127)
 		return (1);
@@ -28,7 +28,7 @@ int	char_is_alphanum(char c)
 		return (0);
 }
 
-int	char_is_whitespace(char c)
+int	is_whitespace(char c)
 {
 	if (c == '\r' || c == ' ' || c == '\t')
 		return (1);
@@ -51,14 +51,14 @@ int	find_next_quote(char *buffer, int *i, char quote_type, int x)
 	return (1);
 }
 
-int	char_is_quote(char c)
+int	is_quote(char c)
 {
 	if (c == '\'' || c == '\"')
 		return (1);
 	return (0);
 }
 
-int	char_is_delimiter(char c)
+int	is_delimiter(char c)
 {
 	if (c == '_')
 		return (0);

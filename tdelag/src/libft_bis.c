@@ -62,7 +62,7 @@ void	ft_str_append(char **begin, int *j, char *end)
 	}
 }
 
-int	char_is_parasit(char c)
+int	is_parasit(char c)
 {
 	if (c == '<' || c == '>')
 		return (1);
@@ -71,7 +71,7 @@ int	char_is_parasit(char c)
 
 void	look_for_heredoc(char *command, int *i, t_com *comm)
 {
-	if (char_is_quote(command[*i]))
+	if (is_quote(command[*i]))
 		find_next_quote(command, i, command[*i], 1);
 	else if (command[*i] == '<' && command[*i + 1] == '<')
 	{

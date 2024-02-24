@@ -81,6 +81,7 @@ typedef struct s_command
 	char		**arguments;
 	int			has_heredoc;
 	char		**here_doc_delimiter;
+	bool		expand_hd;
 	bool		has_input;
 	char		*input;
 	int			fd_input;

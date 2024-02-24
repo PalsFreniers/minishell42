@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 13:40:39 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/24 11:29:42 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ int	main(int argc, char **argv, char **envp)
 	// 	signal(SIGINT, catch_int);
 	signal(SIGQUIT, catch_quit);
 	envp_cpy = ft_strdup_char_star(envp);
-        ret.last = 0;
-        ret.cont = 1;
+	ret.last = 0;
+	ret.cont = 1;
 	while (1)
 	{
 		ret = give_the_prompt(&envp_cpy, ret.last);

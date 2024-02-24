@@ -437,7 +437,7 @@ int	check_usr_input_for_errors(char *input)
 
 int	is_usr_input_blank(char *usr_input)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	skip_to_the_next_word(usr_input, &i);
@@ -454,18 +454,39 @@ struct				s_mainloop
 	int				last;
 };
 
+struct s_mainloop	s_exit(t_com *command)
+{
+	if (ft_dt_len((void **)command->arguments) == 1)
+		return ((struct s_mainloop){0, 0});
+	if (ft_dt_len((void **)command->arguments) > 2)
+	{
+		ft_fprintf(STDERR, "minishell : exit : too much arguments\n");
+		return ((struct s_mainloop){1, 1});
+	}
+	else
+		return ((struct s_mainloop){0, ft_atoi(command->arguments[1])});
+}
+
+struct s_mainloop	solo_b_in(t_com *command)
+{
+	if (ft_strequ(command->program, "exit"))
+		return (s_exit(command));
+	return ((struct s_mainloop){1, 0});
+}
+
 struct s_mainloop	give_the_prompt(char ***envp, int last)
 {
-	t_main	*thgg;
-	char	*usr_input;
-	int		ret;
+	t_main				*thgg;
+	char				*usr_input;
+	int					ret;
+	struct s_mainloop	b_in;
 
-	ret = 0;
+	ret = 1;
 	usr_input = readline("minishell $> ");
 	if (g_signum == SIGINT)
 		return ((struct s_mainloop){.cont = 1, .last = 130});
 	else if (!usr_input)
-		return ((struct s_mainloop){.cont = 0, .last = 1});
+		return ((struct s_mainloop){.cont = 0, .last = 123});
 	if (ft_strlen(usr_input))
 		add_history(usr_input);
 	if (is_usr_input_blank(usr_input))
@@ -487,8 +508,9 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 	{
 		if (is_builtin(thgg->commands_data[0]->program))
 		{
-			if (ft_strequ(thgg->commands_data[0]->program, "exit"))
-				ret = 0;
+			b_in = solo_b_in(thgg->commands_data[0]);
+			last = b_in.last;
+			ret = b_in.cont;
 		}
 		else
 			last = forks(thgg);
@@ -539,8 +561,8 @@ void	catch_int2(int sn)
 void	catch_int(int sn)
 {
 	g_signum = sn;
-        printf("\n");
-        signal(SIGINT, catch_int2);
+	printf("\n");
+	signal(SIGINT, catch_int2);
 	close(0);
 }
 
@@ -559,11 +581,11 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	cpy = dup(0);
- 	signal(SIGINT, catch_int);
+	signal(SIGINT, catch_int);
 	signal(SIGQUIT, catch_quit);
 	envp_cpy = ft_strdup_char_star(envp);
-        ret.last = 0;
-        ret.cont = 1;
+	ret.last = 0;
+	ret.cont = 1;
 	while (1)
 	{
 		ret = give_the_prompt(&envp_cpy, ret.last);
@@ -577,5 +599,5 @@ int	main(int argc, char **argv, char **envp)
 	}
 	free_double_char(envp_cpy);
 	printf("exit\n");
-	return (0);
+	return (ret.last);
 }

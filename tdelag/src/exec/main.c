@@ -181,7 +181,7 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 	if (!is_builtin(data->commands_data[id]->program)
 		&& ft_strlen(data->commands_data[id]->program) > 0)
 		command.exec = ft_find_path(data->commands_data[id]->program,
-				data->paths);
+			data->paths);
 	else
 		command.exec = ft_strdup(data->commands_data[id]->program);
 	command.args = dup_char_dt(data->commands_data[id]->arguments);
@@ -194,7 +194,6 @@ int	resolve_heredoc(char **hdd, t_bool all_dum)
 	int	ret;
 
 	ret = -1;
-	printf("hdd:%s\n", hdd[0]);
 	resolve_dum_heredoc(hdd, all_dum);
 	if (!all_dum)
 		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1]);
@@ -206,10 +205,9 @@ int	resolve_entry(t_com *self, int (*pipes)[2], int id)
 	int	ret;
 	int	hd;
 
-	printf("has_HD : %d, %d\n", self->has_heredoc, self->entry == ENTRY_HEREDOC);
 	if (self->has_heredoc)
 		hd = resolve_heredoc(self->here_doc_delimiter,
-				self->entry != ENTRY_HEREDOC);
+			self->entry != ENTRY_HEREDOC);
 	if (self->entry == ENTRY_PIPE)
 		ret = pipes[id - 1][0];
 	else if (self->entry == ENTRY_INPUT)
@@ -383,9 +381,9 @@ int	forks(t_main *data)
 			exec(data, cmds, i);
 		else
 		{
-			if (cmds.cmds[i]->infd < 0)
+			if (cmds.cmds[i]->infd != STDIN)
 				m_close(cmds.cmds[i]->infd);
-			if (cmds.cmds[i]->outfd < 1)
+			if (cmds.cmds[i]->outfd != STDOUT)
 				m_close(cmds.cmds[i]->outfd);
 		}
 	}

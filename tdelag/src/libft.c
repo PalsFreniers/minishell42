@@ -57,7 +57,7 @@ void	should_add_quotes(const char *s, char *cut, int *l)
 	{
 		if (is_quote(s[i]))
 			find_next_quote((char *)s, &i, s[i], 1);
-		else if (is_whitespace(s[i]) && c)
+		else if (is_whitespace(s[i]))
 			reset = true;
 		else
 		{
@@ -98,7 +98,6 @@ char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 	bool	reset;
 
 	reset = true;
-	quoted = false;
 	l = ft_strlen((char *)s) - (ft_strlen(cut) + 1);
 	should_add_quotes(s, cut, &l);
 	result = malloc((l + 1) * sizeof(char));
@@ -115,13 +114,13 @@ char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 		else if (is_whitespace(s[i]))
 		{
 			if (!reset)
-				result[j++] = '\''
+				result[j++] = '\'';
 			reset = true;
 			result[j++] = s[i++];
 		}
 		else if (!(is_quote(s[i])) && !(is_whitespace(s[i])) && reset)
 		{
-			result[j++] = '\''
+			result[j++] = '\'';
 			reset = !reset;
 		}
 		else

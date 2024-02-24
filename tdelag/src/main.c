@@ -20,9 +20,22 @@ struct				s_mainloop
 	int				last;
 };
 
+struct s_mainloop        solo_b_in(t_com *command)
+{
+        struct s_mainloop ret;
+
+        ret = (struct s_mainloop){1, 0};
+        if(ft_strequ(command->program, "exit"))
+                ret = (struct s_mainloop){0, 0};
+        return (ret);
+}
+
 struct s_mainloop	give_the_prompt(char ***envp, int last)
 {
-	int	i;
+        int ret;
+        struct s_mainloop b_in;
+        char *usr_input;
+        t_main *thgg;
 
 	ret = 1;
 	usr_input = readline("$> ");
@@ -57,11 +70,6 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 		}
 		else
 			last = forks(thgg);
-	}
-	else if (thgg->command_c == 0)
-	{
-		deinit_thgg(thgg);
-		return ((struct s_mainloop){.cont = 1, .last = 0});
 	}
 	deinit_thgg(thgg);
 	return ((struct s_mainloop){.cont = ret, .last = last});

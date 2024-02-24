@@ -73,18 +73,7 @@ char	*get_the_next_arg(char *command, int *i)
 	int		j;
 
 	type_quote = 'a';
-<<<<<<<< HEAD:tdelag/src/argument_treat.c
-	skip_to_the_next_word(command, i);
-	while (char_is_parasit(command[*i]))
-	{
-		while (char_is_parasit(command[*i]))
-			*i = *i + 1;
-		skip_the_next_word(command, i);
-		skip_to_the_next_word(command, i);
-	}
-========
 	skip_in_outs_hds(command, i);
->>>>>>>> origin/werwer:tdelag/src/arg_treat.c
 	length = get_the_next_arg_length(command, *i);
 	argument = malloc((length + 1) * sizeof(char));
 	j = 0;
@@ -99,16 +88,7 @@ char	*get_the_next_arg(char *command, int *i)
 			dup_and_get_next(&command, i, &argument, &j);
 	}
 	argument[j] = '\0';
-<<<<<<<< HEAD:tdelag/src/argument_treat.c
-	if (char_is_quote(command[*i]))
-	{
-		*i = *i + 1;
-		if (length == 0)
-			*i = *i + 1;
-	}
-========
 	skip_ending_quotes(command, i, length);
->>>>>>>> origin/werwer:tdelag/src/arg_treat.c
 	return (argument);
 }
 

@@ -42,16 +42,65 @@ char	*ft_strdup(const char *s)
 	return (k);
 }
 
-char	*ft_strdup_env(const char *s, char *cut)
+void	should_add_quotes(const char *s, char *cut, int *l)
 {
-	int		l;
 	int		i;
-	int		j;
-	char	*result;
+	bool	reset;
 
 	i = 0;
-	j = 0;
+	reset = true;
+	while (s[i] && cut[i] && s[i] == cut[i])
+		i++;
+	if (s[i] == '=')
+		i++;
+	while (s[i])
+	{
+		if (is_quote(s[i]))
+			find_next_quote((char *)s, &i, s[i], 1);
+		else if (is_whitespace(s[i]) && c)
+			reset = true;
+		else
+		{
+			if (reset)
+			{
+				*l = *l + 2;
+				reset = !reset;
+			}
+			i++;
+		}
+	}
+}
+
+void	quote_copy(const char *s, char **result, int *i, int *j)
+{
+	char quote;
+
+	quote = s[*i];
+	(*result)[*j] = s[*i];
+	*j = *j + 1;
+	*i = *i + 1;
+	while (s[*i] != quote)
+	{
+		(*result)[*j] = s[*i];
+		*j = *j + 1;
+		*i = *i + 1;
+	}
+	(*result)[*j] = s[*i];
+	*j = *j + 1;
+	*i = *i + 1;
+	return ;
+}
+
+char	*ft_strdup_env(const char *s, char *cut, int i, int j)
+{
+	int		l;
+	char	*result;
+	bool	reset;
+
+	reset = true;
+	quoted = false;
 	l = ft_strlen((char *)s) - (ft_strlen(cut) + 1);
+	should_add_quotes(s, cut, &l);
 	result = malloc((l + 1) * sizeof(char));
 	if (!result)
 		return (NULL);
@@ -60,7 +109,26 @@ char	*ft_strdup_env(const char *s, char *cut)
 	if (s[i] == '=')
 		i++;
 	while (s[i])
-		result[j++] = s[i++];
+	{
+		if (is_quote(s[i]))
+			quote_copy(s, &result, &i, &j);
+		else if (is_whitespace(s[i]))
+		{
+			if (!reset)
+				result[j++] = '\''
+			reset = true;
+			result[j++] = s[i++];
+		}
+		else if (!(is_quote(s[i])) && !(is_whitespace(s[i])) && reset)
+		{
+			result[j++] = '\''
+			reset = !reset;
+		}
+		else
+			result[j++] = s[i++];
+	}
+	if (!reset)
+		result[j++] = '\'';
 	result[j] = '\0';
 	return (result);
 }

@@ -133,7 +133,7 @@ char			*ft_strdup(const char *s);
 char			*ft_strdupi(char *original, int *index, int size);
 int				ft_strcmp(char *modele, char *compared);
 int				ft_strbackslashn(char *s);
-char			*ft_strdup_env(const char *s, char *cut);
+char			*ft_strdup_env(const char *s, char *cut, int i, int j);
 void			ft_str_append(char **begin, int *j, char *end);
 char			*ft_strcatslash(char *begin, char *end);
 char			*ft_itoa(int i);

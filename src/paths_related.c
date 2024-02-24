@@ -43,7 +43,7 @@ char	*get_env(char **envp, char *extracted)
 	}
 	if (!envp[i])
 		return (NULL);
-	env_var = ft_strdup_env(envp[i], extracted);
+	env_var = ft_strdup_env(envp[i], extracted, 0, 0);
 	return (env_var);
 }
 

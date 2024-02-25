@@ -92,7 +92,7 @@ void	catch_int(int sn)
 void	catch_quit(int sn)
 {
 	(void)sn;
-	printf("  ");
+        ft_putstr_fd("\b\b  \b\b", 1);	
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -104,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	cpy = dup(0);
-	// 	signal(SIGINT, catch_int);
+ 	signal(SIGINT, catch_int);
 	signal(SIGQUIT, catch_quit);
 	envp_cpy = ft_strdup_char_star(envp);
 	ret.last = 0;

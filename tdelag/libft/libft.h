@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 12:11:06 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/08 14:26:23 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/27 21:09:50 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void				ft_striteri(char *s, void (*f)(unsigned int, char *));
 // ft_convert
 char				*ft_itoa(int n);
 int					ft_atoi(const char *str);
+t_i64				ft_atol(const char *str);
 
 // ft_output
 int					ft_putchar_fd(char c, int fd);

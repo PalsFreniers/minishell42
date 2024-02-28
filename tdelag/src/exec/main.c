@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/28 18:06:34 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/28 18:16:02 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -357,6 +357,11 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id)
 		m_close(cmd->infd);
 	if (cmd->outfd != STDOUT)
 		m_close(cmd->outfd);
+	if (!data->commands_data[id]->has_program)
+	{
+		free_cmd(cmd);
+		return ;
+	}
 	if (is_builtin(cmd->exec))
 		exec_builtin(cmd);
 	exec_cmd(cmd);

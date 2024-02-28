@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/28 18:12:09 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/28 18:13:01 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 	char	*result;
 	bool	reset;
 
-	reset = true;
+	reset = false;
 	l = ft_strlen((char *)s) - (ft_strlen(cut) + 1);
 	should_add_quotes(s, cut, &l);
 	result = malloc((l + 1) * sizeof(char));

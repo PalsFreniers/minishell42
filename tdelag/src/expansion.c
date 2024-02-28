@@ -14,12 +14,17 @@
 
 int	primary_exception_cancel(char *usr_input, int *i, int *l)
 {
-	if (is_whitespace(usr_input[*i + 1]))
+	if (is_whitespace(usr_input[*i + 1]) || first_character_env_invalid(usr_input[*i + 1]))
 	{
 		*l = *l + 2;
 		*i = *i + 1;
 		return (1);
 	}
+    if (is_numeric(usr_input[*i + 1]))
+    {
+        *i = *i + 2;
+        return (1);
+    }
 	// if (usr_input[i + 1] == '?')
 	// {
 	// 	test_env_name = NULL;

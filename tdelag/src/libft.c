@@ -58,7 +58,10 @@ void	should_add_quotes(const char *s, char *cut, int *l)
 		if (is_quote(s[i]))
 			find_next_quote((char *)s, &i, s[i], 1);
 		else if (is_whitespace(s[i]))
-			reset = true;
+        {
+            reset = true;
+            ++i;
+        }
 		else
 		{
 			if (reset)

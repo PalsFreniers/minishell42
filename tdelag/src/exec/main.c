@@ -6,12 +6,12 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/13 17:11:17 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/28 18:06:34 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
 #include "../minishell.h"
+#include <string.h>
 #define MAX_FILE_TRIES 100
 
 void	ft_file_name_rand(char file[20])
@@ -98,9 +98,10 @@ void	generate_non_existing_file(char file[20])
 		ft_file_name_rand(file);
 }
 
-void	write_heredoc(int fd, char *limiter)
+void	write_heredoc(int fd, char *limiter, t_bool exp, char **envp)
 {
 	char	*c;
+	char	*tmp;
 
 	while (1)
 	{
@@ -114,12 +115,17 @@ void	write_heredoc(int fd, char *limiter)
 			free(c);
 			break ;
 		}
+		if (exp)
+		{
+			tmp = c;
+			c = expansion(tmp, envp);
+		}
 		ft_fprintf(fd, "%s\n", c);
 		free(c);
 	}
 }
 
-int	make_here_doc_file(char *limiter)
+int	make_here_doc_file(char *limiter, t_bool exp, char **env)
 {
 	char	file[21];
 	int		fd;
@@ -129,7 +135,7 @@ int	make_here_doc_file(char *limiter)
 	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 		return (fd);
-	write_heredoc(fd, limiter);
+	write_heredoc(fd, limiter, exp, env);
 	m_close(fd);
 	fd = open(file, O_RDONLY, 0644);
 	if (fd == -1)
@@ -177,7 +183,7 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 	if (!is_builtin(data->commands_data[id]->program)
 		&& ft_strlen(data->commands_data[id]->program) > 0)
 		command.exec = ft_find_path(data->commands_data[id]->program,
-			data->paths);
+				data->paths);
 	else
 		command.exec = ft_strdup(data->commands_data[id]->program);
 	command.args = dup_char_dt(data->commands_data[id]->arguments);
@@ -185,27 +191,26 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 	return (command);
 }
 
-int	resolve_heredoc(char **hdd, t_bool all_dum)
+int	resolve_heredoc(char **hdd, t_bool all_dum, t_bool exp, char **env)
 {
 	int	ret;
 
 	ret = -1;
-	printf("hdd:%s\n", hdd[0]);
+	printf("resolve_heredoc all_dum %d\n", all_dum);
 	resolve_dum_heredoc(hdd, all_dum);
-	if (!all_dum)
-		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1]);
+	if (all_dum)
+		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1], exp, env);
 	return (ret);
 }
 
-int	resolve_entry(t_com *self, int (*pipes)[2], int id)
+int	resolve_entry(t_com *self, int (*pipes)[2], int id, char **env)
 {
 	int	ret;
 	int	hd;
 
-	printf("has_HD : %d, %d\n", self->has_heredoc, self->entry == ENTRY_HEREDOC);
 	if (self->has_heredoc)
 		hd = resolve_heredoc(self->here_doc_delimiter,
-			self->entry != ENTRY_HEREDOC);
+				self->entry == ENTRY_HEREDOC, self->expand_hd, env);
 	if (self->entry == ENTRY_PIPE)
 		ret = pipes[id - 1][0];
 	else if (self->entry == ENTRY_INPUT)
@@ -242,7 +247,7 @@ struct s_cmd	*generate_cmd(t_main *data, int (*pipes)[2], int id)
 	command = malloc(sizeof(struct s_cmd));
 	*command = extract_base_cmd(data, id);
 	self = data->commands_data[id];
-	command->infd = resolve_entry(self, pipes, id);
+	command->infd = resolve_entry(self, pipes, id, data->envp);
 	command->outfd = resolve_out(self, pipes, id);
 	return (command);
 }

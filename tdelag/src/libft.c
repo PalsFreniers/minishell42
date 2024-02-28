@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 10:41:20 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/02/28 18:12:09 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	should_add_quotes(const char *s, char *cut, int *l)
 	bool	reset;
 
 	i = 0;
-	reset = true;
+	reset = false;
 	while (s[i] && cut[i] && s[i] == cut[i])
 		i++;
 	if (s[i] == '=')
@@ -58,10 +58,10 @@ void	should_add_quotes(const char *s, char *cut, int *l)
 		if (is_quote(s[i]))
 			find_next_quote((char *)s, &i, s[i], 1);
 		else if (is_whitespace(s[i]))
-        {
-            reset = true;
-            ++i;
-        }
+		{
+			reset = true;
+			++i;
+		}
 		else
 		{
 			if (reset)
@@ -76,7 +76,7 @@ void	should_add_quotes(const char *s, char *cut, int *l)
 
 void	quote_copy(const char *s, char **result, int *i, int *j)
 {
-	char quote;
+	char	quote;
 
 	quote = s[*i];
 	(*result)[*j] = s[*i];

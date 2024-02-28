@@ -98,6 +98,7 @@ char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 {
 	int		l;
 	char	*result;
+    bool    multipe_word = false;
 	bool	reset;
 
 	reset = false;
@@ -120,6 +121,7 @@ char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 				result[j++] = '\'';
 			reset = true;
 			result[j++] = s[i++];
+            multipe_word = true;
 		}
 		else if (!(is_quote(s[i])) && !(is_whitespace(s[i])) && reset)
 		{
@@ -129,7 +131,7 @@ char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 		else
 			result[j++] = s[i++];
 	}
-	if (!reset)
+	if (!reset && multipe_word)
 		result[j++] = '\'';
 	result[j] = '\0';
 	return (result);

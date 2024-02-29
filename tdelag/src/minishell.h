@@ -28,6 +28,16 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
+typedef struct s_exp_actions{
+    char *var_name;
+    char *var_value;
+}t_exp;
+
+typedef struct s_global_expansion{
+    int exp_count;
+    t_exp **exps;
+}t_big_exp;
+
 typedef enum e_first_error
 {
 	ENEWLINE,
@@ -213,5 +223,7 @@ char			*create_expanded(int l);
 void			error_exit_hd(char *input, int i);
 int				ft_strlen_char_ss(char **s);
 char			**ft_strdup_char_star(char **to_dup);
+t_big_exp       *get_big_exp(int argc , char **argv);
+
 
 #endif

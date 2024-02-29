@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.c                                            :+:      :+:    :+:   */
+/*   libft_bis.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:09:36 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/02/29 11:22:25 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ bool    ft_strcmp(char *modele, char *compared)
 	int	i;
 
 	i = 0;
-    if (!compared)
-        return (false);
+	if (!compared)
+		return (false);
 	while (modele[i])
 	{
-        if (!compared[i])
-            return (false);
+		if (!compared[i])
+		    return (false);
 		if (compared[i] != modele[i])
 			return (false);
 		++i;

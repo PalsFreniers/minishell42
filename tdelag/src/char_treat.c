@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-int is_alpha_or_numeric(char c)
-{
-
-}
-
 int	is_alphanum(char c)
 {
 	if (c == '|')

@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-typedef struct s_exp_actions{
-    char *var_name;
-    char *var_value;
-}t_exp;
-
-typedef struct s_global_expansion{
-    int exp_count;
-    t_exp **exps;
-}t_big_exp;
-
 bool    is_exp_struct(char *s)
 {
     int i;
@@ -35,6 +25,8 @@ int check_for_exp_c(int argc, char **argv)
     c = 0;
     while (i < argc)
     {
+        if (!argv[i])
+            return (c);
         if (is_exp_struct(argv[i]))
             ++c;
         i++;
@@ -44,9 +36,6 @@ int check_for_exp_c(int argc, char **argv)
 
 char    *get_the_var_value(char *s, int *i)
 {
-    int i_bis;
-    int j;
-    int size;
     char *var_name;
 
     if (s[*i] == '=')
@@ -85,6 +74,8 @@ t_exp       *get_an_exp(char **argv, int *index)
     if (!argv[*index])
         return (NULL);
     new_exp = malloc(sizeof(t_exp));
+    if (!new_exp)
+        return (NULL);
     new_exp->var_name = get_the_var_name(argv[*index], &i);
     new_exp->var_value = get_the_var_value(argv[*index], &i);
     return (new_exp);
@@ -98,7 +89,11 @@ t_exp       **get_the_exps(int argc, char **argv, int count)
 
     i = 0;
     index = 0;
+    if (argc == 1)
+        return (NULL);
     exps = malloc((count + 1) * sizeof(t_exp));
+    if (!exps)
+        return (NULL);
     while (i < count)
     {
         exps[i] = get_an_exp(argv, &index);

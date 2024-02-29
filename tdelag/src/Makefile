@@ -7,6 +7,7 @@ SRCS = error_manager.c \
        skipper.c \
        tempo_utils.c \
        ft_itoa.c \
+       letrucdecondetidiane.c \
        heredoc.c \
        in_and_out.c \
        main.c \

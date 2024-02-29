@@ -12,20 +12,24 @@
 
 #include "minishell.h"
 
-int	ft_strcmp(char *modele, char *compared)
+bool    ft_strcmp(char *modele, char *compared)
 {
 	int	i;
 
 	i = 0;
+    if (!compared)
+        return (false);
 	while (modele[i])
 	{
+        if (!compared[i])
+            return (false);
 		if (compared[i] != modele[i])
-			return (-1);
+			return (false);
 		++i;
 	}
 	if (compared[i])
-		return (-1);
-	return (1);
+		return (false);
+	return (true);
 }
 
 char	*ft_strcatslash(char *begin, char *end)

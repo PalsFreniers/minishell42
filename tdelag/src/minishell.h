@@ -156,6 +156,7 @@ void			has_input(char *command, t_com *comm, int last_index_hd, int i);
 void			has_output(char *command, t_com *comm);
 int             is_numeric(char c);
 int             first_character_env_invalid(char c);
+bool            ft_strcmp(char *modele, char *compared);
 char			*exit_to_text(t_exit exit);
 char			*entry_to_text(t_entry entry);
 

@@ -13,7 +13,7 @@
 
 static char	get_int(int n, int up)
 {
-	const static char	all_chars[] = "0123456789abcdef0123456789ABCDEF";
+	static char	all_chars[] = "0123456789abcdef0123456789ABCDEF";
 
 	return (all_chars[n + (up * 16)]);
 }

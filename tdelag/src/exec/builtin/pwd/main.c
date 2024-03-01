@@ -23,7 +23,7 @@ int	b_pwd(int argc, char **argv, char **envp)
 	(void)argv;
 	(void)envp;
 	free_pwd = FALSE;
-	pwd = getenv("PWD");
+	pwd = ft_getenv("PWD", envp);
 	if (!pwd)
 	{
 		pwd = getcwd(NULL, 0);

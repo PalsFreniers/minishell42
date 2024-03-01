@@ -85,38 +85,104 @@ t_bool	is_env(char *arg, char **envp)
 	i = -1;
 	while (envp[++i])
 	{
-		if (ft_strncmp(arg, envp[i], ft_strlen(arg)) == 0)
+		if (ft_strncmp(arg, envp[i], ft_strlen(arg)) == 0
+			&& envp[i][ft_strlen(arg)] == '=')
 			return (TRUE);
 	}
 	return (FALSE);
 }
 
-struct s_mainloop	sb_unset(t_com *command, char ***envp)
+void	remove_one(char *argument, char ***envp)
 {
-	int		i;
 	char	**tmp;
 	int		j;
+	int		k;
+
+	if (is_env(argument, *envp))
+	{
+		tmp = malloc(sizeof(char *) * (ft_dt_len((void **)*envp)));
+		j = -1;
+		k = -1;
+		while ((*envp)[++j])
+		{
+			if (ft_strncmp(argument, (*envp)[j], ft_strlen(argument)) != 0)
+				tmp[++k] = ft_strdup((*envp)[j]);
+		}
+		free_dt((void **)*envp);
+		*envp = tmp;
+	}
+}
+
+struct s_mainloop	sb_unset(t_com *command, char ***envp)
+{
+	int	i;
 
 	i = 0;
 	while (command->arguments[++i])
+		remove_one(command->arguments[i], envp);
+	return ((struct s_mainloop){1, 0});
+}
+
+char	*get_env_value_view(char *name, char **envp)
+{
+	int	i;
+
+	i = -1;
+	while (envp[++i])
 	{
-		if (is_env(command->arguments[i], *envp))
-		{
-			tmp = malloc(sizeof(char *) * (ft_dt_len((void **)*envp)));
-			j = -1;
-                        int k = -1;
-			while ((*envp)[++j])
-			{
-				if (ft_strncmp(command->arguments[i], (*envp)[j],
-						ft_strlen(command->arguments[i])) != 0)
-				{
-					tmp[++k] = ft_strdup((*envp)[j]);
-				}
-			}
-			free_dt((void **)*envp);
-			*envp = tmp;
-		}
+		if (ft_strncmp(name, envp[i], ft_strlen(name)) == 0)
+			return (envp[i] + ft_strlen(name) + 1);
 	}
+	return (NULL);
+}
+
+void	create_env(char *name, char *value, char ***envp)
+{
+	char	**tmp;
+	char	*tmp2;
+	int		i;
+
+	tmp = malloc(sizeof(char *) * (ft_dt_len((void **)*envp) + 2));
+	i = -1;
+	while ((*envp)[++i])
+		tmp[i] = (*envp)[i];
+	tmp2 = ft_strjoin(name, "=");
+	tmp[i] = ft_strjoin(tmp2, value);
+	free(tmp2);
+	tmp[i + 1] = NULL;
+	free(*envp);
+	*envp = tmp;
+}
+
+struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp)
+{
+	char	*path;
+
+	if (argc == 1)
+	{
+		path = get_env_value_view("HOME", *envp);
+		if (!path) {
+                        ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+			return ((struct s_mainloop){1, 1});
+                }
+	}
+	else
+		path = command->arguments[1];
+	if (chdir(path) == -1)
+	{
+		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
+		return ((struct s_mainloop){1, 1});
+	}
+	remove_one("OLDPWD", envp);
+	create_env("OLDPWD", get_env_value_view("PWD", *envp), envp);
+	path = getcwd(NULL, 0);
+	remove_one("PWD", envp);
+	create_env("PWD", path, envp);
+	free(path);
 	return ((struct s_mainloop){1, 0});
 }
 
@@ -137,6 +203,8 @@ struct s_mainloop	solo_b_in(t_com *command, char ***envp)
 		ret.last = b_pwd(argc, command->arguments, *envp);
 	else if (ft_strequ(command->program, "unset"))
 		ret = sb_unset(command, envp);
+	else if (ft_strequ(command->program, "cd"))
+		ret = sb_cd(argc, command, envp);
 	return (ret);
 }
 

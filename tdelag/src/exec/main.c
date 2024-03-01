@@ -74,7 +74,7 @@ t_builtin_f	get_builtin(char *exec)
 	if (ft_strequ(exec, "echo"))
 		return (b_echo);
 	if (ft_strequ(exec, "cd"))
-		return (NULL);
+		return (b_cd);
 	if (ft_strequ(exec, "pwd"))
 		return (b_pwd);
 	if (ft_strequ(exec, "export"))

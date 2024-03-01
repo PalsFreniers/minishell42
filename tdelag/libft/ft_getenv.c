@@ -20,7 +20,7 @@ char	*ft_getenv(char *name, char **env)
 	while (env[i])
 	{
 		if (ft_strprefix(env[i], name) == 1)
-			return (env[i] + ft_strlenc(env[i], '=') + 2);
+			return (env[i] + ft_strlenc(env[i], '=') + 1);
 		i++;
 	}
 	return (NULL);

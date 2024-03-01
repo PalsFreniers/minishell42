@@ -80,7 +80,7 @@ t_builtin_f	get_builtin(char *exec)
 	if (ft_strequ(exec, "export"))
 		return (NULL);
 	if (ft_strequ(exec, "unset"))
-		return (NULL);
+		return (b_unset);
 	if (ft_strequ(exec, "env"))
 		return (b_env);
 	if (ft_strequ(exec, "exit"))

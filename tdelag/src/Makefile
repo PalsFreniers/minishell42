@@ -32,7 +32,8 @@ SRCS = error_manager.c \
        exec/builtin/echo/main.c \
        exec/builtin/pwd/main.c \
        exec/builtin/env/main.c \
-       exec/builtin/exit/main.c
+       exec/builtin/exit/main.c \
+       exec/builtin/unset/main.c
 OBJS = $(SRCS:.c=.o)
 HEADER = minishell.h
 FLAGS = -Wall -Werror -Wextra -g

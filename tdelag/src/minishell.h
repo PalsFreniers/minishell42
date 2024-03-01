@@ -190,6 +190,7 @@ int				b_pwd(int argc, char **argv, char **envp);
 int				b_exit(int argc, char **argv, char **envp);
 int				b_env(int argc, char **argv, char **envp);
 int				b_echo(int count, char **args, char **envp);
+int				b_unset(int count, char **args, char **envp);
 int				forks(t_main *data);
 t_u8			is_builtin(char *exec);
 int				manage_shit(char *command, int i, char ch);

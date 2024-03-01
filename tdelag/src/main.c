@@ -78,6 +78,48 @@ struct s_mainloop	sb_exit(t_com *command)
 	return ((struct s_mainloop){0, 0});
 }
 
+t_bool	is_env(char *arg, char **envp)
+{
+	int	i;
+
+	i = -1;
+	while (envp[++i])
+	{
+		if (ft_strncmp(arg, envp[i], ft_strlen(arg)) == 0)
+			return (TRUE);
+	}
+	return (FALSE);
+}
+
+struct s_mainloop	sb_unset(t_com *command, char ***envp)
+{
+	int		i;
+	char	**tmp;
+	int		j;
+
+	i = 0;
+	while (command->arguments[++i])
+	{
+		if (is_env(command->arguments[i], *envp))
+		{
+			tmp = malloc(sizeof(char *) * (ft_dt_len((void **)*envp)));
+			j = -1;
+                        int k = -1;
+			while ((*envp)[++j])
+			{
+				if (ft_strncmp(command->arguments[i], (*envp)[j],
+						ft_strlen(command->arguments[i])) != 0)
+				{
+					tmp[++k] = ft_strdup((*envp)[j]);
+				}
+			}
+			free_dt((void **)*envp);
+			*envp = tmp;
+		}
+	}
+	return ((struct s_mainloop){1, 0});
+}
+
 struct s_mainloop	solo_b_in(t_com *command, char ***envp)
 {
 	struct s_mainloop	ret;
@@ -93,6 +135,8 @@ struct s_mainloop	solo_b_in(t_com *command, char ***envp)
 		ret.last = b_env(argc, command->arguments, *envp);
 	else if (ft_strequ(command->program, "pwd"))
 		ret.last = b_pwd(argc, command->arguments, *envp);
+	else if (ft_strequ(command->program, "unset"))
+		ret = sb_unset(command, envp);
 	return (ret);
 }
 

@@ -28,8 +28,15 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
+typedef enum e_exp_type
+{
+    EQUAL,
+    PLUS,
+}t_exp_type;
+
 typedef struct s_exp_actions
 {
+    t_exp_type      type;
 	char			*var_name;
 	char			*var_value;
 }					t_exp;

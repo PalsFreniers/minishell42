@@ -54,10 +54,7 @@ char	**get_splitted_path(char **envp)
 
 	paths = get_env(envp, "PATH");
 	if (!paths)
-	{
-		printf("Error, no paths envp\n");
 		return (NULL);
-	}
 	splitted_paths = ft_split_path(paths, ':');
 	free(paths);
 	return (splitted_paths);

@@ -77,7 +77,7 @@ int	first_command_valid(char *buffer)
 			return (0);
 	if (empty)
 	{
-		if (parasit && !buffer[j])
+		if (parasit)
 			return (parasit_only_treat(buffer));
 		printf("syntax error near unexpected token `|'\n");
 		return (0);
@@ -85,14 +85,13 @@ int	first_command_valid(char *buffer)
 	return (1);
 }
 
-int	check_usr_input_for_errors(char *input)
-{
-	int		i;
+int	check_usr_input_for_errors(char *input) {
+    int i;
 
-	i = 0;
-	if (!first_command_valid(input))
-		return (1);
-	while (input[i])
+    i = 0;
+    if (!first_command_valid(input))
+        return (1);
+    while (input[i])
 	{
 		if (is_quote(input[i]))
 		{

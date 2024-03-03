@@ -49,6 +49,7 @@ int	check_next_char_errority(char *input, int i)
 	}
 	if (is_parasit(ch))
 	{
+        printf("ok\n");
 		error_exit_hd(input, i);
 		manage_shit(input, i, ch);
 		return (1);

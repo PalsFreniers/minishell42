@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/03 23:06:08 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/03 23:19:55 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,19 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-typedef struct s_length_exp{
-    int		i;
-    int		l;
-    bool	is_double_quote;
-    int     last;
-}t_length_exp;
+struct				s_mainloop
+{
+	int			cont;
+	int				last;
+};
+
+typedef struct s_length_exp
+{
+	int				i;
+	int				l;
+	bool			is_double_quote;
+	int				last;
+}					t_length_exp;
 
 typedef enum e_exp_type
 {
@@ -93,7 +100,7 @@ typedef struct s_data_expand
 	char			*expanded;
 	char			*test_env_name;
 	bool			is_double_quote;
-    int             last;
+	int				last;
 	int				i;
 	int				j;
 }					t_data_e;
@@ -214,7 +221,7 @@ int					b_env(int argc, char **argv, char **envp);
 int					b_cd(int argc, char **argv, char **envp);
 int					b_echo(int count, char **args, char **envp);
 int					b_unset(int count, char **args, char **envp);
-int					forks(t_main *data);
+int					forks(t_main *data, int last);
 t_u8				is_builtin(char *exec);
 int					manage_shit(char *command, int i, char ch);
 void				free_double_char(char **to_free);
@@ -236,7 +243,8 @@ int					init_cd_first(t_com *command, char **commands, int i,
 t_com				**init_command_data(int command_c, char **commands);
 t_main				*check_commands_integrity(t_main *thgg);
 t_main				*init_thgg(char **envp, char *o_usr_input);
-int					primary_exception_cancel(char *usr_input, int *i, int *l, int last);
+int					primary_exception_cancel(char *usr_input, int *i, int *l,
+						int last);
 void				single_quote_expansion(char *usr_input, int *i, int *l);
 void				exp_single_quote(char *usr_input, int *i, char *expanded,
 						int *j);
@@ -248,12 +256,15 @@ void				error_exit_hd(char *input, int i);
 int					ft_strlen_char_ss(char **s);
 char				**ft_strdup_char_star(char **to_dup);
 t_big_exp			*get_big_exp(int argc, char **argv);
-int	                expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j);
-int	                get_length_expanded(char *usr_input, char **envp, int last);
-void	            get_length_dollar(char *usr_input, char **envp, t_length_exp *data);
-char	            *expansion(char *usr_input, char **envp, int last);
+int					expansion_char_is_dollar(char *usr_input, int *i,
+						t_data_e *exp, int *j);
+int					get_length_expanded(char *usr_input, char **envp, int last);
+void				get_length_dollar(char *usr_input, char **envp,
+						t_length_exp *data);
+char				*expansion(char *usr_input, char **envp, int last);
 void				free_big_exp(t_big_exp *big_exp);
-int	resolve_out(t_com *self, int (*pipes)[2], int id);
-int	resolve_entry(t_com *self, int (*pipes)[2], int id, char **env);
+int					resolve_out(t_com *self, int (*pipes)[2], int id);
+int					resolve_entry(t_com *self, int (*pipes)[2],
+						struct s_mainloop data, char **env);
 
 #endif

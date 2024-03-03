@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/03 21:44:20 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/03 23:19:37 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	generate_non_existing_file(char *file)
 		ft_file_name_rand(file);
 }
 
-void	write_heredoc(int fd, char *limiter, t_bool exp, char **envp)
+void	write_heredoc(int fd, char *limiter, struct s_mainloop data, char **envp)
 {
 	char	*c;
 	char	*tmp;
@@ -118,27 +118,27 @@ void	write_heredoc(int fd, char *limiter, t_bool exp, char **envp)
 			free(c);
 			break ;
 		}
-		if (exp)
+		if (data.cont)
 		{
 			tmp = c;
-			c = expansion(tmp, envp, 0);
+			c = expansion(tmp, envp, data.last);
 		}
 		ft_fprintf(fd, "%s\n", c);
 		free(c);
 	}
 }
 
-int	make_here_doc_file(char *limiter, t_bool exp, char **env)
+int	make_here_doc_file(char *limiter, char **env, struct s_mainloop data)
 {
-	int	fd;
+	int			fd;
+	static char	file[21] = {0};
 
-	static char file[21] = {0};
 	generate_non_existing_file(file);
 	file[20] = 0;
 	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 		return (fd);
-	write_heredoc(fd, limiter, exp, env);
+	write_heredoc(fd, limiter, data, env);
 	m_close(fd);
 	fd = open(file, O_RDONLY, 0644);
 	if (fd == -1)
@@ -186,7 +186,7 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 	if (!is_builtin(data->commands_data[id]->program)
 		&& ft_strlen(data->commands_data[id]->program) > 0)
 		command.exec = ft_find_path(data->commands_data[id]->program,
-			data->paths);
+				data->paths);
 	else
 		command.exec = ft_strdup(data->commands_data[id]->program);
 	command.args = dup_char_dt(data->commands_data[id]->arguments);
@@ -194,25 +194,33 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 	return (command);
 }
 
-int	resolve_heredoc(char **hdd, t_bool all_dum, t_bool exp, char **env)
+int	resolve_heredoc(char **hdd, struct s_mainloop data, t_bool exp, char **env)
 {
 	int	ret;
 
 	ret = -1;
-	resolve_dum_heredoc(hdd, all_dum);
-	if (all_dum)
-		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1], exp, env);
+	resolve_dum_heredoc(hdd, data.cont);
+	if (data.cont) {
+                data.cont = exp;
+		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1], env, data);
+        }
 	return (ret);
 }
 
-int	resolve_entry(t_com *self, int (*pipes)[2], int id, char **env)
+int	resolve_entry(t_com *self, int (*pipes)[2], struct s_mainloop data,
+		char **env)
 {
 	int	ret;
 	int	hd;
+	int	id;
 
+	id = data.cont;
 	if (self->has_heredoc)
-		hd = resolve_heredoc(self->here_doc_delimiter,
-			self->entry == ENTRY_HEREDOC, self->expand_hd, env);
+	{
+		data.cont = self->entry == ENTRY_HEREDOC;
+		hd = resolve_heredoc(self->here_doc_delimiter, data, self->expand_hd,
+				env);
+	}
 	if (self->entry == ENTRY_PIPE)
 		ret = pipes[id - 1][0];
 	else if (self->entry == ENTRY_INPUT)
@@ -241,7 +249,7 @@ int	resolve_out(t_com *self, int (*pipes)[2], int id)
 	return (ret);
 }
 
-struct s_cmd	*generate_cmd(t_main *data, int (*pipes)[2], int id)
+struct s_cmd	*generate_cmd(t_main *data, int (*pipes)[2], int id, int last)
 {
 	struct s_cmd	*command;
 	t_com			*self;
@@ -249,12 +257,12 @@ struct s_cmd	*generate_cmd(t_main *data, int (*pipes)[2], int id)
 	command = malloc(sizeof(struct s_cmd));
 	*command = extract_base_cmd(data, id);
 	self = data->commands_data[id];
-	command->infd = resolve_entry(self, pipes, id, data->envp);
+	command->infd = resolve_entry(self, pipes, (struct s_mainloop){id, last}, data->envp);
 	command->outfd = resolve_out(self, pipes, id);
 	return (command);
 }
 
-void	generate_fork_data(struct s_cmds_piped *self, t_main *data)
+void	generate_fork_data(struct s_cmds_piped *self, t_main *data, int last)
 {
 	int	i;
 
@@ -269,7 +277,7 @@ void	generate_fork_data(struct s_cmds_piped *self, t_main *data)
 		self->cmds = malloc((data->command_c + 1) * sizeof(struct s_cmd *));
 		if (self->valid && self->cmds)
 			while (++i < self->count)
-				self->cmds[i] = generate_cmd(data, self->pipes, i);
+				self->cmds[i] = generate_cmd(data, self->pipes, i, last);
 		else
 			self->valid = FALSE;
 	}
@@ -345,17 +353,17 @@ void	exec_builtin(struct s_cmd *cmd)
 	exit(ret);
 }
 
-void sig_quit(int signum)
+void	sig_quit(int signum)
 {
-        (void)signum;
-        write(STDERR, "Quit (core dumped)\n", 19);
+	(void)signum;
+	write(STDERR, "Quit (core dumped)\n", 19);
 }
 
 void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 {
 	struct s_cmd	*cmd;
 
-        free(pids);
+	free(pids);
 	cmd = cmds.cmds[id];
 	dup2(cmd->infd, STDIN);
 	dup2(cmd->outfd, STDOUT);
@@ -376,14 +384,14 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 	exec_cmd(cmd);
 }
 
-int	forks(t_main *data)
+int	forks(t_main *data, int last)
 {
 	struct s_cmds_piped	cmds;
 	int					*pids;
 	int					i;
 	int					ret;
 
-	generate_fork_data(&cmds, data);
+	generate_fork_data(&cmds, data, last);
 	if (!cmds.valid)
 	{
 		free_cmds(cmds, -1);
@@ -391,13 +399,14 @@ int	forks(t_main *data)
 	}
 	pids = malloc(cmds.count * sizeof(int));
 	i = -1;
-        signal(SIGQUIT, sig_quit);
+	signal(SIGQUIT, sig_quit);
 	while (g_signum != SIGINT && ++i < cmds.count)
 	{
 		pids[i] = fork();
-		if (!(pids[i])) {
-                        exec(data, cmds, i, pids);
-                }
+		if (!(pids[i]))
+		{
+			exec(data, cmds, i, pids);
+		}
 		else
 		{
 			if (cmds.cmds[i]->infd != STDIN)

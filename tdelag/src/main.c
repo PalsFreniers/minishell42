@@ -6,19 +6,13 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/03 23:03:30 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/03 23:20:20 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int					g_signum = 0;
-
-struct				s_mainloop
-{
-	t_bool			cont;
-	int				last;
-};
 
 bool	is_correct(char *tmp, int i)
 {
@@ -91,8 +85,6 @@ t_bool	is_env(char *arg, char **envp)
 	}
 	return (FALSE);
 }
-
-#include <unistd.h>
 
 void	remove_one(char *argument, char ***envp)
 {
@@ -307,7 +299,7 @@ struct s_mainloop	reset_command(struct s_reset_vec reset_vec)
 	return ((struct s_mainloop){1, 130});
 }
 
-struct s_reset_vec	prepare_command(t_com *command, char **envp)
+struct s_reset_vec	prepare_command(t_com *command, char **envp, int last)
 {
 	int	c_stdin;
 	int	c_stdout;
@@ -316,7 +308,8 @@ struct s_reset_vec	prepare_command(t_com *command, char **envp)
 
 	c_stdin = dup(0);
 	c_stdout = dup(1);
-	in = resolve_entry(command, NULL, -1, envp);
+	in = resolve_entry(command, NULL, (struct s_mainloop){.cont = -1,
+			.last = last}, envp);
 	out = resolve_out(command, NULL, -1);
 	dup2(in, 0);
 	dup2(out, 1);
@@ -327,7 +320,7 @@ struct s_reset_vec	prepare_command(t_com *command, char **envp)
 	return ((struct s_reset_vec){c_stdin, c_stdout});
 }
 
-struct s_mainloop	solo_b_in(t_com *command, char ***envp)
+struct s_mainloop	solo_b_in(t_com *command, char ***envp, int last)
 {
 	struct s_mainloop	ret;
 	int					argc;
@@ -335,7 +328,7 @@ struct s_mainloop	solo_b_in(t_com *command, char ***envp)
 
 	argc = ft_dt_len((void **)command->arguments);
 	ret = (struct s_mainloop){1, 0};
-	reset_vec = prepare_command(command, *envp);
+	reset_vec = prepare_command(command, *envp, last);
 	if (g_signum == SIGINT)
 		return (reset_command(reset_vec));
 	if (ft_strequ(command->program, "exit"))
@@ -384,18 +377,18 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 		return ((struct s_mainloop){.cont = 0, .last = 1});
 	if (thgg->command_c > 1)
 	{
-		last = forks(thgg);
+		last = forks(thgg, last);
 	}
 	else if (thgg->command_c == 1)
 	{
 		if (is_builtin(thgg->commands_data[0]->program))
 		{
-			b_in = solo_b_in(thgg->commands_data[0], envp);
+			b_in = solo_b_in(thgg->commands_data[0], envp, last);
 			last = b_in.last;
 			ret = b_in.cont;
 		}
 		else
-			last = forks(thgg);
+			last = forks(thgg, last);
 	}
 	deinit_thgg(thgg);
 	return ((struct s_mainloop){.cont = ret, .last = last});

@@ -1,5 +1,6 @@
 #include "minishell.h"
 
+<<<<<<< HEAD
 bool	is_exp_struct(char *s)
 {
 	int	i;
@@ -14,6 +15,84 @@ bool	is_exp_struct(char *s)
 	if (s[i] != '=' && (s[i] != '+' && s[i + 1] == '='))
 		return (false);
 	return (true);
+=======
+int	get_the_exp_name_l(char *command, int j)
+{
+    int	length;
+    int	tempo;
+
+    length = 0;
+    if (is_quote(command[j]))
+    {
+        tempo = j;
+        find_next_quote(command, &j, command[j], 1);
+        length = length + (j - tempo - 2);
+        if (!is_whitespace(command[j]) && command[j] != '=')
+            return (length + get_the_exp_name_l(command, j));
+        return (length);
+    }
+    while (command[j] && ((!(first_character_env_invalid(command[j])) || is_numeric(command[j] )) || is_quote(command[j])) && command[j] != '=')
+    {
+        if (is_quote(command[j]))
+            return (length + get_the_exp_name_l(command, j));
+        ++length;
+        ++j;
+    }
+    return (length);
+}
+
+char	*get_the_exp_name(char *command, int *i)
+{
+    char	*argument;
+    int		length;
+    char	type_quote;
+    int		j;
+
+    type_quote = 'a';
+    length = get_the_exp_name_l(command, *i);
+    argument = malloc((length + 1) * sizeof(char));
+    j = 0;
+    while (j < length)
+    {
+        if (is_quote(command[*i]))
+        {
+            if (!(gtna_quote_case(command, i, &type_quote)))
+                dup_and_get_next(&command, i, &argument, &j);
+        }
+        else
+            dup_and_get_next(&command, i, &argument, &j);
+    }
+    argument[j] = '\0';
+    skip_ending_quotes(command, i, length);
+    return (argument);
+}
+
+bool    is_exp_struct(char *s)
+{
+    int i;
+    int j;
+    char *test_name;
+
+    i = 0;
+    skip_to_the_next_word(s, &i);
+    test_name = get_the_exp_name(s, &i);
+    j = 0;
+    if (is_numeric(test_name[j]) || first_character_env_invalid(test_name[j]))
+    {
+        free (test_name);
+        return (false);
+    }
+    ++j;
+    while(test_name[j])
+        ++j;
+    if (s[i] != '=' && !(s[i] == '+' && s[i + 1] == '='))
+    {
+        free (test_name);
+        return (false);
+    }
+    free(test_name);
+    return (true);
+>>>>>>> 80224a6 (fixed exportation)
 }
 
 int	check_for_exp_c(int argc, char **argv)
@@ -73,6 +152,7 @@ t_exp	*get_an_exp(char **argv, int *index)
 	int		i;
 	t_exp	*new_exp;
 
+<<<<<<< HEAD
 	i = 0;
 	while (argv[*index] && !(is_exp_struct(argv[*index])))
 		*index = *index + 1;
@@ -85,6 +165,20 @@ t_exp	*get_an_exp(char **argv, int *index)
 	new_exp->var_name = get_the_var_name(argv[*index], &i);
 	new_exp->var_value = get_the_var_value(argv[*index], &i, &new_exp->type);
 	return (new_exp);
+=======
+    i = 0;
+    while (argv[*index] && !(is_exp_struct(argv[*index])))
+        *index = *index + 1;
+    if (!argv[*index])
+        return (NULL);
+    new_exp = malloc(sizeof(t_exp));
+    if (!new_exp)
+        return (NULL);
+    new_exp->type = EQUAL;
+    new_exp->var_name = get_the_exp_name(argv[*index], &i);
+    new_exp->var_value = get_the_var_value(argv[*index], &i, &new_exp->type);
+    return (new_exp);
+>>>>>>> 80224a6 (fixed exportation)
 }
 
 t_exp	**get_the_exps(int argc, char **argv, int count)

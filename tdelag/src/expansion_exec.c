@@ -34,7 +34,7 @@ void	exp_heredoc(char *usr_input, int *i, char *expanded, int *j)
 }
 
 
-char	*get_expanded(char *usr_input, char **envp, int expansion_l)
+char	*get_expanded(char *usr_input, char **envp, int expansion_l, int last)
 {
 	t_data_e	exp;
 
@@ -42,6 +42,7 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 	exp.expanded = create_expanded(expansion_l);
 	exp.i = 0;
 	exp.j = 0;
+    exp.last = last;
 	while (usr_input[exp.i])
 	{
 		if (usr_input[exp.i] == '\'' && !exp.is_double_quote)
@@ -61,15 +62,15 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 	return (exp.expanded);
 }
 
-char	*expansion(char *usr_input, char **envp)
+char	*expansion(char *usr_input, char **envp, int last)
 {
 	char	*expanded_input;
 	size_t	expanded_l;
 
-	expanded_l = get_length_expanded(usr_input, envp);
+	expanded_l = get_length_expanded(usr_input, envp, last);
 	if (expanded_l == ft_strlen(usr_input))
 		return (usr_input);
-	expanded_input = get_expanded(usr_input, envp, expanded_l);
+	expanded_input = get_expanded(usr_input, envp, expanded_l, last);
 	free(usr_input);
 	return (expanded_input);
 }

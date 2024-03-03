@@ -122,7 +122,7 @@ void	write_heredoc(int fd, char *limiter, t_bool exp, char **envp)
 		if (exp)
 		{
 			tmp = c;
-			c = expansion(tmp, envp);
+			c = expansion(tmp, envp, 0);
 		}
 		ft_fprintf(fd, "%s\n", c);
 		free(c);

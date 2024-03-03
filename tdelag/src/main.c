@@ -313,7 +313,7 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 		add_history(usr_input);
 	if (is_usr_input_blank(usr_input))
 		return ((struct s_mainloop){.cont = 1, .last = last});
-	usr_input = expansion(usr_input, *envp);
+	usr_input = expansion(usr_input, *envp, last);
 	if (check_usr_input_for_errors(usr_input))
 	{
 		free(usr_input);

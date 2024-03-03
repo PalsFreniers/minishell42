@@ -28,6 +28,13 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
+typedef struct s_length_exp{
+    int		i;
+    int		l;
+    bool	is_double_quote;
+    int     last;
+}t_length_exp;
+
 typedef enum e_exp_type
 {
     EQUAL,
@@ -86,6 +93,7 @@ typedef struct s_data_expand
 	char			*expanded;
 	char			*test_env_name;
 	bool			is_double_quote;
+    int             last;
 	int				i;
 	int				j;
 }					t_data_e;
@@ -228,12 +236,8 @@ int					init_cd_first(t_com *command, char **commands, int i,
 t_com				**init_command_data(int command_c, char **commands);
 t_main				*check_commands_integrity(t_main *thgg);
 t_main				*init_thgg(char **envp, char *o_usr_input);
-int					primary_exception_cancel(char *usr_input, int *i, int *l);
-void				get_length_dollar(char *usr_input, char **envp, int *i,
-						int *l);
+int					primary_exception_cancel(char *usr_input, int *i, int *l, int last);
 void				single_quote_expansion(char *usr_input, int *i, int *l);
-int					get_length_expanded(char *usr_input, char **envp);
-char				*expansion(char *usr_input, char **envp);
 void				exp_single_quote(char *usr_input, int *i, char *expanded,
 						int *j);
 char				*get_the_test_env(char *usr_input, int *i);
@@ -245,5 +249,9 @@ int					ft_strlen_char_ss(char **s);
 char				**ft_strdup_char_star(char **to_dup);
 t_big_exp			*get_big_exp(int argc, char **argv);
 int	                expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j);
+int	                get_length_expanded(char *usr_input, char **envp, int last);
+void	            get_length_dollar(char *usr_input, char **envp, t_length_exp *data);
+char	            *expansion(char *usr_input, char **envp, int last);
+
 
 #endif

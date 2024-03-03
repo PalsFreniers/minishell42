@@ -2,80 +2,82 @@
 
 int	get_the_exp_name_l(char *command, int j)
 {
-    int	length;
-    int	tempo;
+	int	length;
+	int	tempo;
 
-    length = 0;
-    if (is_quote(command[j]))
-    {
-        tempo = j;
-        find_next_quote(command, &j, command[j], 1);
-        length = length + (j - tempo - 2);
-        if (!is_whitespace(command[j]) && command[j] != '=')
-            return (length + get_the_exp_name_l(command, j));
-        return (length);
-    }
-    while (command[j] && ((!(first_character_env_invalid(command[j])) || is_numeric(command[j] )) || is_quote(command[j])) && command[j] != '=')
-    {
-        if (is_quote(command[j]))
-            return (length + get_the_exp_name_l(command, j));
-        ++length;
-        ++j;
-    }
-    return (length);
+	length = 0;
+	if (is_quote(command[j]))
+	{
+		tempo = j;
+		find_next_quote(command, &j, command[j], 1);
+		length = length + (j - tempo - 2);
+		if (!is_whitespace(command[j]) && command[j] != '=')
+			return (length + get_the_exp_name_l(command, j));
+		return (length);
+	}
+	while (command[j] && ((!(first_character_env_invalid(command[j]))
+				|| is_numeric(command[j])) || is_quote(command[j]))
+		&& command[j] != '=')
+	{
+		if (is_quote(command[j]))
+			return (length + get_the_exp_name_l(command, j));
+		++length;
+		++j;
+	}
+	return (length);
 }
 
 char	*get_the_exp_name(char *command, int *i)
 {
-    char	*argument;
-    int		length;
-    char	type_quote;
-    int		j;
+	char	*argument;
+	int		length;
+	char	type_quote;
+	int		j;
 
-    type_quote = 'a';
-    length = get_the_exp_name_l(command, *i);
-    argument = malloc((length + 1) * sizeof(char));
-    j = 0;
-    while (j < length)
-    {
-        if (is_quote(command[*i]))
-        {
-            if (!(gtna_quote_case(command, i, &type_quote)))
-                dup_and_get_next(&command, i, &argument, &j);
-        }
-        else
-            dup_and_get_next(&command, i, &argument, &j);
-    }
-    argument[j] = '\0';
-    skip_ending_quotes(command, i, length);
-    return (argument);
+	type_quote = 'a';
+	length = get_the_exp_name_l(command, *i);
+	argument = malloc((length + 1) * sizeof(char));
+	j = 0;
+	while (j < length)
+	{
+		if (is_quote(command[*i]))
+		{
+			if (!(gtna_quote_case(command, i, &type_quote)))
+				dup_and_get_next(&command, i, &argument, &j);
+		}
+		else
+			dup_and_get_next(&command, i, &argument, &j);
+	}
+	argument[j] = '\0';
+	skip_ending_quotes(command, i, length);
+	return (argument);
 }
 
-bool    is_exp_struct(char *s)
+bool	is_exp_struct(char *s)
 {
-    int i;
-    int j;
-    char *test_name;
+	int		i;
+	int		j;
+	char	*test_name;
 
-    i = 0;
-    skip_to_the_next_word(s, &i);
-    test_name = get_the_exp_name(s, &i);
-    j = 0;
-    if (is_numeric(test_name[j]) || first_character_env_invalid(test_name[j]))
-    {
-        free (test_name);
-        return (false);
-    }
-    ++j;
-    while(test_name[j])
-        ++j;
-    if (s[i] != '=' && !(s[i] == '+' && s[i + 1] == '='))
-    {
-        free (test_name);
-        return (false);
-    }
-    free(test_name);
-    return (true);
+	i = 0;
+	skip_to_the_next_word(s, &i);
+	test_name = get_the_exp_name(s, &i);
+	j = 0;
+	if (is_numeric(test_name[j]) || first_character_env_invalid(test_name[j]))
+	{
+		free(test_name);
+		return (false);
+	}
+	++j;
+	while (test_name[j])
+		++j;
+	if (s[i] != '=' && !(s[i] == '+' && s[i + 1] == '='))
+	{
+		free(test_name);
+		return (false);
+	}
+	free(test_name);
+	return (true);
 }
 
 int	check_for_exp_c(int argc, char **argv)
@@ -187,4 +189,27 @@ t_big_exp	*get_big_exp(int argc, char **argv)
 	big_exp->exp_count = count;
 	big_exp->exps = get_the_exps(argc, argv, count);
 	return (big_exp);
+}
+
+void	free_exp(t_exp *exp)
+{
+	free(exp->var_name);
+	free(exp->var_value);
+	free(exp);
+}
+
+void	free_big_exp(t_big_exp *big_exp)
+{
+	int	i;
+
+	i = 0;
+	if (!big_exp || !big_exp->exps)
+		return ;
+	while (i < big_exp->exp_count)
+	{
+		free_exp(big_exp->exps[i]);
+		++i;
+	}
+	free(big_exp->exps);
+	free(big_exp);
 }

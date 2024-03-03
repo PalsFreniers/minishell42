@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/27 21:57:44 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/03 23:03:30 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ t_bool	is_env(char *arg, char **envp)
 	return (FALSE);
 }
 
+#include <unistd.h>
+
 void	remove_one(char *argument, char ***envp)
 {
 	char	**tmp;
@@ -105,10 +107,17 @@ void	remove_one(char *argument, char ***envp)
 		k = -1;
 		while ((*envp)[++j])
 		{
-			if (ft_strncmp(argument, (*envp)[j], ft_strlen(argument)) != 0)
-				tmp[++k] = ft_strdup((*envp)[j]);
+			if (ft_strncmp(argument, (*envp)[j], ft_strlen(argument)) != 0
+				|| (ft_strncmp(argument, (*envp)[j], ft_strlen(argument)) == 0
+					&& (*envp)[j][ft_strlen(argument)] != '='))
+			{
+				tmp[++k] = (*envp)[j];
+			}
+			else
+				free((*envp)[j]);
 		}
-		free_dt((void **)*envp);
+		tmp[++k] = NULL;
+		free(*envp);
 		*envp = tmp;
 	}
 }
@@ -220,7 +229,6 @@ struct s_mainloop	sb_export(char ***envp, t_com *command)
 	i = 0;
 	while (i < exp->exp_count)
 	{
-                printf("%s\n", exp->exps[i]->var_name);
 		if (exp->exps[i]->type == EQUAL)
 		{
 			remove_one(exp->exps[i]->var_name, envp);
@@ -229,26 +237,38 @@ struct s_mainloop	sb_export(char ***envp, t_com *command)
 		else if (exp->exps[i]->type == PLUS)
 		{
 			tmp = ft_strjoin(exp->exps[i]->var_value,
-				get_env_value_view(exp->exps[i]->var_name, *envp));
+					get_env_value_view(exp->exps[i]->var_name, *envp));
 			remove_one(exp->exps[i]->var_name, envp);
 			create_env(exp->exps[i]->var_name, tmp, envp);
-                        free(tmp);
+			free(tmp);
 		}
 		i++;
 	}
+	free_big_exp(exp);
 	return ((struct s_mainloop){1, 0});
 }
 
 struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp)
 {
 	char	*path;
+	t_bool	free_path;
 
+	free_path = FALSE;
 	if (argc == 1)
 	{
 		path = get_env_value_view("HOME", *envp);
 		if (!path)
 		{
 			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+			return ((struct s_mainloop){1, 1});
+		}
+	}
+	else if (ft_strequ(command->arguments[1], "-"))
+	{
+		path = get_env_value_view("OLDPWD", *envp);
+		if (!path)
+		{
+			ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2);
 			return ((struct s_mainloop){1, 1});
 		}
 	}
@@ -272,13 +292,52 @@ struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp)
 	return ((struct s_mainloop){1, 0});
 }
 
+struct				s_reset_vec
+{
+	int				c_stdin;
+	int				c_stdout;
+};
+
+struct s_mainloop	reset_command(struct s_reset_vec reset_vec)
+{
+	dup2(reset_vec.c_stdin, 0);
+	dup2(reset_vec.c_stdout, 1);
+	m_close(reset_vec.c_stdin);
+	m_close(reset_vec.c_stdout);
+	return ((struct s_mainloop){1, 130});
+}
+
+struct s_reset_vec	prepare_command(t_com *command, char **envp)
+{
+	int	c_stdin;
+	int	c_stdout;
+	int	in;
+	int	out;
+
+	c_stdin = dup(0);
+	c_stdout = dup(1);
+	in = resolve_entry(command, NULL, -1, envp);
+	out = resolve_out(command, NULL, -1);
+	dup2(in, 0);
+	dup2(out, 1);
+	if (in != STDIN)
+		m_close(in);
+	if (out != STDOUT)
+		m_close(out);
+	return ((struct s_reset_vec){c_stdin, c_stdout});
+}
+
 struct s_mainloop	solo_b_in(t_com *command, char ***envp)
 {
 	struct s_mainloop	ret;
 	int					argc;
+	struct s_reset_vec	reset_vec;
 
 	argc = ft_dt_len((void **)command->arguments);
 	ret = (struct s_mainloop){1, 0};
+	reset_vec = prepare_command(command, *envp);
+	if (g_signum == SIGINT)
+		return (reset_command(reset_vec));
 	if (ft_strequ(command->program, "exit"))
 		ret = sb_exit(command);
 	else if (ft_strequ(command->program, "echo"))
@@ -293,6 +352,7 @@ struct s_mainloop	solo_b_in(t_com *command, char ***envp)
 		ret = sb_cd(argc, command, envp);
 	else if (ft_strequ(command->program, "export"))
 		ret = sb_export(envp, command);
+	reset_command(reset_vec);
 	return (ret);
 }
 
@@ -355,12 +415,6 @@ void	catch_int(int sn)
 	close(0);
 }
 
-void	catch_quit(int sn)
-{
-	(void)sn;
-	ft_putstr_fd("\b\b  \b\b", 1);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	int					cpy;
@@ -371,12 +425,12 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	cpy = dup(0);
 	signal(SIGINT, catch_int);
-	signal(SIGQUIT, catch_quit);
 	envp_cpy = ft_strdup_char_star(envp);
 	ret.last = 0;
 	ret.cont = 1;
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
 		ret = give_the_prompt(&envp_cpy, ret.last);
 		if (!ret.cont)
 			break ;

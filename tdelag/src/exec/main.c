@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/28 18:16:02 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/03 21:44:20 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,7 @@ void	write_heredoc(int fd, char *limiter, t_bool exp, char **envp)
 		{
 			break ;
 		}
-		ft_printf("%s ", limiter);
-		c = readline("here_doc> ");
+		c = readline("> ");
 		if (!c)
 			continue ;
 		c[ft_strlenc(c, '\n') + 1] = 0;
@@ -346,6 +345,12 @@ void	exec_builtin(struct s_cmd *cmd)
 	exit(ret);
 }
 
+void sig_quit(int signum)
+{
+        (void)signum;
+        write(STDERR, "Quit (core dumped)\n", 19);
+}
+
 void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 {
 	struct s_cmd	*cmd;
@@ -363,7 +368,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 	if (!data->commands_data[id]->has_program)
 	{
 		free_cmd(cmd);
-		return ;
+		exit(0);
 	}
 	deinit_thgg(data);
 	if (is_builtin(cmd->exec))
@@ -386,11 +391,13 @@ int	forks(t_main *data)
 	}
 	pids = malloc(cmds.count * sizeof(int));
 	i = -1;
+        signal(SIGQUIT, sig_quit);
 	while (g_signum != SIGINT && ++i < cmds.count)
 	{
 		pids[i] = fork();
-		if (!(pids[i]))
-			exec(data, cmds, i, pids);
+		if (!(pids[i])) {
+                        exec(data, cmds, i, pids);
+                }
 		else
 		{
 			if (cmds.cmds[i]->infd != STDIN)

@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 13:38:36 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/03 23:06:08 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,13 @@ typedef struct s_length_exp{
 
 typedef enum e_exp_type
 {
-    EQUAL,
-    PLUS,
-}t_exp_type;
+	EQUAL,
+	PLUS,
+}					t_exp_type;
 
 typedef struct s_exp_actions
 {
-    t_exp_type      type;
+	t_exp_type		type;
 	char			*var_name;
 	char			*var_value;
 }					t_exp;
@@ -147,7 +147,7 @@ struct				s_cmds_piped
 	struct s_cmd	**cmds;
 };
 
-extern int g_signum;
+extern int			g_signum;
 
 typedef int			(*t_builtin_f)(int, char **, char **);
 
@@ -252,6 +252,8 @@ int	                expansion_char_is_dollar(char *usr_input, int *i, t_data_e *
 int	                get_length_expanded(char *usr_input, char **envp, int last);
 void	            get_length_dollar(char *usr_input, char **envp, t_length_exp *data);
 char	            *expansion(char *usr_input, char **envp, int last);
-
+void				free_big_exp(t_big_exp *big_exp);
+int	resolve_out(t_com *self, int (*pipes)[2], int id);
+int	resolve_entry(t_com *self, int (*pipes)[2], int id, char **env);
 
 #endif

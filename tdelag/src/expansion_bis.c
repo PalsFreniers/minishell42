@@ -33,16 +33,21 @@ void	exp_single_quote(char *usr_input, int *i, char *expanded, int *j)
 	dup_and_get_next(&usr_input, i, &expanded, j);
 }
 
-int	expansion_char_is_dollar(char *usr_input, int *i, char *expanded, int *j)
+int	expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j)
 {
     if (usr_input[*i + 1] == '$' || is_numeric(usr_input[*i + 1]))
     {
         *i = *i + 2;
         return (0);
     }
+    if (is_quote(usr_input[*i + 1]) && !exp->is_double_quote)
+    {
+        *i = *i + 1;
+        return (0);
+    }
 	if (is_whitespace(usr_input[*i + 1]) || first_character_env_invalid(usr_input[*i + 1]))
 	{
-		dup_and_get_next(&usr_input, i, &expanded, j);
+		dup_and_get_next(&usr_input, i, &exp->expanded, j);
 		return (0);
 	}
 	// if (usr_input[i + 1] == '$')

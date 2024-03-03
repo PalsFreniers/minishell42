@@ -234,8 +234,6 @@ void				get_length_dollar(char *usr_input, char **envp, int *i,
 void				single_quote_expansion(char *usr_input, int *i, int *l);
 int					get_length_expanded(char *usr_input, char **envp);
 char				*expansion(char *usr_input, char **envp);
-int					expansion_char_is_dollar(char *usr_input, int *i,
-						char *expanded, int *j);
 void				exp_single_quote(char *usr_input, int *i, char *expanded,
 						int *j);
 char				*get_the_test_env(char *usr_input, int *i);
@@ -246,5 +244,7 @@ void				error_exit_hd(char *input, int i);
 int					ft_strlen_char_ss(char **s);
 char				**ft_strdup_char_star(char **to_dup);
 t_big_exp			*get_big_exp(int argc, char **argv);
+int	                expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j);
+
 
 #endif

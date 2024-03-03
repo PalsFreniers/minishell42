@@ -85,10 +85,12 @@ int	treat_the_char_exp(char *usr_input, int *i, int *l, bool *is_double_quote)
 	else if (usr_input[*i] == '$')
 	{
 		if (usr_input[*i + 1] == '$')
-		{
+        {
 			*i = *i + 2;
 			return (0);
 		}
+        else if (is_quote(usr_input[*i + 1]) && !is_double_quote)
+            *i = *i + 1;
 		return (1);
 	}
 	else

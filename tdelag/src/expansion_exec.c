@@ -14,7 +14,7 @@
 
 void	create_expansion(t_data_e *exp, char *usr_input, char **envp)
 {
-	if (expansion_char_is_dollar(usr_input, &exp->i, exp->expanded, &exp->j))
+	if (expansion_char_is_dollar(usr_input, &exp->i, exp, &exp->j))
 	{
 		exp->test_env_name = get_the_test_env(usr_input, &exp->i);
 		add_env_var(exp->expanded, &exp->j, exp->test_env_name, envp);

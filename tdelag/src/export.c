@@ -1,21 +1,5 @@
 #include "minishell.h"
 
-<<<<<<< HEAD
-bool	is_exp_struct(char *s)
-{
-	int	i;
-
-	i = 0;
-	skip_to_the_next_word(s, &i);
-	if (is_numeric(s[i]) || first_character_env_invalid(s[i]))
-		return (false);
-	++i;
-	while (s[i] && (!(first_character_env_invalid(s[i])) || is_numeric(s[i])))
-		++i;
-	if (s[i] != '=' && (s[i] != '+' && s[i + 1] == '='))
-		return (false);
-	return (true);
-=======
 int	get_the_exp_name_l(char *command, int j)
 {
     int	length;
@@ -92,7 +76,6 @@ bool    is_exp_struct(char *s)
     }
     free(test_name);
     return (true);
->>>>>>> 80224a6 (fixed exportation)
 }
 
 int	check_for_exp_c(int argc, char **argv)
@@ -152,7 +135,6 @@ t_exp	*get_an_exp(char **argv, int *index)
 	int		i;
 	t_exp	*new_exp;
 
-<<<<<<< HEAD
 	i = 0;
 	while (argv[*index] && !(is_exp_struct(argv[*index])))
 		*index = *index + 1;
@@ -162,23 +144,9 @@ t_exp	*get_an_exp(char **argv, int *index)
 	if (!new_exp)
 		return (NULL);
 	new_exp->type = EQUAL;
-	new_exp->var_name = get_the_var_name(argv[*index], &i);
+	new_exp->var_name = get_the_exp_name(argv[*index], &i);
 	new_exp->var_value = get_the_var_value(argv[*index], &i, &new_exp->type);
 	return (new_exp);
-=======
-    i = 0;
-    while (argv[*index] && !(is_exp_struct(argv[*index])))
-        *index = *index + 1;
-    if (!argv[*index])
-        return (NULL);
-    new_exp = malloc(sizeof(t_exp));
-    if (!new_exp)
-        return (NULL);
-    new_exp->type = EQUAL;
-    new_exp->var_name = get_the_exp_name(argv[*index], &i);
-    new_exp->var_value = get_the_var_value(argv[*index], &i, &new_exp->type);
-    return (new_exp);
->>>>>>> 80224a6 (fixed exportation)
 }
 
 t_exp	**get_the_exps(int argc, char **argv, int count)

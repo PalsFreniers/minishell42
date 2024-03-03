@@ -88,7 +88,7 @@ t_builtin_f	get_builtin(char *exec)
 	return (NULL);
 }
 
-void	generate_non_existing_file(char file[20])
+void	generate_non_existing_file(char *file)
 {
 	int	i;
 
@@ -105,6 +105,10 @@ void	write_heredoc(int fd, char *limiter, t_bool exp, char **envp)
 
 	while (1)
 	{
+		if (g_signum == SIGINT)
+		{
+			break ;
+		}
 		ft_printf("%s ", limiter);
 		c = readline("here_doc> ");
 		if (!c)
@@ -127,9 +131,9 @@ void	write_heredoc(int fd, char *limiter, t_bool exp, char **envp)
 
 int	make_here_doc_file(char *limiter, t_bool exp, char **env)
 {
-	char	file[21];
-	int		fd;
+	int	fd;
 
+	static char file[21] = {0};
 	generate_non_existing_file(file);
 	file[20] = 0;
 	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
@@ -183,7 +187,7 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 	if (!is_builtin(data->commands_data[id]->program)
 		&& ft_strlen(data->commands_data[id]->program) > 0)
 		command.exec = ft_find_path(data->commands_data[id]->program,
-				data->paths);
+			data->paths);
 	else
 		command.exec = ft_strdup(data->commands_data[id]->program);
 	command.args = dup_char_dt(data->commands_data[id]->arguments);
@@ -196,7 +200,6 @@ int	resolve_heredoc(char **hdd, t_bool all_dum, t_bool exp, char **env)
 	int	ret;
 
 	ret = -1;
-	printf("resolve_heredoc all_dum %d\n", all_dum);
 	resolve_dum_heredoc(hdd, all_dum);
 	if (all_dum)
 		ret = make_here_doc_file(hdd[ft_dt_len((void **)hdd) - 1], exp, env);
@@ -210,7 +213,7 @@ int	resolve_entry(t_com *self, int (*pipes)[2], int id, char **env)
 
 	if (self->has_heredoc)
 		hd = resolve_heredoc(self->here_doc_delimiter,
-				self->entry == ENTRY_HEREDOC, self->expand_hd, env);
+			self->entry == ENTRY_HEREDOC, self->expand_hd, env);
 	if (self->entry == ENTRY_PIPE)
 		ret = pipes[id - 1][0];
 	else if (self->entry == ENTRY_INPUT)
@@ -343,15 +346,15 @@ void	exec_builtin(struct s_cmd *cmd)
 	exit(ret);
 }
 
-void	exec(t_main *data, struct s_cmds_piped cmds, int id)
+void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 {
 	struct s_cmd	*cmd;
 
+        free(pids);
 	cmd = cmds.cmds[id];
 	dup2(cmd->infd, STDIN);
 	dup2(cmd->outfd, STDOUT);
 	free_dt((void **)data->envp);
-	deinit_thgg(data);
 	free_cmds(cmds, id);
 	if (cmd->infd != STDIN)
 		m_close(cmd->infd);
@@ -362,6 +365,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id)
 		free_cmd(cmd);
 		return ;
 	}
+	deinit_thgg(data);
 	if (is_builtin(cmd->exec))
 		exec_builtin(cmd);
 	exec_cmd(cmd);
@@ -382,11 +386,11 @@ int	forks(t_main *data)
 	}
 	pids = malloc(cmds.count * sizeof(int));
 	i = -1;
-	while (++i < cmds.count)
+	while (g_signum != SIGINT && ++i < cmds.count)
 	{
 		pids[i] = fork();
 		if (!(pids[i]))
-			exec(data, cmds, i);
+			exec(data, cmds, i, pids);
 		else
 		{
 			if (cmds.cmds[i]->infd != STDIN)
@@ -397,9 +401,11 @@ int	forks(t_main *data)
 	}
 	close_all_pipes(cmds.pipes, cmds.count - 1);
 	i = -1;
-	while (++i < cmds.count)
+	while (g_signum != SIGINT && ++i < cmds.count)
 		waitpid(pids[i], &ret, 0);
 	free_cmds(cmds, -1);
 	free(pids);
+	if (g_signum == SIGINT)
+		return (130);
 	return ((ret & 0xff00) >> 8);
 }

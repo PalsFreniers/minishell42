@@ -139,6 +139,8 @@ struct				s_cmds_piped
 	struct s_cmd	**cmds;
 };
 
+extern int g_signum;
+
 typedef int			(*t_builtin_f)(int, char **, char **);
 
 int					is_quote(char c);

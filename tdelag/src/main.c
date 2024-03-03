@@ -129,10 +129,8 @@ char	*get_env_value_view(char *name, char **envp)
 
 	i = -1;
 	while (envp[++i])
-	{
 		if (ft_strncmp(name, envp[i], ft_strlen(name)) == 0)
 			return (envp[i] + ft_strlen(name) + 1);
-	}
 	return (NULL);
 }
 
@@ -154,6 +152,93 @@ void	create_env(char *name, char *value, char ***envp)
 	*envp = tmp;
 }
 
+char	**sort_env(char **envp)
+{
+	int		i;
+	int		j;
+	char	*tmp;
+
+	envp = dup_char_dt(envp);
+	if (!envp)
+		return (NULL);
+	i = 0;
+	while (envp[i])
+	{
+		j = i + 1;
+		while (envp[j])
+		{
+			if (ft_strncmp(envp[i], envp[j], ft_strlen(envp[i])) > 0)
+			{
+				tmp = envp[i];
+				envp[i] = envp[j];
+				envp[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+	return (envp);
+}
+
+struct s_mainloop	print_export(char **envp)
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	envp = sort_env(envp);
+	if (!envp)
+		return ((struct s_mainloop){1, 1});
+	while (envp[++i])
+	{
+		j = -1;
+		ft_putstr_fd("declare -x ", 1);
+		while (envp[i][++j] != '=')
+			ft_putchar_fd(envp[i][j], 1);
+		ft_putstr_fd("=\"", 1);
+		ft_putstr_fd(envp[i] + j + 1, 1);
+		ft_putstr_fd("\"\n", 1);
+	}
+	free_dt((void **)envp);
+	return ((struct s_mainloop){1, 0});
+}
+
+struct s_mainloop	sb_export(char ***envp, t_com *command)
+{
+	t_big_exp	*exp;
+	int			i;
+	char		*tmp;
+	int			argc;
+
+	argc = ft_dt_len((void **)command->arguments);
+	if (argc == 1)
+		return (print_export(*envp));
+	// add checks
+	exp = get_big_exp(argc, command->arguments);
+	if (!exp)
+		return ((struct s_mainloop){1, 1});
+	i = 0;
+	while (i < exp->exp_count)
+	{
+                printf("%s\n", exp->exps[i]->var_name);
+		if (exp->exps[i]->type == EQUAL)
+		{
+			remove_one(exp->exps[i]->var_name, envp);
+			create_env(exp->exps[i]->var_name, exp->exps[i]->var_value, envp);
+		}
+		else if (exp->exps[i]->type == PLUS)
+		{
+			tmp = ft_strjoin(exp->exps[i]->var_value,
+				get_env_value_view(exp->exps[i]->var_name, *envp));
+			remove_one(exp->exps[i]->var_name, envp);
+			create_env(exp->exps[i]->var_name, tmp, envp);
+                        free(tmp);
+		}
+		i++;
+	}
+	return ((struct s_mainloop){1, 0});
+}
+
 struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp)
 {
 	char	*path;
@@ -161,10 +246,11 @@ struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp)
 	if (argc == 1)
 	{
 		path = get_env_value_view("HOME", *envp);
-		if (!path) {
-                        ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+		if (!path)
+		{
+			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 			return ((struct s_mainloop){1, 1});
-                }
+		}
 	}
 	else
 		path = command->arguments[1];
@@ -205,6 +291,8 @@ struct s_mainloop	solo_b_in(t_com *command, char ***envp)
 		ret = sb_unset(command, envp);
 	else if (ft_strequ(command->program, "cd"))
 		ret = sb_cd(argc, command, envp);
+	else if (ft_strequ(command->program, "export"))
+		ret = sb_export(envp, command);
 	return (ret);
 }
 

@@ -246,5 +246,4 @@ char				**ft_strdup_char_star(char **to_dup);
 t_big_exp			*get_big_exp(int argc, char **argv);
 int	                expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j);
 
-
 #endif

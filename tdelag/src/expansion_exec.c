@@ -21,6 +21,19 @@ void	create_expansion(t_data_e *exp, char *usr_input, char **envp)
 	}
 }
 
+void	exp_heredoc(char *usr_input, int *i, char *expanded, int *j)
+{
+    int tempo;
+
+    dup_and_get_next(&usr_input, i, &expanded, j);
+    dup_and_get_next(&usr_input, i, &expanded, j);
+    tempo = *i;
+    skip_the_next_word(usr_input, i);
+    while (tempo < *i)
+        dup_and_get_next(&usr_input, &tempo, &expanded, j);
+}
+
+
 char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 {
 	t_data_e	exp;
@@ -40,6 +53,8 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l)
 		}
 		else if (usr_input[exp.i] == '$')
 			create_expansion(&exp, usr_input, envp);
+        else if (!exp.is_double_quote && (usr_input[exp.i] == '<' && usr_input[exp.i + 1] == '<'))
+            exp_heredoc(usr_input, &exp.i, exp.expanded, &exp.j);
 		else
 			exp.expanded[exp.j++] = usr_input[exp.i++];
 	}

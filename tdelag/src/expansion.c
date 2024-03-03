@@ -73,6 +73,15 @@ void	single_quote_expansion(char *usr_input, int *i, int *l)
 	*l = *l + (*i - j);
 }
 
+void	heredoc_detected_expansion(char *usr_input, int *i, int *l)
+{
+    int	j;
+
+    j = *i;
+    skip_the_next_word(usr_input, i);
+    *l = *l + (*i - j);
+}
+
 int	treat_the_char_exp(char *usr_input, int *i, int *l, bool *is_double_quote)
 {
 	if (usr_input[*i] == '\'' && !is_double_quote)
@@ -82,6 +91,8 @@ int	treat_the_char_exp(char *usr_input, int *i, int *l, bool *is_double_quote)
 		*is_double_quote = !(*is_double_quote);
 		increment_both(i, l);
 	}
+    else if (!is_double_quote && (usr_input[*i] == '<' && usr_input[*i + 1] == '<'))
+        heredoc_detected_expansion(usr_input, i, l);
 	else if (usr_input[*i] == '$')
 	{
 		if (usr_input[*i + 1] == '$')

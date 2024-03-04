@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 17:50:15 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/04 12:45:10 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,27 +46,6 @@ int	get_the_next_hd_length(char *command, int i)
 	return (length - i);
 }
 
-char	*get_the_next_heredoc(char *command, int *i)
-{
-	char	*argument;
-	int		length;
-	int		j;
-
-	while (command[*i] && (is_whitespace(command[*i])))
-		*i = *i + 1;
-	length = get_the_next_hd_length(command, *i);
-	argument = malloc((length + 1) * sizeof(char));
-	j = 0;
-	while (j < length)
-	{
-		argument[j] = command[*i];
-		*i = *i + 1;
-		j++;
-	}
-	argument[j] = 0;
-	return (argument);
-}
-
 int	here_doc_init(t_com *comm, char *command, int i)
 {
 	int	index_last_hd;
@@ -74,6 +53,8 @@ int	here_doc_init(t_com *comm, char *command, int i)
 
 	j = 0;
 	comm->here_doc_delimiter = malloc((comm->has_heredoc + 1) * sizeof(char *));
+	if (!comm->here_doc_delimiter)
+		return (-1);
 	while (command[i])
 		index_last_hd = get_heredocs(command, &i, comm, &j);
 	comm->here_doc_delimiter[j] = NULL;

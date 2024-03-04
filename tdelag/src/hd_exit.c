@@ -17,7 +17,7 @@ static void	ask_for_dum_hd(char *input, int *j)
 	char	*s;
 	char	*c;
 
-	s = get_the_next_arg(input, j);
+	s = get_the_next_arg(input, j, NULL);
 	while (1)
 	{
 		c = readline("here_doc> ");

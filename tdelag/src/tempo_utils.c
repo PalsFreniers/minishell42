@@ -49,7 +49,7 @@ int	get_heredocs(char *command, int *i, t_com *comm, int *j)
 		*i = *i + 2;
 		if (check_for_next_char(command , *i) == '\"')
 			comm->expand_hd = false;
-		comm->here_doc_delimiter[*j] = get_the_next_arg(command, i);
+		comm->here_doc_delimiter[*j] = get_the_next_arg(command, i, NULL);
 		index_last_hd = *i;
 		*j = *j + 1;
 	}

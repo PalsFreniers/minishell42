@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   expansion_exec.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 13:40:39 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/04 10:00:00 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,15 @@ void	create_expansion(t_data_e *exp, char *usr_input, char **envp)
 
 void	exp_heredoc(char *usr_input, int *i, char *expanded, int *j)
 {
-    int tempo;
+	int	tempo;
 
-    dup_and_get_next(&usr_input, i, &expanded, j);
-    dup_and_get_next(&usr_input, i, &expanded, j);
-    tempo = *i;
-    skip_the_next_word(usr_input, i);
-    while (tempo < *i)
-        dup_and_get_next(&usr_input, &tempo, &expanded, j);
+	dup_and_get_next(&usr_input, i, &expanded, j);
+	dup_and_get_next(&usr_input, i, &expanded, j);
+	tempo = *i;
+	skip_the_next_word(usr_input, i);
+	while (tempo < *i)
+		dup_and_get_next(&usr_input, &tempo, &expanded, j);
 }
-
 
 char	*get_expanded(char *usr_input, char **envp, int expansion_l, int last)
 {
@@ -40,9 +39,11 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l, int last)
 
 	exp.is_double_quote = false;
 	exp.expanded = create_expanded(expansion_l);
+	if (!exp.expanded)
+		return (NULL);
 	exp.i = 0;
 	exp.j = 0;
-    exp.last = last;
+	exp.last = last;
 	while (usr_input[exp.i])
 	{
 		if (usr_input[exp.i] == '\'' && !exp.is_double_quote)
@@ -54,8 +55,9 @@ char	*get_expanded(char *usr_input, char **envp, int expansion_l, int last)
 		}
 		else if (usr_input[exp.i] == '$')
 			create_expansion(&exp, usr_input, envp);
-        else if (!exp.is_double_quote && (usr_input[exp.i] == '<' && usr_input[exp.i + 1] == '<'))
-            exp_heredoc(usr_input, &exp.i, exp.expanded, &exp.j);
+		else if (!exp.is_double_quote && (usr_input[exp.i] == '<'
+				&& usr_input[exp.i + 1] == '<'))
+			exp_heredoc(usr_input, &exp.i, exp.expanded, &exp.j);
 		else
 			exp.expanded[exp.j++] = usr_input[exp.i++];
 	}
@@ -72,5 +74,7 @@ char	*expansion(char *usr_input, char **envp, int last)
 		return (usr_input);
 	expanded_input = get_expanded(usr_input, envp, expanded_l, last);
 	free(usr_input);
+	if (!expanded_input)
+		return (NULL);
 	return (expanded_input);
 }

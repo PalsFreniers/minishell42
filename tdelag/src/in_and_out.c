@@ -24,7 +24,7 @@ int	treat_input(char *command, t_com *comm, int *i, int last_index_hd)
 	comm->has_input = true;
 	if (*i > last_index_hd)
 		comm->entry = ENTRY_INPUT;
-	comm->input = get_the_next_arg(command, i);
+	comm->input = get_the_next_arg(command, i, NULL);
 	comm->fd_input = open(comm->input, O_RDONLY);
 	if (comm->fd_input < 0 && !comm->error)
 	{
@@ -68,7 +68,7 @@ void	treat_output_first(char *command, t_com *comm, int *i)
 	{
 		*i = *i + 2;
 		comm->outkind = APPEND;
-		comm->output = get_the_next_arg(command, i);
+		comm->output = get_the_next_arg(command, i, NULL);
 		comm->fd_output = open(comm->output, O_CREAT | O_RDWR | O_APPEND,
 				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	}
@@ -76,7 +76,7 @@ void	treat_output_first(char *command, t_com *comm, int *i)
 	{
 		*i = *i + 1;
 		comm->outkind = OVERWRITE;
-		comm->output = get_the_next_arg(command, i);
+		comm->output = get_the_next_arg(command, i, NULL);
 		comm->fd_output = open(comm->output, O_CREAT | O_WRONLY | O_TRUNC,
 				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	}

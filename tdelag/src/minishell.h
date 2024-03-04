@@ -173,7 +173,6 @@ char				**scrap_input(int command_number, char *usr_input);
 void				dup_and_get_next(char **copy, int *i, char **paste, int *j);
 void				skip_undesired(char *command, int *i, int *reset, int *c);
 int					check_for_empty(char *buffer, int i);
-char				*get_the_next_arg(char *command, int *i);
 int					gtna_quote_case(char *command, int *i, char *type_quote);
 void				skip_ending_quotes(char *command, int *i, int length);
 void				skip_in_outs_hds(char *command, int *i);
@@ -266,5 +265,6 @@ void				free_big_exp(t_big_exp *big_exp);
 int					resolve_out(t_com *self, int (*pipes)[2], int id);
 int					resolve_entry(t_com *self, int (*pipes)[2],
 						struct s_mainloop data, char **env);
+char	            *get_the_next_arg(char *command, int *i, bool *has_program);
 
 #endif

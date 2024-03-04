@@ -37,6 +37,8 @@ char	*get_the_exp_name(char *command, int *i)
 	type_quote = 'a';
 	length = get_the_exp_name_l(command, *i);
 	argument = malloc((length + 1) * sizeof(char));
+	if (!argument)
+		return (NULL);
 	j = 0;
 	while (j < length)
 	{
@@ -62,6 +64,8 @@ bool	is_exp_struct(char *s)
 	i = 0;
 	skip_to_the_next_word(s, &i);
 	test_name = get_the_exp_name(s, &i);
+	if (!test_name)
+		return (false);
 	j = 0;
 	if (is_numeric(test_name[j]) || first_character_env_invalid(test_name[j]))
 	{
@@ -109,26 +113,7 @@ char	*get_the_var_value(char *s, int *i, t_exp_type *type)
 		*type = PLUS;
 		*i = *i + 2;
 	}
-	var_name = get_the_next_arg(s, i);
-	return (var_name);
-}
-
-char	*get_the_var_name(char *s, int *i)
-{
-	int		i_bis;
-	int		j;
-	int		size;
-	char	*var_name;
-
-	i_bis = *i;
-	size = 0;
-	while (!(is_delimiter(s[i_bis])))
-		increment_both(&size, &i_bis);
-	var_name = malloc((size + 1) * sizeof(char));
-	j = 0;
-	while (j < size)
-		dup_and_get_next(&s, i, &var_name, &j);
-	var_name[j] = '\0';
+	var_name = get_the_next_arg(s, i, NULL);
 	return (var_name);
 }
 
@@ -147,6 +132,8 @@ t_exp	*get_an_exp(char **argv, int *index)
 		return (NULL);
 	new_exp->type = EQUAL;
 	new_exp->var_name = get_the_exp_name(argv[*index], &i);
+	if (!new_exp->var_name)
+		return (NULL);
 	new_exp->var_value = get_the_var_value(argv[*index], &i, &new_exp->type);
 	return (new_exp);
 }
@@ -186,6 +173,8 @@ t_big_exp	*get_big_exp(int argc, char **argv)
 	if (!count)
 		return (NULL);
 	big_exp = malloc(sizeof(t_big_exp));
+	if (!big_exp)
+		return (NULL);
 	big_exp->exp_count = count;
 	big_exp->exps = get_the_exps(argc, argv, count);
 	return (big_exp);

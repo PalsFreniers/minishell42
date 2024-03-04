@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/03 23:03:46 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/04 12:44:30 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ char	**ft_strdup_char_star(char **to_dup)
 
 	l = ft_strlen_char_ss(to_dup);
 	copy = malloc((l + 1) * sizeof(char *));
+	if (!copy)
+		return (NULL);
 	i = 0;
 	while (i < l)
 	{

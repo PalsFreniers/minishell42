@@ -32,27 +32,6 @@ bool    ft_strcmp(char *modele, char *compared)
 	return (true);
 }
 
-char	*ft_strcatslash(char *begin, char *end)
-{
-	int		i;
-	int		j;
-	int		l;
-	char	*result;
-
-	l = ft_strlen(begin) + ft_strlen(end);
-	result = malloc((l + 2) * sizeof(char));
-	i = 0;
-	j = 0;
-	while (begin[i])
-		result[j++] = begin[i++];
-	i = 0;
-	result[j++] = '/';
-	while (end[i])
-		result[j++] = end[i++];
-	result[j] = 0;
-	return (result);
-}
-
 void	ft_str_append(char **begin, int *j, char *end)
 {
 	int	i;

@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/03 23:20:20 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/04 12:44:37 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -367,7 +367,7 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 	if (is_usr_input_blank(usr_input))
 		return ((struct s_mainloop){.cont = 1, .last = last});
 	usr_input = expansion(usr_input, *envp, last);
-	if (check_usr_input_for_errors(usr_input))
+	if (!usr_input || check_usr_input_for_errors(usr_input))
 	{
 		free(usr_input);
 		return ((struct s_mainloop){.cont = 1, .last = 2});
@@ -419,6 +419,8 @@ int	main(int argc, char **argv, char **envp)
 	cpy = dup(0);
 	signal(SIGINT, catch_int);
 	envp_cpy = ft_strdup_char_star(envp);
+	if (!envp_cpy)
+		return (0);
 	ret.last = 0;
 	ret.cont = 1;
 	while (1)

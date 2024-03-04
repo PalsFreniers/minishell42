@@ -58,26 +58,22 @@ int	expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j)
 	{
 		ask_case(exp->expanded, j, exp->last);
 		*i = *i + 2;
-		return (0);
 	}
-	if (usr_input[*i + 1] == '$' || is_numeric(usr_input[*i + 1]))
+	else if (usr_input[*i + 1] == '$')
 	{
 		dup_and_get_next(&usr_input, i, &exp->expanded, j);
 		dup_and_get_next(&usr_input, i, &exp->expanded, j);
-		return (0);
 	}
-	if (is_quote(usr_input[*i + 1]) && !exp->is_double_quote)
-	{
+    else if (is_numeric(usr_input[*i + 1]))
+        *i = *i + 2;
+	else if (is_quote(usr_input[*i + 1]) && !exp->is_double_quote)
 		*i = *i + 1;
-		return (0);
-	}
-	if (is_whitespace(usr_input[*i + 1])
+	else if (is_whitespace(usr_input[*i + 1])
 		|| first_character_env_invalid(usr_input[*i + 1]))
-	{
 		dup_and_get_next(&usr_input, i, &exp->expanded, j);
-		return (0);
-	}
-	return (1);
+    else
+	    return (1);
+    return (0);
 }
 
 char	*get_the_test_env(char *usr_input, int *i)

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 07:52:29 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/27 21:08:31 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/04 18:35:26 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ int	ft_atoi(const char *str)
 	int		sign;
 	size_t	t;
 
+	if (!str)
+		return (0);
 	str = ft_trim_space(str);
 	sign = 1;
 	t = 0;
-	if (*str == '-')
-	{
+	--str;
+	if (*(++str) == '-')
 		sign = -1;
-		str++;
-	}
 	else if (*str == '+')
 	{
 		sign = 1;

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 09:25:23 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/28 17:10:54 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/04 21:14:41 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	b_exit(int argc, char **argv, char **envp)
 	char	*tmp;
 	t_u64	ret;
 
-        (void)envp;
+	(void)envp;
 	i = 0;
 	if (argc > 1)
 	{

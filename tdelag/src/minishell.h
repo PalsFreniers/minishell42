@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/03 23:19:55 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/04 22:09:41 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 
 struct				s_mainloop
 {
-	int			cont;
+	int				cont;
 	int				last;
 };
 
@@ -154,6 +154,12 @@ struct				s_cmds_piped
 	struct s_cmd	**cmds;
 };
 
+struct				s_reset_vec
+{
+	int				c_stdin;
+	int				c_stdout;
+};
+
 extern int			g_signum;
 
 typedef int			(*t_builtin_f)(int, char **, char **);
@@ -265,6 +271,40 @@ void				free_big_exp(t_big_exp *big_exp);
 int					resolve_out(t_com *self, int (*pipes)[2], int id);
 int					resolve_entry(t_com *self, int (*pipes)[2],
 						struct s_mainloop data, char **env);
-char	            *get_the_next_arg(char *command, int *i, bool *has_program);
+char				*get_the_next_arg(char *command, int *i, bool *has_program);
+struct s_mainloop	print_export(char **envp);
+int					b_export(int argc, char **argv, char **envp);
+t_bool				is_env(char *arg, char **envp);
+void				remove_one(char *argument, char ***envp);
+char				*get_env_value_view(char *name, char **envp);
+void				create_env(char *name, char *value, char ***envp);
+char				**sort_env(char **envp);
+struct s_mainloop	print_export(char **envp);
+struct s_mainloop	sb_exit(t_com *command);
+struct s_mainloop	sb_unset(t_com *command, char ***envp);
+struct s_mainloop	sb_export(char ***envp, t_com *command);
+struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp);
+struct s_mainloop	solo_b_in(t_com *command, char ***envp, int last);
+void				catch_int(int sn);
+struct s_mainloop	give_the_prompt(char ***envp, int last);
+char				*get_the_var_value(char *s, int *i, t_exp_type *type);
+int					check_for_exp_c(int argc, char **argv);
+char				*get_the_var_value(char *s, int *i, t_exp_type *type);
+bool				is_exp_struct(char *s);
+char				*get_the_exp_name(char *command, int *i);
+char				*ft_find_path(char *exec, char **paths);
+void				free_cmds(struct s_cmds_piped piped, int skip);
+void				free_cmd(struct s_cmd *cmd);
+void				generate_fork_data(struct s_cmds_piped *self, t_main *data,
+						int last);
+t_u8				is_builtin(char *exec);
+t_builtin_f			get_builtin(char *exec);
+void				exec(t_main *data, struct s_cmds_piped cmds, int id,
+						int *pids);
+void				close_all_pipes(int (*pipes)[2], int count);
+int					make_here_doc_file(char *limiter, char **env,
+						struct s_mainloop data);
+void				catch_int(int sn);
+void                            catch_int2(int sn);
 
 #endif

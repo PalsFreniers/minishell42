@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   funcs.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/04 21:16:53 by tdelage           #+#    #+#             */
+/*   Updated: 2024/03/04 21:17:00 by tdelage          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-void m_close(int fd) {
-        if(fd >= 0)
-                close(fd);
+void	m_close(int fd)
+{
+	if (fd >= 0)
+		close(fd);
 }
 
 size_t	ft_dt_len(void **s)
@@ -47,17 +60,6 @@ char	**dup_char_dt(char **src)
 	}
 	ret[i] = NULL;
 	return (ret);
-}
-
-void	init_rand(void)
-{
-	int	ps;
-
-	ps = fork();
-	if (ps == 0)
-		exit(0);
-	waitpid(ps, NULL, 0);
-	ft_srand(ps);
 }
 
 char	**compute_path(void)

@@ -8,8 +8,10 @@ SRCS = error_manager.c \
        tempo_utils.c \
        ft_itoa.c \
        export.c \
+       export2.c \
        heredoc.c \
        in_and_out.c \
+       prompt.c \
        main.c \
        arg_treat.c \
        arg_utils.c \
@@ -26,14 +28,25 @@ SRCS = error_manager.c \
        init.c \
        deinit.c \
        expansion.c \
+       solo_b_in.c \
+       builtin.c \
+       builtin2.c \
+       env_b_in.c \
+       signals.c \
        exec/funcs.c \
        exec/main.c \
        exec/resolve.c \
+       exec/b_in.c \
+       exec/deinit.c \
+       exec/exec.c \
+       exec/generate.c \
+       exec/rand_file.c \
        exec/builtin/echo/main.c \
        exec/builtin/pwd/main.c \
        exec/builtin/env/main.c \
        exec/builtin/exit/main.c \
        exec/builtin/unset/main.c \
+       exec/builtin/export/main.c \
        exec/builtin/cd/main.c
 OBJS = $(SRCS:.c=.o)
 HEADER = minishell.h

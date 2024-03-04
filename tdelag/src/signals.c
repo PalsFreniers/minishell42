@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin.h                                          :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/12 12:49:19 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/12 12:50:51 by tdelage          ###   ########.fr       */
+/*   Created: 2024/03/04 20:29:39 by tdelage           #+#    #+#             */
+/*   Updated: 2024/03/04 22:05:19 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTIN_H
-# define BUILTIN_H
+#include "minishell.h"
 
-int	b_pwd(int argc, char **argv, char **envp);
-int	b_exit(int argc, char **argv, char **envp);
-int	b_env(int argc, char **argv, char **envp);
-int	b_echo(int count, char **args, char **envp);
+void	catch_int2(int sn)
+{
+	g_signum = sn;
+	close(0);
+}
 
-#endif // BUILTIN_H
+void	catch_int(int sn)
+{
+	g_signum = sn;
+	printf("\n");
+	signal(SIGINT, catch_int2);
+	close(0);
+}

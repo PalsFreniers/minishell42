@@ -6,13 +6,13 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:08:41 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 12:21:58 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_alphanum(char c)
+bool	is_alphanum(char c)
 {
 	if (c == '|')
 		return (0);
@@ -28,7 +28,7 @@ int	is_alphanum(char c)
 		return (0);
 }
 
-int	is_whitespace(char c)
+bool	is_whitespace(char c)
 {
 	if (c == '\r' || c == ' ' || c == '\t')
 		return (1);
@@ -51,14 +51,14 @@ int	find_next_quote(char *buffer, int *i, char quote_type, int x)
 	return (1);
 }
 
-int	is_quote(char c)
+bool	is_quote(char c)
 {
 	if (c == '\'' || c == '\"')
 		return (1);
 	return (0);
 }
 
-int	is_delimiter(char c)
+bool	is_delimiter(char c)
 {
 	if (c == '_')
 		return (0);
@@ -69,22 +69,4 @@ int	is_delimiter(char c)
 	if (c >= 'A' && c <= 'Z')
 		return (0);
 	return (1);
-}
-
-int is_numeric(char c)
-{
-    if (c >= '0' && c <= '9')
-        return (1);
-    return (0);
-}
-
-int first_character_env_invalid(char c)
-{
-    if (c >= 'a' && c <= 'z')
-        return (0);
-    if (c >= 'A' && c <='Z')
-        return (0);
-    if (c == '_')
-        return (0);
-    return (1);
 }

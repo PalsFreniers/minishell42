@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/04 12:44:45 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 12:07:13 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,26 @@ char	*get_the_next_arg(char *command, int *i, bool *has_program)
 	return (argument);
 }
 
+int	get_an_argument(char *command, int *i, char **arguments, int *j)
+{
+	if (is_whitespace(command[*i]))
+		*i = *i + 1;
+	else if (is_parasit(command[*i]))
+	{
+		while (command[*i] && is_parasit(command[*i]))
+			*i = *i + 1;
+		skip_the_next_word(command, i);
+	}
+	else
+	{
+		arguments[*j] = get_the_next_arg(command, i, NULL);
+		if (!arguments[*j])
+			return (1);
+		*j = *j + 1;
+	}
+	return (0);
+}
+
 char	**get_the_arguments(char *command, int *i, char *program_name)
 {
 	int		c;
@@ -111,21 +131,8 @@ char	**get_the_arguments(char *command, int *i, char *program_name)
 	arguments[j++] = ft_strdup(program_name);
 	while (j < c + 1)
 	{
-		if (is_whitespace(command[*i]))
-			*i = *i + 1;
-		else if (is_parasit(command[*i]))
-		{
-			while (command[*i] && is_parasit(command[*i]))
-				*i = *i + 1;
-			skip_the_next_word(command, i);
-		}
-		else
-		{
-			arguments[j] = get_the_next_arg(command, i, NULL);
-			if (!arguments[j])
-				return (arguments);
-			j++;
-		}
+		if (get_an_argument(command, i, arguments, &j))
+			return (arguments);
 	}
 	arguments[j] = NULL;
 	return (arguments);

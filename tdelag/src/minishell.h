@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/04 22:09:41 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 16:54:29 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+
+typedef struct s_dup_data
+{
+	int				l;
+	char			*result;
+	bool			multiple_word;
+	bool			reset;
+}					t_dup_data;
 
 struct				s_mainloop
 {
@@ -149,7 +157,7 @@ struct				s_cmd
 struct				s_cmds_piped
 {
 	t_bool			valid;
-	int (*pipes)[2];
+	int	(*pipes)[2];
 	int				count;
 	struct s_cmd	**cmds;
 };
@@ -164,11 +172,11 @@ extern int			g_signum;
 
 typedef int			(*t_builtin_f)(int, char **, char **);
 
-int					is_quote(char c);
-int					is_whitespace(char c);
-int					is_alphanum(char c);
-int					is_parasit(char c);
-int					is_delimiter(char c);
+bool				is_quote(char c);
+bool				is_whitespace(char c);
+bool				is_alphanum(char c);
+bool				is_parasit(char c);
+bool				is_delimiter(char c);
 char				**ft_split_path(char const *s, char c);
 char				*ft_strdup(const char *s);
 char				*ft_strdupi(char *original, int *index, int size);
@@ -198,8 +206,8 @@ int					has_heredoc(char *command, t_com *comm);
 void				has_input(char *command, t_com *comm, int last_index_hd,
 						int i);
 void				has_output(char *command, t_com *comm);
-int					is_numeric(char c);
-int					first_character_env_invalid(char c);
+bool				is_numeric(char c);
+bool				first_character_env_invalid(char c);
 bool				ft_strcmp(char *modele, char *compared);
 char				*exit_to_text(t_exit exit);
 char				*entry_to_text(t_entry entry);
@@ -305,6 +313,6 @@ void				close_all_pipes(int (*pipes)[2], int count);
 int					make_here_doc_file(char *limiter, char **env,
 						struct s_mainloop data);
 void				catch_int(int sn);
-void                            catch_int2(int sn);
+void				catch_int2(int sn);
 
 #endif

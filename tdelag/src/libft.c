@@ -6,40 +6,30 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/28 18:13:01 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 16:44:14 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_strbackslashn(char *s)
+void	should_add_quotes_child(const char *s, int *i, int *l, bool *reset)
 {
-	int	i;
-
-	i = 0;
-	while (s[i] != '\n')
-		i++;
-	return (i);
-}
-
-char	*ft_strdup(const char *s)
-{
-	int		l;
-	int		i;
-	char	*k;
-
-	i = 0;
-	l = ft_strlen((char *)s);
-	k = malloc((l + 1) * (sizeof(const char)));
-	if (k == NULL)
-		return (NULL);
-	while (s[i])
+	if (is_quote(s[*i]))
+		find_next_quote((char *)s, i, s[*i], 1);
+	else if (is_whitespace(s[*i]))
 	{
-		k[i] = s[i];
-		i++;
+		*reset = true;
+		*i = *i + 1;
 	}
-	k[i] = '\0';
-	return (k);
+	else
+	{
+		if (*reset)
+		{
+			*l = *l + 2;
+			*reset = !(*reset);
+		}
+		*i = *i + 1;
+	}
 }
 
 void	should_add_quotes(const char *s, char *cut, int *l)
@@ -54,24 +44,7 @@ void	should_add_quotes(const char *s, char *cut, int *l)
 	if (s[i] == '=')
 		i++;
 	while (s[i])
-	{
-		if (is_quote(s[i]))
-			find_next_quote((char *)s, &i, s[i], 1);
-		else if (is_whitespace(s[i]))
-		{
-			reset = true;
-			++i;
-		}
-		else
-		{
-			if (reset)
-			{
-				*l = *l + 2;
-				reset = !reset;
-			}
-			i++;
-		}
-	}
+		should_add_quotes_child(s, &i, l, &reset);
 }
 
 void	quote_copy(const char *s, char **result, int *i, int *j)
@@ -94,86 +67,50 @@ void	quote_copy(const char *s, char **result, int *i, int *j)
 	return ;
 }
 
+void	ft_strdup_env_child(const char *s, t_dup_data *data, int *j, int *i)
+{
+	if (is_quote(s[*i]))
+		quote_copy(s, &(data->result), i, j);
+	else if (is_whitespace(s[*i]))
+	{
+		if (!data->reset)
+		{
+			data->result[*j] = '\'';
+			*j = *j + 1;
+		}
+		data->reset = true;
+		dup_and_get_next((char **)&s, i, &data->result, j);
+		data->multiple_word = true;
+	}
+	else if (!(is_quote(s[*i])) && !(is_whitespace(s[*i])) && data->reset)
+	{
+		data->result[*j] = '\'';
+		*j = *j + 1;
+		data->reset = !data->reset;
+	}
+	else
+		dup_and_get_next((char **)&s, i, &data->result, j);
+}
+
 char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 {
-	int		l;
-	char	*result;
-    bool    multipe_word = false;
-	bool	reset;
+	t_dup_data	data;
 
-	reset = false;
-	l = ft_strlen((char *)s) - (ft_strlen(cut) + 1);
-	should_add_quotes(s, cut, &l);
-	result = malloc((l + 1) * sizeof(char));
-	if (!result)
+	data.multiple_word = false;
+	data.reset = false;
+	data.l = ft_strlen((char *)s) - (ft_strlen(cut) + 1);
+	should_add_quotes(s, cut, &data.l);
+	data.result = malloc((data.l + 1) * sizeof(char));
+	if (!data.result)
 		return (NULL);
 	while (s[i] && cut[i] && s[i] == cut[i])
 		i++;
 	if (s[i] == '=')
 		i++;
 	while (s[i])
-	{
-		if (is_quote(s[i]))
-			quote_copy(s, &result, &i, &j);
-		else if (is_whitespace(s[i]))
-		{
-			if (!reset)
-				result[j++] = '\'';
-			reset = true;
-			result[j++] = s[i++];
-            multipe_word = true;
-		}
-		else if (!(is_quote(s[i])) && !(is_whitespace(s[i])) && reset)
-		{
-			result[j++] = '\'';
-			reset = !reset;
-		}
-		else
-			result[j++] = s[i++];
-	}
-	if (!reset && multipe_word)
-		result[j++] = '\'';
-	result[j] = '\0';
-	return (result);
-}
-
-char	*ft_strdupi(char *original, int *index, int size)
-{
-	char	*copy;
-	int		i;
-
-	if (*index != 0 && original[*index] == '|')
-		*index = *index + 1;
-	while (is_whitespace(original[*index]))
-	{
-		*index = *index + 1;
-		--size;
-	}
-	copy = malloc((size + 1) * sizeof(char));
-	if (!copy)
-		return (NULL);
-	i = 0;
-	while (i < size)
-	{
-		copy[i] = original[*index];
-		*index = *index + 1;
-		i++;
-	}
-	copy[i] = '\0';
-	return (copy);
-}
-
-void	free_double_char(char **to_free)
-{
-	int	i;
-
-	i = 0;
-	if (!to_free)
-		return ;
-	while (to_free[i])
-	{
-		free(to_free[i]);
-		i++;
-	}
-	free(to_free);
+		ft_strdup_env_child(s, &data, &j, &i);
+	if (!data.reset && data.multiple_word)
+		data.result[j++] = '\'';
+	data.result[j] = '\0';
+	return (data.result);
 }

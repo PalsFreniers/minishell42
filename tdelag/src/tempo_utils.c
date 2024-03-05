@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   tempo_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:10:58 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 16:56:41 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	get_heredocs(char *command, int *i, t_com *comm, int *j)
 	{
 		comm->expand_hd = true;
 		*i = *i + 2;
-		if (check_for_next_char(command , *i) == '\"')
+		if (check_for_next_char(command, *i) == '\"')
 			comm->expand_hd = false;
 		comm->here_doc_delimiter[*j] = get_the_next_arg(command, i, NULL);
 		index_last_hd = *i;

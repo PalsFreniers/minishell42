@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:53:37 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 18:16:14 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 12:24:04 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -85,13 +85,14 @@ int	first_command_valid(char *buffer)
 	return (1);
 }
 
-int	check_usr_input_for_errors(char *input) {
-    int i;
+int	check_usr_input_for_errors(char *input)
+{
+	int	i;
 
-    i = 0;
-    if (!first_command_valid(input))
-        return (1);
-    while (input[i])
+	i = 0;
+	if (!first_command_valid(input))
+		return (1);
+	while (input[i])
 	{
 		if (is_quote(input[i]))
 		{

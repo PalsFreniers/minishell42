@@ -28,7 +28,7 @@ int	treat_input(char *command, t_com *comm, int *i, int last_index_hd)
 	comm->fd_input = open(comm->input, O_RDONLY);
 	if (comm->fd_input < 0 && !comm->error)
 	{
-		comm->error = ft_strdup((const char *)comm->input);
+		//comm->error = ft_strdup((const char *)comm->input);
 		return (1);
 	}
 	return (0);

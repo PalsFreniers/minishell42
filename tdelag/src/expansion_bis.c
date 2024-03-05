@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/04 10:00:08 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 12:49:15 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,16 @@ int	expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j)
 		dup_and_get_next(&usr_input, i, &exp->expanded, j);
 		dup_and_get_next(&usr_input, i, &exp->expanded, j);
 	}
-    else if (is_numeric(usr_input[*i + 1]))
-        *i = *i + 2;
+	else if (is_numeric(usr_input[*i + 1]))
+		*i = *i + 2;
 	else if (is_quote(usr_input[*i + 1]) && !exp->is_double_quote)
 		*i = *i + 1;
 	else if (is_whitespace(usr_input[*i + 1])
 		|| first_character_env_invalid(usr_input[*i + 1]))
 		dup_and_get_next(&usr_input, i, &exp->expanded, j);
-    else
-	    return (1);
-    return (0);
+	else
+		return (1);
+	return (0);
 }
 
 char	*get_the_test_env(char *usr_input, int *i)
@@ -90,21 +90,4 @@ char	*get_the_test_env(char *usr_input, int *i)
 		*i = *i + 1;
 	test_env_name = ft_strdupi(usr_input, &k, *i - k);
 	return (test_env_name);
-}
-
-void	add_env_var(char *expanded, int *j, char *test_env_name, char **envp)
-{
-	char	*env_var;
-
-	env_var = get_env(envp, test_env_name);
-	if (env_var)
-	{
-		ft_str_append(&expanded, j, env_var);
-		free(env_var);
-		if (test_env_name)
-			free(test_env_name);
-		return ;
-	}
-	if (test_env_name)
-		free(test_env_name);
 }

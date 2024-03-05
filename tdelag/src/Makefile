@@ -16,13 +16,16 @@ SRCS = error_manager.c \
        arg_treat.c \
        arg_utils.c \
        char_treat.c \
+       char_treat_bis.c \
        commands_to_exec.c \
        hd_exit.c \
        expansion_bis.c \
        expansion_exec.c \
+       expansion_utils.c \
        ft_split.c \
        input_parse.c \
        libft.c \
+       libft_utils.c \
        paths_related.c \
        utils.c \
        init.c \

@@ -64,6 +64,7 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 	}
 	thgg = init_thgg(*envp, usr_input);
 	ret_ml = exec_cmds(thgg, envp, &last, &ret);
-	deinit_thgg(thgg);
+    if (thgg)
+	    deinit_thgg(thgg);
 	return (ret_ml);
 }

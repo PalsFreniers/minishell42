@@ -6,13 +6,13 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/29 11:22:25 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 14:05:16 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool    ft_strcmp(char *modele, char *compared)
+bool	ft_strcmp(char *modele, char *compared)
 {
 	int	i;
 
@@ -22,7 +22,7 @@ bool    ft_strcmp(char *modele, char *compared)
 	while (modele[i])
 	{
 		if (!compared[i])
-		    return (false);
+			return (false);
 		if (compared[i] != modele[i])
 			return (false);
 		++i;
@@ -45,13 +45,6 @@ void	ft_str_append(char **begin, int *j, char *end)
 	}
 }
 
-int	is_parasit(char c)
-{
-	if (c == '<' || c == '>')
-		return (1);
-	return (0);
-}
-
 void	look_for_heredoc(char *command, int *i, t_com *comm)
 {
 	if (is_quote(command[*i]))
@@ -63,4 +56,19 @@ void	look_for_heredoc(char *command, int *i, t_com *comm)
 	}
 	else
 		*i = *i + 1;
+}
+
+void	free_double_char(char **to_free)
+{
+	int	i;
+
+	i = 0;
+	if (!to_free)
+		return ;
+	while (to_free[i])
+	{
+		free(to_free[i]);
+		i++;
+	}
+	free(to_free);
 }

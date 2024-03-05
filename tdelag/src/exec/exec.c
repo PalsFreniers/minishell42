@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 21:27:42 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 20:29:59 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	exec_cmd(struct s_cmd *cmd)
 	else
 	{
 		arg1 = cmd->args[0];
-		if ((arg1[0] == '.' && arg1[1] == '/') || arg1[0] == '/')
+		if (ft_strchr(arg1, '/'))
 		{
 			if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
 				ft_fprintf(STDERR, "minishell: '%s': is a directory\n", arg1);
@@ -39,7 +39,7 @@ void	exec_cmd(struct s_cmd *cmd)
 	exit(127);
 }
 
-void	exec_builtin(struct s_cmd *cmd)
+void	exec_builtin_s(struct s_cmd *cmd)
 {
 	t_builtin_f	builtin;
 	int			ret;
@@ -71,6 +71,6 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 	}
 	deinit_thgg(data);
 	if (is_builtin(cmd->exec))
-		exec_builtin(cmd);
+		exec_builtin_s(cmd);
 	exec_cmd(cmd);
 }

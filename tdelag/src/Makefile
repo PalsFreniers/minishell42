@@ -55,6 +55,7 @@ OBJS = $(SRCS:.c=.o)
 HEADER = minishell.h
 FLAGS = -Wall -Werror -Wextra -g
 CC = cc
+LIBFT = ../libft/libft.a
 
 ifdef CHECK
 	FLAGS += -fsanitize=address
@@ -62,16 +63,21 @@ endif
 
 all: $(NAME)
 
-$(NAME) : $(OBJS)
-	$(CC) $(FLAGS) $(OBJS) ../libft/libft.a -lreadline -o $(NAME)
+$(LIBFT) :
+	make -C ../libft
+
+$(NAME) : $(OBJS) $(LIBFT)
+	$(CC) $(FLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
 
 %.o : %.c $(HEADER)
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean : 
+	make -C ../libft clean
 	rm -f $(OBJS)
 
 fclean : clean
+	make -C ../libft fclean
 	rm -f $(NAME)
 
 re : fclean all

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:44 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 20:29:45 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 20:20:25 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,31 +42,40 @@ struct s_reset_vec	prepare_command(t_com *command, char **envp, int last)
 	return ((struct s_reset_vec){c_stdin, c_stdout});
 }
 
+void	exec_builtin(t_com *command, struct s_mainloop *ret, char ***envp,
+		int argc)
+{
+	if (ft_strequ(command->program, "exit"))
+		*ret = sb_exit(command);
+	else if (ft_strequ(command->program, "echo"))
+		ret->last = b_echo(argc, command->arguments, *envp);
+	else if (ft_strequ(command->program, "env"))
+		ret->last = b_env(argc, command->arguments, *envp);
+	else if (ft_strequ(command->program, "pwd"))
+		ret->last = b_pwd(argc, command->arguments, *envp);
+	else if (ft_strequ(command->program, "unset"))
+		*ret = sb_unset(command, envp);
+	else if (ft_strequ(command->program, "cd"))
+		*ret = sb_cd(argc, command, envp);
+	else if (ft_strequ(command->program, "export"))
+		*ret = sb_export(envp, command);
+}
+
 struct s_mainloop	solo_b_in(t_com *command, char ***envp, int last)
 {
 	struct s_mainloop	ret;
 	int					argc;
 	struct s_reset_vec	reset_vec;
 
+	if (!command)
+		return ((struct s_mainloop){1, 0});
 	argc = ft_dt_len((void **)command->arguments);
 	ret = (struct s_mainloop){1, 0};
 	reset_vec = prepare_command(command, *envp, last);
 	if (g_signum == SIGINT)
 		return (reset_command(reset_vec));
-	if (ft_strequ(command->program, "exit"))
-		ret = sb_exit(command);
-	else if (ft_strequ(command->program, "echo"))
-		ret.last = b_echo(argc, command->arguments, *envp);
-	else if (ft_strequ(command->program, "env"))
-		ret.last = b_env(argc, command->arguments, *envp);
-	else if (ft_strequ(command->program, "pwd"))
-		ret.last = b_pwd(argc, command->arguments, *envp);
-	else if (ft_strequ(command->program, "unset"))
-		ret = sb_unset(command, envp);
-	else if (ft_strequ(command->program, "cd"))
-		ret = sb_cd(argc, command, envp);
-	else if (ft_strequ(command->program, "export"))
-		ret = sb_export(envp, command);
+	if (command->has_program)
+		exec_builtin(command, &ret, envp, argc);
 	reset_command(reset_vec);
 	return (ret);
 }

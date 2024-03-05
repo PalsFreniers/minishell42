@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 12:11:06 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/27 21:09:50 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 20:54:37 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "iodef.h"
 # include "structs.h"
 # include "types.h"
+# include "ft_complex.h"
 
 // ft_strings
 struct s_string		ft_string_create(char *ptr, size_t len);

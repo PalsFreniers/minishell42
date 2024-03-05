@@ -6,14 +6,11 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/25 23:41:47 by tdelage           #+#    #+#             */
-/*   Updated: 2024/01/25 23:42:43 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 20:53:46 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_COMPLEX_MATH_H
-# define FT_COMPLEX_MATH_H
-
-# include "libft.h"
+#include "libft.h"
 
 struct s_complex	ft_complex_add(struct s_complex a, struct s_complex b)
 {
@@ -52,5 +49,3 @@ struct s_complex	ft_complex_div(struct s_complex a, struct s_complex b)
 	c.i = (a.i * b.r - a.r * b.i) / denom;
 	return (c);
 }
-
-#endif // FT_COMPLEX_MATH_H

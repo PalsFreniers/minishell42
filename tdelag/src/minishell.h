@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 16:54:29 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 20:32:47 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ struct				s_cmd
 struct				s_cmds_piped
 {
 	t_bool			valid;
-	int	(*pipes)[2];
+	int (*pipes)[2];
 	int				count;
 	struct s_cmd	**cmds;
 };
@@ -314,5 +314,6 @@ int					make_here_doc_file(char *limiter, char **env,
 						struct s_mainloop data);
 void				catch_int(int sn);
 void				catch_int2(int sn);
+bool				check_invalid_in_out(char *command, t_com *comm, int i);
 
 #endif

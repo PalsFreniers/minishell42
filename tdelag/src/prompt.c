@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:23:36 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 20:29:24 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 20:28:26 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ struct s_mainloop	give_the_prompt(char ***envp, int last)
 	}
 	thgg = init_thgg(*envp, usr_input);
 	ret_ml = exec_cmds(thgg, envp, &last, &ret);
-    if (thgg)
-	    deinit_thgg(thgg);
+	if (thgg)
+		deinit_thgg(thgg);
 	return (ret_ml);
 }

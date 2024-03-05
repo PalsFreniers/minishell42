@@ -27,6 +27,7 @@ SRCS = error_manager.c \
        libft.c \
        libft_utils.c \
        paths_related.c \
+       in_out_error.c \
        utils.c \
        init.c \
        deinit.c \

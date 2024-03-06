@@ -87,13 +87,13 @@ bool	is_exp_struct(char *s)
 	++j;
 	while (test_name[j])
 		++j;
-	if (s[i] != '=' && !(s[i] == '+' && s[i + 1] == '='))
-	{
-		free(test_name);
-		return (false);
-	}
+    if (!s[i] || is_whitespace(s[i]) || s[i] == '=' || (s[i] == '+' && s[i] == '='))
+    {
+        free(test_name);
+        return (true);
+    }
 	free(test_name);
-	return (true);
+	return (false);
 }
 
 int	check_for_exp_c(int argc, char **argv)
@@ -118,6 +118,11 @@ char	*get_the_var_value(char *s, int *i, t_exp_type *type)
 {
 	char	*var_name;
 
+    if (!s[*i] || is_whitespace(s[*i]))
+    {
+        *type = NOTHING;
+        return (NULL);
+    }
 	if (s[*i] == '=')
 		*i = *i + 1;
 	else if (s[*i] == '+')

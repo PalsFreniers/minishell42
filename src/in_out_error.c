@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 20:38:06 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/06 12:39:00 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	treat_append_output(char *command, t_com *comm, int *i)
 			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd < 0)
 	{
-		printf("fd: %d tempo:'%s'\n", fd, tempo);
 		comm->error = tempo;
 		return (1);
 	}
@@ -92,7 +91,7 @@ bool	check_invalid_in_out(char *command, t_com *comm, int i)
 			find_next_quote(command, &i, command[i], 1);
 		}
 		else if (command[i] == '>')
-		{	
+		{
 			if (check_invalid_out(command, comm, &i))
 				return (true);
 		}

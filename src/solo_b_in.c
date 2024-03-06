@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:44 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/05 20:20:25 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/06 18:20:29 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,18 @@ struct s_mainloop	solo_b_in(t_com *command, char ***envp, int last)
 		exec_builtin(command, &ret, envp, argc);
 	reset_command(reset_vec);
 	return (ret);
+}
+
+bool	no_dollar(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '$')
+			return (false);
+		i++;
+	}
+	return (true);
 }

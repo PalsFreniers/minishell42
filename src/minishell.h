@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 20:43:30 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/06 18:24:29 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,6 @@ typedef struct s_global_expansion
 	int				exp_count;
 	t_exp			**exps;
 }					t_big_exp;
-
-typedef enum e_first_error
-{
-	ENEWLINE,
-	R1Q,
-	R2Q,
-	L1Q,
-	L2Q,
-	L3Q,
-}					t_first_error;
 
 typedef enum e_outkind
 {
@@ -143,6 +133,7 @@ typedef struct s_main
 	int				command_c;
 	char			**commands;
 	t_com			**commands_data;
+	int				incpy;
 }					t_main;
 
 struct				s_cmd
@@ -157,7 +148,7 @@ struct				s_cmd
 struct				s_cmds_piped
 {
 	t_bool			valid;
-	int				(*pipes)[2];
+	int (*pipes)[2];
 	int				count;
 	struct s_cmd	**cmds;
 };
@@ -177,8 +168,6 @@ bool				is_whitespace(char c);
 bool				is_alphanum(char c);
 bool				is_parasit(char c);
 bool				is_delimiter(char c);
-char				**ft_split_path(char const *s, char c);
-char				*ft_strdup(const char *s);
 char				*ft_strdupi(char *original, int *index, int size);
 char				*ft_strdup_env(const char *s, char *cut, int i, int j);
 void				ft_str_append(char **begin, int *j, char *end);
@@ -209,12 +198,7 @@ void				has_output(char *command, t_com *comm);
 bool				is_numeric(char c);
 bool				first_character_env_invalid(char c);
 bool				ft_strcmp(char *modele, char *compared);
-char				*exit_to_text(t_exit exit);
-char				*entry_to_text(t_entry entry);
 
-int					create_the_com_table(char *usr_input, char **commands,
-						int command_number);
-int					check_for_error_output(char *command, int i);
 int					create_the_com_table(char *usr_input, char **commands,
 						int command_number);
 char				check_for_next_char(char *command, int i);
@@ -224,9 +208,7 @@ size_t				ft_dt_len(void **s);
 void				free_dt(void **s);
 char				**dup_char_dt(char **src);
 void				init_rand(void);
-char				**compute_path(void);
 void				resolve_dum_heredoc(char **here_docs, t_bool is_heredoc);
-char				*resolve_path_to_abs(char *exec);
 void				m_close(int fd);
 int					b_pwd(int argc, char **argv, char **envp);
 int					b_exit(int argc, char **argv, char **envp);
@@ -237,8 +219,6 @@ int					b_unset(int count, char **args, char **envp);
 int					forks(t_main *data, int last);
 t_u8				is_builtin(char *exec);
 int					manage_shit(char *command, int i, char ch);
-void				free_double_char(char **to_free);
-int					first_command_valid(char *buffer);
 void				free_double_char(char **to_free);
 int					first_command_valid(char *buffer);
 void				error_exit_hd(char *input, int i);
@@ -265,7 +245,6 @@ char				*get_the_test_env(char *usr_input, int *i);
 void				add_env_var(char *expanded, int *j, char *test_env_name,
 						char **envp);
 char				*create_expanded(int l);
-void				error_exit_hd(char *input, int i);
 int					ft_strlen_char_ss(char **s);
 char				**ft_strdup_char_star(char **to_dup);
 t_big_exp			*get_big_exp(int argc, char **argv);
@@ -287,15 +266,13 @@ void				remove_one(char *argument, char ***envp);
 char				*get_env_value_view(char *name, char **envp);
 void				create_env(char *name, char *value, char ***envp);
 char				**sort_env(char **envp);
-struct s_mainloop	print_export(char **envp);
 struct s_mainloop	sb_exit(t_com *command);
 struct s_mainloop	sb_unset(t_com *command, char ***envp);
 struct s_mainloop	sb_export(char ***envp, t_com *command);
 struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp);
 struct s_mainloop	solo_b_in(t_com *command, char ***envp, int last);
 void				catch_int(int sn);
-struct s_mainloop	give_the_prompt(char ***envp, int last);
-char				*get_the_var_value(char *s, int *i, t_exp_type *type);
+struct s_mainloop	give_the_prompt(char ***envp, int last, int cpy);
 int					check_for_exp_c(int argc, char **argv);
 char				*get_the_var_value(char *s, int *i, t_exp_type *type);
 bool				is_exp_struct(char *s);
@@ -305,15 +282,14 @@ void				free_cmds(struct s_cmds_piped piped, int skip);
 void				free_cmd(struct s_cmd *cmd);
 void				generate_fork_data(struct s_cmds_piped *self, t_main *data,
 						int last);
-t_u8				is_builtin(char *exec);
 t_builtin_f			get_builtin(char *exec);
 void				exec(t_main *data, struct s_cmds_piped cmds, int id,
 						int *pids);
 void				close_all_pipes(int (*pipes)[2], int count);
 int					make_here_doc_file(char *limiter, char **env,
 						struct s_mainloop data);
-void				catch_int(int sn);
 void				catch_int2(int sn);
 bool				check_invalid_in_out(char *command, t_com *comm, int i);
+bool				no_dollar(char *s);
 
 #endif

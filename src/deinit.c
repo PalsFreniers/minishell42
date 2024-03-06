@@ -18,7 +18,7 @@ void	deinit_cd_first(t_com *comm)
 	j = 0;
 	if (comm->program)
 		free(comm->program);
-	if (comm->program)
+	if (comm->arguments)
 	{
 		while (comm->arguments[j])
 		{

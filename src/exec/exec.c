@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/05 20:29:59 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 23:47:19 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ void	exec_cmd(struct s_cmd *cmd)
 		if (ft_strchr(arg1, '/'))
 		{
 			if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
-				ft_fprintf(STDERR, "minishell: '%s': is a directory\n", arg1);
+				ft_fprintf(STDERR, "minishell: %s: is a directory\n", arg1);
 			else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-				ft_fprintf(STDERR, "minishell: '%s': %s\n", arg1,
+				ft_fprintf(STDERR, "minishell: %s: %s\n", arg1,
 					strerror(errno));
 		}
 		else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-			ft_fprintf(STDERR, "minishell: '%s': unknown command\n", arg1);
+			ft_fprintf(STDERR, "minishell: %s: unknown command\n", arg1);
 	}
 	free_cmd(cmd);
 	exit(127);
@@ -55,6 +55,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 	struct s_cmd	*cmd;
 
 	free(pids);
+	m_close(data->incpy);
 	cmd = cmds.cmds[id];
 	dup2(cmd->infd, STDIN);
 	dup2(cmd->outfd, STDOUT);
@@ -67,6 +68,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 	if (!data->commands_data[id]->has_program)
 	{
 		free_cmd(cmd);
+		deinit_thgg(data);
 		exit(0);
 	}
 	deinit_thgg(data);

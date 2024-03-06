@@ -1,38 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_complex.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/08 08:18:51 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/13 14:48:52 by tdelage          ###   ########.fr       */
+/*   Created: 2024/01/25 23:38:11 by tdelage           #+#    #+#             */
+/*   Updated: 2024/03/05 21:13:35 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../../libft/libft.h"
+#include "libft.h"
 
-int	b_echo(int count, char **args, char **envp)
+struct s_complex	ft_complex_create(double real, double imag)
 {
-	int		i;
-	char	trailing;
+	struct s_complex	clx;
 
-	(void)envp;
-	i = 1;
-	trailing = '\n';
-	if (count > 1 && ft_strncmp(args[1], "-n", 2) == 0)
-	{
-		trailing = '\0';
-		i++;
-	}
-	while (i < count)
-	{
-		ft_printf("%s", args[i]);
-		if (i < count - 1)
-			ft_putchar_fd(' ', 1);
-		i++;
-	}
-	if (trailing)
-		ft_putchar_fd(trailing, 1);
-	return (0);
+	clx.r = real;
+	clx.i = imag;
+	return (clx);
 }

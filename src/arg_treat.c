@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 12:07:13 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/06 20:05:54 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ int	get_an_argument(char *command, int *i, char **arguments, int *j)
 	else
 	{
 		arguments[*j] = get_the_next_arg(command, i, NULL);
+		while (is_quote(command[*i]))
+			*i = *i + 1;
 		if (!arguments[*j])
 			return (1);
 		*j = *j + 1;

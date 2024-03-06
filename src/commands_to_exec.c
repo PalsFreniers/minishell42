@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 20:28:19 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 22:54:18 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 
 int	in_out_mana(char *command, t_com *comm, int last_heredoc_i)
 {
+	char	*error;
+
 	if (check_invalid_in_out(command, comm, 0))
 	{
+		error = strerror(errno);
 		if (comm->has_heredoc)
 		{
 			resolve_dum_heredoc(comm->here_doc_delimiter, 0);
@@ -23,7 +26,9 @@ int	in_out_mana(char *command, t_com *comm, int last_heredoc_i)
 			comm->has_heredoc = 0;
 		}
 		comm->has_program = false;
-		printf("minishell: %s: %s\n", comm->error, strerror(errno));
+		free(comm->program);
+		comm->program = NULL;
+		printf("minishell: %s: %s\n", comm->error, error);
 		return (0);
 	}
 	has_input(command, comm, last_heredoc_i, 0);

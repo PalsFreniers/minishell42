@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 22:11:06 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 23:31:27 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,15 @@ char	*ft_find_path(char *exec, char **paths)
 		free(ret);
 		i++;
 	}
+	if (!ft_strchr(exec, '/'))
+		return (ft_strjoin("/", exec));
 	return (ft_strdup(exec));
 }
 
 void	sig_quit(int signum)
 {
 	(void)signum;
-	write(STDERR, "Quit (core dumped)\n", 19);
+	write(STDERR, "Quit\n", 5);
 }
 
 void	fork_loop(int *pids, struct s_cmds_piped cmds, t_main *data, int i)

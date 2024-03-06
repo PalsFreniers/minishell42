@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/04 22:06:28 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 23:42:05 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 int		g_signum = 0;
 
-void	prompt_loop_prepare(struct s_mainloop *ret, char ***envp)
+void	prompt_loop_prepare(struct s_mainloop *ret, char ***envp, int cpy)
 {
 	signal(SIGQUIT, SIG_IGN);
-	*ret = give_the_prompt(envp, ret->last);
+	*ret = give_the_prompt(envp, ret->last, cpy);
 }
 
 void	prompt_loop_signals(int cpy)
@@ -42,6 +42,18 @@ void	init_rand(void)
 	ft_srand(ps);
 }
 
+char	**envp_set(char **envp)
+{
+	char	**envp_cpy;
+
+	envp_cpy = ft_strdup_char_star(envp);
+	if (!ft_getenv("PATH", envp))
+		create_env("PATH",
+			"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+			&envp_cpy);
+	return (envp_cpy);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	int					cpy;
@@ -53,13 +65,13 @@ int	main(int argc, char **argv, char **envp)
 	init_rand();
 	cpy = dup(0);
 	signal(SIGINT, catch_int);
-	envp_cpy = ft_strdup_char_star(envp);
+	envp_cpy = envp_set(envp);
 	if (!envp_cpy)
 		return (0);
 	ret = (struct s_mainloop){.cont = 1, .last = 0};
 	while (1)
 	{
-		prompt_loop_prepare(&ret, &envp_cpy);
+		prompt_loop_prepare(&ret, &envp_cpy, cpy);
 		if (!ret.cont)
 			break ;
 		prompt_loop_signals(cpy);

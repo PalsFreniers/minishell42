@@ -1,27 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_complex.c                                       :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/25 23:38:11 by tdelage           #+#    #+#             */
-/*   Updated: 2024/01/25 23:41:34 by tdelage          ###   ########.fr       */
+/*   Created: 2024/02/08 08:18:51 by tdelage           #+#    #+#             */
+/*   Updated: 2024/03/05 23:14:17 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_COMPLEX_H
-# define FT_COMPLEX_H
+#include "../../../../libft/libft.h"
 
-# include "libft.h"
-
-struct s_complex	ft_complex_create(double real, double imag)
+int	b_echo(int count, char **args, char **envp)
 {
-	struct s_complex	clx;
+	int		i;
+	char	trailing;
 
-	clx.r = real;
-	clx.i = imag;
-	return (clx);
+	(void)envp;
+	i = 1;
+	trailing = '\n';
+	if (count > 1 && ft_strequ(args[1], "-n"))
+	{
+		trailing = '\0';
+		i++;
+	}
+	while (i < count)
+	{
+		ft_printf("%s", args[i]);
+		if (i < count - 1)
+			ft_putchar_fd(' ', 1);
+		i++;
+	}
+	if (trailing)
+		ft_putchar_fd(trailing, 1);
+	return (0);
 }
-
-#endif // FT_COMPLEX_H

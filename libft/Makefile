@@ -3,6 +3,7 @@ LD = ar
 NAME = libft.a
 SRCS = ft_arena.c \
       ft_complex_math.c \
+      ft_complex.c \
       ft_isascii.c \
       ft_memcmp.c \
       ft_printf_special_handlers_p1.c \
@@ -39,7 +40,6 @@ SRCS = ft_arena.c \
       ft_strjoin.c \
       ft_strncmp.c \
       ft_strtrim.c \
-      ft_complex.c \
       ft_isalpha.c \
       ft_memchr.c \
       ft_printf.c \

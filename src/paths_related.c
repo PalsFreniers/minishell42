@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 11:10:02 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/05 23:30:01 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	**get_splitted_path(char **envp)
 	paths = get_env(envp, "PATH");
 	if (!paths)
 		return (NULL);
-	splitted_paths = ft_split_path(paths, ':');
+	splitted_paths = ft_split(paths, ':');
 	free(paths);
 	return (splitted_paths);
 }

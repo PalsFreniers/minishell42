@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 12:49:53 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 12:51:42 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/06 18:00:20 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	heredoc_detected_expansion(char *usr_input, int *i, int *l)
 	int	j;
 
 	j = *i;
+	*i = *i + 2;
 	skip_the_next_word(usr_input, i);
 	*l = *l + (*i - j);
 }
@@ -49,14 +50,14 @@ int	treat_dollar_case_exp(char *usr_input, int *i, int *l,
 
 int	treat_the_char_exp(char *usr_input, int *i, int *l, bool *is_double_quote)
 {
-	if (usr_input[*i] == '\'' && !is_double_quote)
+	if (usr_input[*i] == '\'' && !(*is_double_quote))
 		single_quote_expansion(usr_input, i, l);
 	else if (usr_input[*i] == '\"')
 	{
 		*is_double_quote = !(*is_double_quote);
 		increment_both(i, l);
 	}
-	else if (!is_double_quote && (usr_input[*i] == '<' && usr_input[*i
+	else if (!(*is_double_quote) && (usr_input[*i] == '<' && usr_input[*i
 				+ 1] == '<'))
 		heredoc_detected_expansion(usr_input, i, l);
 	else if (usr_input[*i] == '$')

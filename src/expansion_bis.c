@@ -17,7 +17,6 @@ char	*create_expanded(int l)
 	int		i;
 	char	*expanded;
 
-	i = 0;
 	expanded = malloc((l + 1) * sizeof(char));
 	if (!expanded)
 		return (NULL);

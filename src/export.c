@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:13:13 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 21:13:14 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/06 00:10:04 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,6 @@ char	*get_the_var_value(char *s, int *i, t_exp_type *type)
 		*type = PLUS;
 		*i = *i + 2;
 	}
-	var_name = get_the_next_arg(s, i, NULL);
+	var_name = ft_strdup(s + *i);
 	return (var_name);
 }

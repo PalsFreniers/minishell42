@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:23:01 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 21:41:55 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/05 22:30:24 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,17 @@
 struct s_cmd	extract_base_cmd(t_main *data, int id)
 {
 	struct s_cmd	command;
+	t_com			*commandr;
 
-	if (!is_builtin(data->commands_data[id]->program)
-		&& ft_strlen(data->commands_data[id]->program) > 0)
+	commandr = data->commands_data[id];
+	if (commandr->has_program && !is_builtin(commandr->program)
+		&& ft_strlen(commandr->program) > 0)
 		command.exec = ft_find_path(data->commands_data[id]->program,
 				data->paths);
-	else
+	else if (commandr->has_program)
 		command.exec = ft_strdup(data->commands_data[id]->program);
+	else
+		command.exec = NULL;
 	command.args = dup_char_dt(data->commands_data[id]->arguments);
 	command.env = dup_char_dt(data->envp);
 	return (command);

@@ -73,7 +73,7 @@ char	*expansion(char *usr_input, char **envp, int last)
 	size_t	expanded_l;
 
 	expanded_l = get_length_expanded(usr_input, envp, last);
-	if (expanded_l == ft_strlen(usr_input))
+	if (expanded_l == ft_strlen(usr_input) && no_dollar(usr_input))
 		return (usr_input);
 	expanded_input = get_expanded(usr_input, envp, expanded_l, last);
 	free(usr_input);

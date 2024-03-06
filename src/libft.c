@@ -73,7 +73,7 @@ void	ft_strdup_env_child(const char *s, t_dup_data *data, int *j, int *i)
 		quote_copy(s, &(data->result), i, j);
 	else if (is_whitespace(s[*i]))
 	{
-		if (!data->reset)
+		if (!data->reset && data->multiple_word)
 		{
 			data->result[*j] = '\'';
 			*j = *j + 1;

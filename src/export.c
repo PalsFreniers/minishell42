@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:13:13 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/06 00:10:04 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/06 20:32:42 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,15 +84,10 @@ bool	is_exp_struct(char *s)
 		free(test_name);
 		return (false);
 	}
-	++j;
-	while (test_name[j])
-		++j;
-    if (!s[i] || is_whitespace(s[i]) || s[i] == '=' || (s[i] == '+' && s[i] == '='))
-    {
-        free(test_name);
-        return (true);
-    }
 	free(test_name);
+	if (!s[i] || is_whitespace(s[i]) || s[i] == '=' || (s[i] == '+' && s[i
+				+ 1] == '='))
+		return (true);
 	return (false);
 }
 
@@ -118,11 +113,11 @@ char	*get_the_var_value(char *s, int *i, t_exp_type *type)
 {
 	char	*var_name;
 
-    if (!s[*i] || is_whitespace(s[*i]))
-    {
-        *type = NOTHING;
-        return (NULL);
-    }
+	if (!s[*i] || is_whitespace(s[*i]))
+	{
+		*type = NOTHING;
+		return (NULL);
+	}
 	if (s[*i] == '=')
 		*i = *i + 1;
 	else if (s[*i] == '+')

@@ -54,6 +54,7 @@ typedef enum e_exp_type
 {
 	EQUAL,
 	PLUS,
+    NOTHING,
 }					t_exp_type;
 
 typedef struct s_exp_actions

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:23:36 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:11:56 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:26:52 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ struct s_mainloop	give_the_prompt(char ***envp, int last, int cpy)
 		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, last}));
 	usr_input = expansion(usr_input, *envp, last);
 	if (usr_input && is_usr_input_blank(usr_input))
-		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, last}));
+		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, 0}));
 	if (!usr_input || check_usr_input_for_errors(usr_input))
 		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, 2}));
 	thgg = init_thgg(*envp, usr_input);

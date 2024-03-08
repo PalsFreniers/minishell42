@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:28:33 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 22:08:28 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:45:29 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,5 @@ t_builtin_f	get_builtin(char *exec)
 		return (b_unset);
 	if (ft_strequ(exec, "env"))
 		return (b_env);
-	if (ft_strequ(exec, "exit"))
-		return (b_exit);
 	return (NULL);
 }

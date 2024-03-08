@@ -6,10 +6,20 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 18:52:08 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 01:25:50 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:20:51 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../../minishell.h"
+
+int	bisalpha(int c)
+{
+	return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
+}
+
+int	bisalnum(int c)
+{
+	return (ft_isalpha(c) || ft_isdigit(c));
+}
 
 int	check_export(char *args)
 {
@@ -17,7 +27,7 @@ int	check_export(char *args)
 	int	ret;
 
 	ret = 0;
-	if (!isalpha(args[0]) && args[0] != '_')
+	if (!bisalpha(args[0]) && args[0] != '_')
 	{
 		ft_putstr_fd("export: `", 2);
 		ft_putstr_fd(args, 2);
@@ -25,7 +35,7 @@ int	check_export(char *args)
 		ret = 1;
 	}
 	j = 0;
-	while (isalnum(args[++j]) || args[j] == '_')
+	while (bisalnum(args[++j]) || args[j] == '_')
 		;
 	if (args[j] != '=' && !(args[j] == '+' && args[j + 1] == '=')
 		&& args[j] != 0)

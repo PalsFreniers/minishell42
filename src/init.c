@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:53:37 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 22:55:17 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:34:12 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -21,6 +21,8 @@ int	init_cd_first(t_com *command, char **commands, int i, int command_c)
 	command->arguments = NULL;
 	command->program = NULL;
 	command->has_input = false;
+	command->input = NULL;
+	command->output = NULL;
 	command->expand_hd = false;
 	command->has_output = false;
 	if (command_disection(commands[i], command))

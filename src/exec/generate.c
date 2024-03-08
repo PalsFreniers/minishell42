@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:23:01 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 05:42:45 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:36:49 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@ char	**dup_exec_envp(char **envp)
 	int		i;
 	int		j;
 
-	i = 0;
-	while (envp[i])
+	i = -1;
+	j = 0;
+	while (envp[++i])
 		if (ft_strchr(envp[i], '='))
-			i++;
-	new = malloc((i + 1) * sizeof(char *));
+			j++;
+	new = malloc((j + 1) * sizeof(char *));
 	if (!new)
 		return (NULL);
 	i = 0;
@@ -36,7 +37,7 @@ char	**dup_exec_envp(char **envp)
 		}
 		i++;
 	}
-	new[i] = NULL;
+	new[j] = NULL;
 	return (new);
 }
 

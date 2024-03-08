@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_manager.c                                    :+:      :+:    :+:   */
+/*   deinit.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:53:37 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/12 18:16:14 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:33:31 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -41,9 +41,9 @@ void	deinit_cd_first(t_com *comm)
 
 void	deinit_cd_second(t_com *comm)
 {
-	if (comm->has_input)
+	if (comm->input)
 		free(comm->input);
-	if (comm->has_output)
+	if (comm->output)
 		free(comm->output);
 	if (comm->error)
 		free(comm->error);

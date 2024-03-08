@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:08:59 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:14:24 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ void	exec_file(char *arg1, struct s_cmd *cmd, int *ret)
 	}
 	else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
 		ft_fprintf(STDERR, "minishell: %s: %s\n", arg1, strerror(errno));
-	if (access(cmd->exec, X_OK) == -1)
+	if (access(cmd->exec, F_OK) == -1)
+		*ret = 127;
+	else if (access(cmd->exec, X_OK) == -1)
 		*ret = 126;
 }
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   hd_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 13:40:39 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:03:28 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void	error_exit_hd(char *input, int i)
 	{
 		if (is_quote(input[j]))
 			find_next_quote(input, &j, input[j], 1);
-		else if (input[j] == '<' && input[j + 1] == '<')
+		else if (input[j] == '<' && input[j + 1] == '<'
+			&& !is_parasit(check_for_next_char(input, j)))
 		{
 			j += 2;
 			ask_for_dum_hd(input, &j);

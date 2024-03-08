@@ -12,30 +12,6 @@
 
 #include "minishell.h"
 
-char	*entry_to_text(t_entry entry)
-{
-	static char	*table[] = {
-		"ENTRY_HEREDOC",
-		"ENTRY_INPUT",
-		"ENTRY_PIPE",
-		"NO_ENTRY",
-		"HD_ERROR",
-	};
-
-	return (table[entry]);
-}
-
-char	*exit_to_text(t_exit exit)
-{
-	static char	*table[] = {
-		"EXIT_OUTPUT",
-		"EXIT_PIPE",
-		"EXIT_STDOUT",
-	};
-
-	return (table[exit]);
-}
-
 int	get_heredocs(char *command, int *i, t_com *comm, int *j)
 {
 	int	index_last_hd;

@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 12:21:58 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:03:40 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ int	find_next_quote(char *buffer, int *i, char quote_type, int x)
 	*i = *i + 1;
 	while (buffer[*i] && buffer[*i] != quote_type)
 		*i = *i + 1;
-	if (!buffer[*i] && x == 2)
+	if (!buffer[*i])
 	{
-		printf("unclosed quotes\n");
+		if (x == 2)
+			printf("unclosed quotes\n");
 		return (-1);
 	}
 	*i = *i + 1;

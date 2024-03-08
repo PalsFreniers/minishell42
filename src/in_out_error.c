@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/06 12:39:00 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:04:21 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ bool	check_invalid_out(char *command, t_com *comm, int *i)
 				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 		if (fd < 0)
 		{
+			comm->fd_output = -1;
 			comm->error = tempo;
 			return (true);
 		}
@@ -74,6 +75,8 @@ bool	check_invalid_in(char *command, t_com *comm, int *i)
 	fd = open(tempo, O_RDONLY);
 	if (fd < 0)
 	{
+		comm->fd_input = -1;
+		comm->entry = INPUT_ERROR;
 		comm->error = tempo;
 		return (true);
 	}

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:07:52 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:08:59 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	exec_file(char *arg1, struct s_cmd *cmd, int *ret)
 	if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
 	{
 		*ret = 126;
-		ft_fprintf(STDERR, "minishell: %s: is a directory\n", arg1);
+		ft_fprintf(STDERR, "minishell: %s: Is a directory\n", arg1);
 	}
 	else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
 		ft_fprintf(STDERR, "minishell: %s: %s\n", arg1, strerror(errno));

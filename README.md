@@ -1,3 +1,81 @@
+commit c2b0b1651f2c1ec1a05c719ca9d8877bdc174b7b
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:51:36 2024 +0100
+
+    normed qualified
+
+commit e6a79a0a154bd3ffd14a9498df3b89b952c20081
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:45:38 2024 +0100
+
+    sdfkjl
+
+commit 4f132c47fe37c0f3a992abb1cb442289ffd0f89f
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:44:45 2024 +0100
+
+    fix
+
+commit 6296e400e258c40be9bc005548a852e132af12b8
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:28:16 2024 +0100
+
+    fix
+
+commit 0c61c90723d2812fbd161d9fe7c1691927ee67a6
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:23:51 2024 +0100
+
+    fix
+
+commit 3adc1d5b73636f0d57df27228b85fb0c7932769b
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:14:31 2024 +0100
+
+    fix
+
+commit dd4671d4ee5cd6ce95fb28247af0982eedfe9bd3
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:13:00 2024 +0100
+
+    fix
+
+commit c68757dea2809362e33c71973353e8f794e3c17e
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:08:01 2024 +0100
+
+    fix
+
+commit ba8a9d0225060e54b95f47159db6030a0de818df
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 11:01:55 2024 +0100
+
+    fix
+
+commit 4295852d2d55ec556c4d363f7bede320f5389edd
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 10:58:16 2024 +0100
+
+    fix
+
+commit 0275dbedca8561d83a867d2a5035d36da7c96f43
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 10:56:26 2024 +0100
+
+    fix
+
+commit 64141e29f7ca60913ad37baeb897acc57124fea5
+Author: dosokin <dosokin@oneonmail.com>
+Date:   Fri Mar 8 10:54:25 2024 +0100
+
+    changed stdout to stderr
+
+commit 764344cbd26850ea6d6aef2267e92213d773071c
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 10:37:44 2024 +0100
+
+    adding all git logs to readme for RNCP
+
 commit f553267970bc031a6a465f45044fb500654f4275
 Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
 Date:   Fri Mar 8 10:37:12 2024 +0100

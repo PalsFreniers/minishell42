@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 05:13:41 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:58:08 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 	{
 		free_cmd(cmd);
 		deinit_thgg(data);
-		exit(0);
+		exit(data->commands_data[id]->error != 0);
 	}
 	deinit_thgg(data);
 	rl_clear_history();

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 10:58:08 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:59:41 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	exec_cmd(struct s_cmd *cmd)
 					strerror(errno));
 		}
 		else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-			ft_fprintf(STDERR, "minishell: %s: unknown command\n", arg1);
+			ft_fprintf(STDERR, "minishell: %s: command not found\n", arg1);
 	}
 	free_cmd(cmd);
 	exit(127);

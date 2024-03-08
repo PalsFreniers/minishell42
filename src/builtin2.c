@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:56 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 04:21:11 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:01:44 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,16 +114,17 @@ struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp)
 {
 	char	*path;
 
+	if (argc > 2)
+	{
+		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+		return ((struct s_mainloop){1, 1});
+	}
 	path = get_cd_path(argc, command, *envp);
 	if (path == NULL)
 		return ((struct s_mainloop){1, 1});
 	if (chdir(path) == -1)
 	{
-		ft_putstr_fd("minishell: cd: ", 2);
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putstr_fd("\n", 2);
+		ft_fprintf(2, "minishell: cd: %s: %s\n", path, strerror(errno));
 		return ((struct s_mainloop){1, 1});
 	}
 	remove_one("OLDPWD", envp);

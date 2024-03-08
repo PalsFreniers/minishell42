@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:31:25 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 20:31:29 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 01:28:41 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ t_big_exp	*get_big_exp(int argc, char **argv)
 
 void	free_exp(t_exp *exp)
 {
+	if (!exp)
+		return ;
 	free(exp->var_name);
 	free(exp->var_value);
 	free(exp);

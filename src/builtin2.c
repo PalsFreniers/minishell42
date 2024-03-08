@@ -6,16 +6,35 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:56 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 20:29:57 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 01:30:18 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	create_no_env(char *name, char ***envp)
+{
+	char	**tmp;
+	int		i;
+
+	tmp = malloc(sizeof(char *) * (ft_dt_len((void **)*envp) + 2));
+	if (!tmp)
+		return ;
+	i = -1;
+	while ((*envp)[++i])
+		tmp[i] = (*envp)[i];
+	tmp[i] = ft_strdup(name);
+	tmp[i + 1] = NULL;
+	free(*envp);
+	*envp = tmp;
+}
+
 void	create_append_env(t_exp *exp, char ***envp)
 {
 	char	*tmp;
 
+	if (!exp)
+		return ;
 	if (exp->type == EQUAL)
 	{
 		remove_one(exp->var_name, envp);
@@ -30,6 +49,12 @@ void	create_append_env(t_exp *exp, char ***envp)
 		remove_one(exp->var_name, envp);
 		create_env(exp->var_name, tmp, envp);
 		free(tmp);
+	}
+	else if (exp->type == NOTHING)
+	{
+		if (is_env(exp->var_name, *envp))
+			return ;
+		create_no_env(exp->var_name, envp);
 	}
 }
 
@@ -49,6 +74,7 @@ struct s_mainloop	sb_export(char ***envp, t_com *command)
 	if (!exp)
 		return ((struct s_mainloop){1, 1});
 	i = 0;
+        printf("export_count: %d\n", exp->exp_count);
 	while (i < exp->exp_count)
 	{
 		create_append_env(exp->exps[i], envp);

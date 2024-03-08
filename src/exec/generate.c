@@ -6,11 +6,39 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:23:01 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/05 22:30:24 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 01:13:24 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+char	**dup_exec_envp(char **envp)
+{
+	char	**new;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (envp[i])
+		if (ft_strchr(envp[i], '='))
+			i++;
+	new = malloc((i + 1) * sizeof(char *));
+	if (!new)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (envp[i])
+	{
+		if (ft_strchr(envp[i], '='))
+		{
+			new[j] = ft_strdup(envp[i]);
+			j++;
+		}
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
 
 struct s_cmd	extract_base_cmd(t_main *data, int id)
 {
@@ -27,7 +55,7 @@ struct s_cmd	extract_base_cmd(t_main *data, int id)
 	else
 		command.exec = NULL;
 	command.args = dup_char_dt(data->commands_data[id]->arguments);
-	command.env = dup_char_dt(data->envp);
+	command.env = dup_exec_envp(data->envp);
 	return (command);
 }
 
@@ -75,7 +103,7 @@ void	generate_fork_data(struct s_cmds_piped *self, t_main *data, int last)
 	self->valid = TRUE;
 	self->count = data->command_c;
 	self->cmds = NULL;
-	self->pipes = malloc((self->count - 1) * sizeof(int [2]));
+	self->pipes = malloc((self->count - 1) * sizeof(int[2]));
 	if (self->pipes)
 	{
 		self->valid = ft_create_pipes(self->pipes, self->count - 1);

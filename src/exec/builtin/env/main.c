@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 09:27:42 by tdelage           #+#    #+#             */
-/*   Updated: 2024/02/13 14:48:58 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 00:54:01 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ int	b_env(int argc, char **argv, char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		ft_printf("%s\n", envp[i]);
+		if (ft_strchr(envp[i], '='))
+			ft_printf("%s\n", envp[i]);
 		i++;
 	}
 	return (0);

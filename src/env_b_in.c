@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:52 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 20:29:53 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 01:01:20 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ void	create_env(char *name, char *value, char ***envp)
 	int		i;
 
 	tmp = malloc(sizeof(char *) * (ft_dt_len((void **)*envp) + 2));
+	if (!tmp)
+		return ;
 	i = -1;
 	while ((*envp)[++i])
 		tmp[i] = (*envp)[i];

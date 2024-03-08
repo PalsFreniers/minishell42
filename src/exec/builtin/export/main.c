@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 18:52:08 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/05 20:51:57 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 01:25:50 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../../minishell.h"
@@ -27,8 +27,8 @@ int	check_export(char *args)
 	j = 0;
 	while (isalnum(args[++j]) || args[j] == '_')
 		;
-	if (args[j] != '=' && !(args[j] == '+' && args[j + 1] == '=') && args[j
-			+ 1] != 0)
+	if (args[j] != '=' && !(args[j] == '+' && args[j + 1] == '=')
+		&& args[j] != 0)
 	{
 		ft_putstr_fd("export: `", 2);
 		ft_putstr_fd(args, 2);

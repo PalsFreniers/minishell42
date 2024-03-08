@@ -6,17 +6,33 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 10:59:41 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:07:52 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	exec_cmd(struct s_cmd *cmd)
+void	exec_file(char *arg1, struct s_cmd *cmd, int *ret)
 {
-	char		*arg1;
 	struct stat	buf;
 
+	if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
+	{
+		*ret = 126;
+		ft_fprintf(STDERR, "minishell: %s: is a directory\n", arg1);
+	}
+	else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
+		ft_fprintf(STDERR, "minishell: %s: %s\n", arg1, strerror(errno));
+	if (access(cmd->exec, X_OK) == -1)
+		*ret = 126;
+}
+
+void	exec_cmd(struct s_cmd *cmd)
+{
+	char	*arg1;
+	int		ret;
+
+	ret = 127;
 	if (!cmd->exec)
 		ft_fprintf(STDERR, "minishell: null command (internal problem)\n");
 	else if (!cmd->args && !cmd->args[0])
@@ -25,18 +41,12 @@ void	exec_cmd(struct s_cmd *cmd)
 	{
 		arg1 = cmd->args[0];
 		if (ft_strchr(arg1, '/'))
-		{
-			if (stat(cmd->exec, &buf) == 0 && buf.st_mode & S_IFDIR)
-				ft_fprintf(STDERR, "minishell: %s: is a directory\n", arg1);
-			else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
-				ft_fprintf(STDERR, "minishell: %s: %s\n", arg1,
-					strerror(errno));
-		}
+			exec_file(arg1, cmd, &ret);
 		else if (execve(cmd->exec, cmd->args, cmd->env) < 0)
 			ft_fprintf(STDERR, "minishell: %s: command not found\n", arg1);
 	}
 	free_cmd(cmd);
-	exit(127);
+	exit(ret);
 }
 
 void	exec_builtin_s(struct s_cmd *cmd)

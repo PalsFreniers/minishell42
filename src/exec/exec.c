@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:19:12 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:39:31 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,41 +51,52 @@ void	exec_cmd(struct s_cmd *cmd)
 	exit(ret);
 }
 
-void	exec_builtin_s(struct s_cmd *cmd)
+void	exec_builtin_s(struct s_cmd *cmd, int l)
 {
 	t_builtin_f	builtin;
 	int			ret;
 
 	builtin = get_builtin(cmd->exec);
-	ret = builtin(ft_dt_len((void **)cmd->args), cmd->args, cmd->env);
+	if (!ft_strequ(cmd->exec, "exit"))
+		ret = builtin(ft_dt_len((void **)cmd->args), cmd->args, cmd->env);
+	else
+		ret = b_exit(ft_dt_len((void **)cmd->args), cmd->args, cmd->env, l);
 	free_cmd(cmd);
 	exit(ret);
 }
 
-void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
+void	dup_2(struct s_cmd *cmd)
+{
+	dup2(cmd->infd, STDIN);
+	dup2(cmd->outfd, STDOUT);
+}
+
+void	exec(t_main *data, struct s_cmds_piped cmds, struct s_mainloop id,
+		int *pids)
 {
 	struct s_cmd	*cmd;
+	int				i;
 
 	free(pids);
 	m_close(data->incpy);
-	cmd = cmds.cmds[id];
-	dup2(cmd->infd, STDIN);
-	dup2(cmd->outfd, STDOUT);
+	cmd = cmds.cmds[id.cont];
+	dup_2(cmd);
 	free_dt((void **)data->envp);
-	free_cmds(cmds, id);
+	free_cmds(cmds, id.cont);
 	if (cmd->infd != STDIN)
 		m_close(cmd->infd);
 	if (cmd->outfd != STDOUT)
 		m_close(cmd->outfd);
-	if (!data->commands_data[id]->has_program)
+	if (!data->commands_data[id.cont]->has_program)
 	{
+		i = data->commands_data[id.cont]->error != 0;
 		free_cmd(cmd);
 		deinit_thgg(data);
-		exit(data->commands_data[id]->error != 0);
+		exit(i);
 	}
 	deinit_thgg(data);
 	rl_clear_history();
 	if (is_builtin(cmd->exec))
-		exec_builtin_s(cmd);
+		exec_builtin_s(cmd, id.last);
 	exec_cmd(cmd);
 }

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/05 23:31:27 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:44:33 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,17 @@ void	sig_quit(int signum)
 	write(STDERR, "Quit\n", 5);
 }
 
-void	fork_loop(int *pids, struct s_cmds_piped cmds, t_main *data, int i)
+void	fork_loop(int *pids, struct s_cmds_piped cmds, t_main *data, struct s_mainloop i)
 {
-	pids[i] = fork();
-	if (!(pids[i]))
+	pids[i.cont] = fork();
+	if (!(pids[i.cont]))
 		exec(data, cmds, i, pids);
 	else
 	{
-		if (cmds.cmds[i]->infd != STDIN)
-			m_close(cmds.cmds[i]->infd);
-		if (cmds.cmds[i]->outfd != STDOUT)
-			m_close(cmds.cmds[i]->outfd);
+		if (cmds.cmds[i.cont]->infd != STDIN)
+			m_close(cmds.cmds[i.cont]->infd);
+		if (cmds.cmds[i.cont]->outfd != STDOUT)
+			m_close(cmds.cmds[i.cont]->outfd);
 	}
 }
 
@@ -84,7 +84,7 @@ int	forks(t_main *data, int last)
 	signal(SIGQUIT, sig_quit);
 	signal(SIGINT, catch_int);
 	while (g_signum != SIGINT && ++i < cmds.count)
-		fork_loop(pids, cmds, data, i);
+		fork_loop(pids, cmds, data, (struct s_mainloop){i, last});
 	deinit_fork(pids, cmds, &ret);
 	if (g_signum == SIGINT)
 	{

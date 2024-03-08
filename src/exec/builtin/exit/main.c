@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 09:25:23 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 21:14:41 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:40:00 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	b_exit_checks(char **arguments, int argc, t_u64 ret)
 		return (ft_atol(arguments[1]));
 }
 
-int	b_exit(int argc, char **argv, char **envp)
+int	b_exit(int argc, char **argv, char **envp, int last)
 {
 	int		i;
 	char	*tmp;
@@ -65,5 +65,5 @@ int	b_exit(int argc, char **argv, char **envp)
 		ret = ft_atol(tmp + i);
 		return (b_exit_checks(argv, argc, ret));
 	}
-	return (0);
+	return (last);
 }

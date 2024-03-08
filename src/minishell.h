@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/08 05:43:38 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:42:19 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ void				init_rand(void);
 void				resolve_dum_heredoc(char **here_docs, t_bool is_heredoc);
 void				m_close(int fd);
 int					b_pwd(int argc, char **argv, char **envp);
-int					b_exit(int argc, char **argv, char **envp);
+int					b_exit(int argc, char **argv, char **envp, int last);
 int					b_env(int argc, char **argv, char **envp);
 int					b_cd(int argc, char **argv, char **envp);
 int					b_echo(int count, char **args, char **envp);
@@ -267,7 +267,7 @@ void				remove_one(char *argument, char ***envp);
 char				*get_env_value_view(char *name, char **envp);
 void				create_env(char *name, char *value, char ***envp);
 char				**sort_env(char **envp);
-struct s_mainloop	sb_exit(t_com *command);
+struct s_mainloop	sb_exit(t_com *command, int last);
 struct s_mainloop	sb_unset(t_com *command, char ***envp);
 struct s_mainloop	sb_export(char ***envp, t_com *command);
 struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp);
@@ -284,8 +284,8 @@ void				free_cmd(struct s_cmd *cmd);
 void				generate_fork_data(struct s_cmds_piped *self, t_main *data,
 						int last);
 t_builtin_f			get_builtin(char *exec);
-void				exec(t_main *data, struct s_cmds_piped cmds, int id,
-						int *pids);
+void				exec(t_main *data, struct s_cmds_piped cmds,
+						struct s_mainloop id, int *pids);
 void				close_all_pipes(int (*pipes)[2], int count);
 int					make_here_doc_file(char *limiter, char **env,
 						struct s_mainloop data);

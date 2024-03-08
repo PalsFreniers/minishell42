@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:44 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/06 18:20:29 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:35:03 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,20 @@ struct s_reset_vec	prepare_command(t_com *command, char **envp, int last)
 }
 
 void	exec_builtin(t_com *command, struct s_mainloop *ret, char ***envp,
-		int argc)
+		struct s_mainloop argc)
 {
 	if (ft_strequ(command->program, "exit"))
-		*ret = sb_exit(command);
+		*ret = sb_exit(command, argc.last);
 	else if (ft_strequ(command->program, "echo"))
-		ret->last = b_echo(argc, command->arguments, *envp);
+		ret->last = b_echo(argc.cont, command->arguments, *envp);
 	else if (ft_strequ(command->program, "env"))
-		ret->last = b_env(argc, command->arguments, *envp);
+		ret->last = b_env(argc.cont, command->arguments, *envp);
 	else if (ft_strequ(command->program, "pwd"))
-		ret->last = b_pwd(argc, command->arguments, *envp);
+		ret->last = b_pwd(argc.cont, command->arguments, *envp);
 	else if (ft_strequ(command->program, "unset"))
 		*ret = sb_unset(command, envp);
 	else if (ft_strequ(command->program, "cd"))
-		*ret = sb_cd(argc, command, envp);
+		*ret = sb_cd(argc.cont, command, envp);
 	else if (ft_strequ(command->program, "export"))
 		*ret = sb_export(envp, command);
 }
@@ -75,7 +75,7 @@ struct s_mainloop	solo_b_in(t_com *command, char ***envp, int last)
 	if (g_signum == SIGINT)
 		return (reset_command(reset_vec));
 	if (command->has_program)
-		exec_builtin(command, &ret, envp, argc);
+		exec_builtin(command, &ret, envp, (struct s_mainloop){argc, last});
 	reset_command(reset_vec);
 	return (ret);
 }

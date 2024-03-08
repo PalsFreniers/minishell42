@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:30:00 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 04:08:23 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:32:19 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ struct s_mainloop	sb_exit_checks(t_com *command, int argc, t_u64 ret)
 		return ((struct s_mainloop){0, ft_atol(command->arguments[1])});
 }
 
-struct s_mainloop	sb_exit(t_com *command)
+struct s_mainloop	sb_exit(t_com *command, int last)
 {
 	int		argc;
 	int		i;
@@ -67,7 +67,7 @@ struct s_mainloop	sb_exit(t_com *command)
 		ret = ft_atol(command->arguments[1] + i);
 		return (sb_exit_checks(command, argc, ret));
 	}
-	return ((struct s_mainloop){0, 0});
+	return ((struct s_mainloop){0, last});
 }
 
 struct s_mainloop	sb_unset(t_com *command, char ***envp)

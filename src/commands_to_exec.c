@@ -28,7 +28,7 @@ int	in_out_mana(char *command, t_com *comm, int last_heredoc_i)
 		comm->has_program = false;
 		free(comm->program);
 		comm->program = NULL;
-		printf("minishell: %s: %s\n", comm->error, error);
+		ft_fprintf(2,"minishell: %s: %s\n", comm->error, error);
 		return (0);
 	}
 	has_input(command, comm, last_heredoc_i, 0);

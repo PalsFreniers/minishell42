@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:23:36 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/06 00:10:19 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 05:33:35 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,11 @@ struct s_mainloop	exec_cmds(t_main *thgg, char ***envp, struct s_mainloop_p m)
 	return ((struct s_mainloop){.cont = *m.ret, .last = *m.last});
 }
 
-struct s_mainloop	free_and_set_mainloop(char *usr_input)
+struct s_mainloop	free_and_set_mainloop(char *usr_input,
+		struct s_mainloop ret_ml)
 {
 	free(usr_input);
-	return ((struct s_mainloop){.cont = 1, .last = 2});
+	return (ret_ml);
 }
 
 struct s_mainloop	give_the_prompt(char ***envp, int last, int cpy)
@@ -62,16 +63,16 @@ struct s_mainloop	give_the_prompt(char ***envp, int last, int cpy)
 	ret = 1;
 	usr_input = readline("$> ");
 	if (g_signum == SIGINT)
-		return ((struct s_mainloop){.cont = 1, .last = 130});
+		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, 130}));
 	else if (!usr_input)
 		return ((struct s_mainloop){.cont = 0, .last = 1});
 	if (ft_strlen(usr_input))
 		add_history(usr_input);
 	if (is_usr_input_blank(usr_input))
-		return ((struct s_mainloop){.cont = 1, .last = last});
+		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, last}));
 	usr_input = expansion(usr_input, *envp, last);
 	if (!usr_input || check_usr_input_for_errors(usr_input))
-		return (free_and_set_mainloop(usr_input));
+		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, 2}));
 	thgg = init_thgg(*envp, usr_input);
 	thgg->incpy = cpy;
 	ret_ml = exec_cmds(thgg, envp, (struct s_mainloop_p){&last, &ret});

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:27:40 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/05 23:47:19 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 05:13:41 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, int id, int *pids)
 		exit(0);
 	}
 	deinit_thgg(data);
+	rl_clear_history();
 	if (is_builtin(cmd->exec))
 		exec_builtin_s(cmd);
 	exec_cmd(cmd);

@@ -1,5 +1,5 @@
 NAME = minishell
-CFLAGS = -Wall -Werror -Wextra #-g
+CFLAGS = -Wall -Werror -Wextra -g
 CC = cc
 LIBFT = libft/libft.a
 OBJS = $(SRCS:.c=.o)

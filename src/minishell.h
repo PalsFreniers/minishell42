@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/06 18:24:29 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/08 05:43:38 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef enum e_exp_type
 {
 	EQUAL,
 	PLUS,
-    NOTHING,
+	NOTHING,
 }					t_exp_type;
 
 typedef struct s_exp_actions
@@ -149,7 +149,7 @@ struct				s_cmd
 struct				s_cmds_piped
 {
 	t_bool			valid;
-	int (*pipes)[2];
+	int				(*pipes)[2];
 	int				count;
 	struct s_cmd	**cmds;
 };
@@ -292,5 +292,6 @@ int					make_here_doc_file(char *limiter, char **env,
 void				catch_int2(int sn);
 bool				check_invalid_in_out(char *command, t_com *comm, int i);
 bool				no_dollar(char *s);
+void				free_all_main(int cpy, char **envp_cpy);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 23:42:05 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 05:39:28 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		prompt_loop_signals(cpy);
 	}
-	free_double_char(envp_cpy);
-	close(cpy);
+	free_all_main(cpy, envp_cpy);
 	if (g_signum != SIGTRAP)
 		printf("exit\n");
 	return (ret.last);

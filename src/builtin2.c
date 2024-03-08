@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:56 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 01:30:18 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 04:21:11 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ struct s_mainloop	sb_export(char ***envp, t_com *command)
 	if (!exp)
 		return ((struct s_mainloop){1, 1});
 	i = 0;
-        printf("export_count: %d\n", exp->exp_count);
 	while (i < exp->exp_count)
 	{
 		create_append_env(exp->exps[i], envp);

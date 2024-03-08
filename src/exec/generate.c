@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:23:01 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 01:13:24 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 05:42:45 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	generate_fork_data(struct s_cmds_piped *self, t_main *data, int last)
 	self->valid = TRUE;
 	self->count = data->command_c;
 	self->cmds = NULL;
-	self->pipes = malloc((self->count - 1) * sizeof(int[2]));
+	self->pipes = malloc((self->count - 1) * sizeof(int [2]));
 	if (self->pipes)
 	{
 		self->valid = ft_create_pipes(self->pipes, self->count - 1);

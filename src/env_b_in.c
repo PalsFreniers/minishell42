@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:52 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 01:01:20 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 05:44:08 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ t_bool	is_env(char *arg, char **envp)
 	while (envp[++i])
 	{
 		if (ft_strncmp(arg, envp[i], ft_strlen(arg)) == 0
-			&& envp[i][ft_strlen(arg)] == '=')
+			&& (envp[i][ft_strlen(arg)] == '='
+			|| envp[i][ft_strlen(arg)] == '\0'))
 			return (TRUE);
 	}
 	return (FALSE);
@@ -35,18 +36,18 @@ void	remove_one(char *argument, char ***envp)
 	if (is_env(argument, *envp))
 	{
 		tmp = malloc(sizeof(char *) * (ft_dt_len((void **)*envp)));
+		if (!tmp)
+			return ;
 		j = -1;
 		k = -1;
 		while ((*envp)[++j])
 		{
-			if (ft_strncmp(argument, (*envp)[j], ft_strlen(argument)) != 0
-				|| (ft_strncmp(argument, (*envp)[j], ft_strlen(argument)) == 0
-					&& (*envp)[j][ft_strlen(argument)] != '='))
-			{
-				tmp[++k] = (*envp)[j];
-			}
-			else
+			if (ft_strncmp(argument, (*envp)[j], ft_strlen(argument)) == 0
+				&& ((*envp)[j][ft_strlen(argument)] == '='
+					|| (*envp)[j][ft_strlen(argument)] == '\0'))
 				free((*envp)[j]);
+			else
+				tmp[++k] = (*envp)[j];
 		}
 		tmp[++k] = NULL;
 		free(*envp);

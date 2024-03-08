@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:39 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 22:05:19 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 05:35:14 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,11 @@ void	catch_int(int sn)
 	printf("\n");
 	signal(SIGINT, catch_int2);
 	close(0);
+}
+
+void	free_all_main(int cpy, char **envp_cpy)
+{
+	rl_clear_history();
+	free_double_char(envp_cpy);
+	close(cpy);
 }

@@ -39,7 +39,7 @@ t_exp	**get_the_exps(int argc, char **argv, int count)
 	int		index;
 	t_exp	**exps;
 
-	i = 0;
+	i = 1;
 	index = 0;
 	if (argc == 1)
 		return (NULL);

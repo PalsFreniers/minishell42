@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 14:16:03 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:44:33 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:46:49 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	sig_quit(int signum)
 	write(STDERR, "Quit\n", 5);
 }
 
-void	fork_loop(int *pids, struct s_cmds_piped cmds, t_main *data, struct s_mainloop i)
+void	fork_loop(int *pids, struct s_cmds_piped cmds, t_main *data,
+		struct s_mainloop i)
 {
 	pids[i.cont] = fork();
 	if (!(pids[i.cont]))

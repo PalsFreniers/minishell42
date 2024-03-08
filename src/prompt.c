@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:23:36 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:26:52 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:50:16 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,12 @@ struct s_mainloop	free_and_set_mainloop(char *usr_input,
 	return (ret_ml);
 }
 
+void	add_to_history(char *usr_input)
+{
+	if (ft_strlen(usr_input))
+		add_history(usr_input);
+}
+
 struct s_mainloop	give_the_prompt(char ***envp, int last, int cpy)
 {
 	int					ret;
@@ -66,8 +72,7 @@ struct s_mainloop	give_the_prompt(char ***envp, int last, int cpy)
 		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, 130}));
 	else if (!usr_input)
 		return ((struct s_mainloop){.cont = 0, .last = 1});
-	if (ft_strlen(usr_input))
-		add_history(usr_input);
+	add_to_history(usr_input);
 	if (is_usr_input_blank(usr_input))
 		return (free_and_set_mainloop(usr_input, (struct s_mainloop){1, last}));
 	usr_input = expansion(usr_input, *envp, last);

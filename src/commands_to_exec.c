@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/05 22:54:18 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:47:08 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	in_out_mana(char *command, t_com *comm, int last_heredoc_i)
 		comm->has_program = false;
 		free(comm->program);
 		comm->program = NULL;
-		ft_fprintf(2,"minishell: %s: %s\n", comm->error, error);
+		ft_fprintf(2, "minishell: %s: %s\n", comm->error, error);
 		return (0);
 	}
 	has_input(command, comm, last_heredoc_i, 0);

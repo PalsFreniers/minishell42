@@ -1,3 +1,81 @@
+commit f553267970bc031a6a465f45044fb500654f4275
+Author: Tidian Delage <tdelage@2E2.42angouleme.fr>
+Date:   Fri Mar 8 10:37:12 2024 +0100
+
+    last fix before first commit
+
+commit e97cfc4fc493ce99d42cf5bffc2b0e7be252bbbe
+Author: dosokin <dosokin@oneonmail.com>
+Date:   Fri Mar 8 10:22:17 2024 +0100
+
+    fixed tdelage stuff
+
+commit 95b6f7f3906a89c575d06c93f5b8d36d204221ef
+Author: dosokin <dosokin@oneonmail.com>
+Date:   Fri Mar 8 10:06:27 2024 +0100
+
+    lastpushshhshshh
+
+commit 37ce87a82bec0a85280a844cffed388c8c0962fe
+Author: Tidian Delage <tdelage@3A7.42angouleme.fr>
+Date:   Fri Mar 8 06:43:14 2024 +0100
+
+    fixed but dosokin pls fix your errors
+
+commit 3f884849dc6366610fd6fd9fa069032387b80b0b
+Author: Daniel Osokin <daniil@MacBook-Pro-de-Daniel.local>
+Date:   Fri Mar 8 01:51:15 2024 +0100
+
+    dosokin big bozo
+
+commit 694add0f7ddac5e6ea86f92651a8d2b93d8b8668
+Author: Tidian Delage <tdelage@3A7.42angouleme.fr>
+Date:   Fri Mar 8 01:33:21 2024 +0100
+
+    preshot fix print_export
+
+commit c7cd36311fe216f9feb890530172dee7380322bc
+Author: Tidian Delage <tdelage@3A7.42angouleme.fr>
+Date:   Fri Mar 8 01:31:30 2024 +0100
+
+    trying to work with export
+
+commit f893ca1eae966973ca8e9fe57b202063fa297588
+Author: Daniel Osokin <daniil@MacBook-Pro-de-Daniel.local>
+Date:   Fri Mar 8 01:19:42 2024 +0100
+
+    fixed
+
+commit a271dc3ff25194d56d73161b250c6749c4bdc687
+Author: dosokin <dosokin@oneonmail.com>
+Date:   Wed Mar 6 20:33:19 2024 +0100
+
+    lil norm
+
+commit 34b6499614b6c318c9601b58fe0bd4de5378bb4e
+Author: dosokin <dosokin@oneonmail.com>
+Date:   Wed Mar 6 20:25:22 2024 +0100
+
+    jsjs
+
+commit 546aef8f86871c566bae26c6f0e73dc7047be580
+Author: dosokin <dosokin@oneonmail.com>
+Date:   Wed Mar 6 20:24:06 2024 +0100
+
+    export added nothing
+
+commit bc59f4d08d0ae8e02197f10147532fa988827e22
+Author: dosokin <dosokin@oneonmail.com>
+Date:   Wed Mar 6 20:11:10 2024 +0100
+
+    newer version
+
+commit 7c40d1f5ec6766b0ace7a0731117b713d9be8f56
+Author: dosokin <bozotdelage@oneonmail.com>
+Date:   Tue Mar 5 21:00:23 2024 +0100
+
+    added readme
+
 commit a3d805eed330ff96f99f453b9d0a1b1df5737777
 Author: Tidian Delage <tdelage@3A6.42angouleme.fr>
 Date:   Tue Mar 5 20:55:18 2024 +0100

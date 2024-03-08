@@ -6,13 +6,13 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 21:14:09 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/04 21:14:11 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:56:02 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../../libft/libft.h"
-#include <string.h>
 #include <errno.h>
+#include <string.h>
 #include <unistd.h>
 
 char	*get_env_value_view(char *name, char **envp);
@@ -30,15 +30,16 @@ int	b_cd(int argc, char **argv, char **envp)
 			return (1);
 		}
 	}
+	else if (argc > 2)
+	{
+		ft_fprintf(2, "minishell: cd: too many arguments\n");
+		return (1);
+	}
 	else
 		path = argv[1];
 	if (chdir(path) == -1)
 	{
-		ft_putstr_fd("minishell: cd: ", 2);
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putstr_fd("\n", 2);
+		ft_fprintf(2, "minishell: cd: %s: %s\n", path, strerror(errno));
 		return (1);
 	}
 	return (0);

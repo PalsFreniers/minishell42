@@ -37,6 +37,7 @@ SRCS = src/error_manager.c \
        src/expansion.c \
        src/solo_b_in.c \
        src/builtin.c \
+       src/print.c \
        src/builtin2.c \
        src/env_b_in.c \
        src/signals.c \

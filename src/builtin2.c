@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:29:56 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:01:44 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/11 05:46:26 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ char	*get_cd_path(int argc, t_com *command, char **envp)
 {
 	char	*path;
 
-	if (argc == 1)
+	if (argc == 1 || (argc > 1 && ft_strequ(command->arguments[1], "--")))
 	{
 		path = get_env_value_view("HOME", envp);
 		if (!path)
@@ -127,6 +127,8 @@ struct s_mainloop	sb_cd(int argc, t_com *command, char ***envp)
 		ft_fprintf(2, "minishell: cd: %s: %s\n", path, strerror(errno));
 		return ((struct s_mainloop){1, 1});
 	}
+	if (argc > 1 && ft_strequ(command->arguments[1], "-"))
+		printf("%s\n", get_env_value_view("OLDPWD", *envp));
 	remove_one("OLDPWD", envp);
 	create_env("OLDPWD", get_env_value_view("PWD", *envp), envp);
 	path = getcwd(NULL, 0);

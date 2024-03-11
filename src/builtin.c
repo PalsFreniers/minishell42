@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:30:00 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 11:32:19 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/11 05:41:08 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ struct s_mainloop	print_export(char **envp)
 		if (envp[i][j])
 		{
 			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(envp[i] + j + 1, 1);
+			print_escape(envp[i] + j + 1);
 			ft_putstr_fd("\"", 1);
 		}
 		ft_putstr_fd("\n", 1);

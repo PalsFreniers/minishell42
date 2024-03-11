@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/08 11:42:19 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/11 05:40:47 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,5 +293,6 @@ void				catch_int2(int sn);
 bool				check_invalid_in_out(char *command, t_com *comm, int i);
 bool				no_dollar(char *s);
 void				free_all_main(int cpy, char **envp_cpy);
+void				print_escape(char *envp);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: tdelage <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 18:52:08 by tdelage           #+#    #+#             */
-/*   Updated: 2024/03/08 10:20:51 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/15 12:07:09 by tdelage          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "../../../minishell.h"
@@ -32,7 +32,7 @@ int	check_export(char *args)
 		ft_putstr_fd("export: `", 2);
 		ft_putstr_fd(args, 2);
 		ft_putstr_fd("': not a valid identifier\n", 2);
-		ret = 1;
+		return (1);
 	}
 	j = 0;
 	while (bisalnum(args[++j]) || args[j] == '_')

@@ -34,6 +34,7 @@ int	init_cd_first(t_com *command, char **commands, int i, int command_c)
 	}
 	if (command->command_id == 1 && command->entry == ENTRY_PIPE)
 		command->entry = NO_ENTRY;
+	free(command->input);
 	command->input = NULL;
 	return (0);
 }

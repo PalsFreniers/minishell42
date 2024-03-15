@@ -17,20 +17,12 @@
 int	b_pwd(int argc, char **argv, char **envp)
 {
 	char	*pwd;
-	t_bool	free_pwd;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
-	free_pwd = FALSE;
-	pwd = ft_getenv("PWD", envp);
-	if (!pwd)
-	{
-		pwd = getcwd(NULL, 0);
-		free_pwd = TRUE;
-	}
+	pwd = getcwd(NULL, 0);
 	ft_printf("%s\n", pwd);
-	if (free_pwd == TRUE)
-		free(pwd);
+	free(pwd);
 	return (0);
 }

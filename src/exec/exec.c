@@ -69,6 +69,10 @@ void	dup_2(struct s_cmd *cmd)
 {
 	dup2(cmd->infd, STDIN);
 	dup2(cmd->outfd, STDOUT);
+	if (cmd->infd != STDIN)
+		m_close(cmd->infd);
+	if (cmd->outfd != STDOUT)
+		m_close(cmd->outfd);
 }
 
 void	exec(t_main *data, struct s_cmds_piped cmds, struct s_mainloop id,
@@ -83,10 +87,6 @@ void	exec(t_main *data, struct s_cmds_piped cmds, struct s_mainloop id,
 	dup_2(cmd);
 	free_dt((void **)data->envp);
 	free_cmds(cmds, id.cont);
-	if (cmd->infd != STDIN)
-		m_close(cmd->infd);
-	if (cmd->outfd != STDOUT)
-		m_close(cmd->outfd);
 	if (!data->commands_data[id.cont]->has_program)
 	{
 		i = data->commands_data[id.cont]->error != 0;

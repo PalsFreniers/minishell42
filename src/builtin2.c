@@ -63,9 +63,7 @@ struct s_mainloop	sb_export(char ***envp, t_com *command)
 	t_big_exp	*exp;
 	int			i;
 	int			argc;
-	int			ret;
 
-	ret = 0;
 	argc = ft_dt_len((void **)command->arguments);
 	if (argc == 1)
 		return (print_export(*envp));

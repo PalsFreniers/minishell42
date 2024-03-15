@@ -16,6 +16,10 @@ void	free_cmd(struct s_cmd *cmd)
 {
 	if (!cmd)
 		return ;
+	if (cmd->infd != STDIN)
+		m_close(cmd->infd);
+	if (cmd->outfd != STDOUT)
+		m_close(cmd->outfd);
 	free_dt((void **)cmd->args);
 	free_dt((void **)cmd->env);
 	free(cmd->exec);

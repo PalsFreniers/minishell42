@@ -15,7 +15,10 @@
 void	should_add_quotes_child(const char *s, int *i, int *l, bool *reset)
 {
 	if (is_quote(s[*i]))
-		find_next_quote((char *)s, i, s[*i], 1);
+    {
+        *l = *l + 2;
+        find_next_quote((char *) s, i, s[*i], 1);
+    }
 	else if (is_whitespace(s[*i]))
 	{
 		*reset = true;
@@ -52,18 +55,25 @@ void	quote_copy(const char *s, char **result, int *i, int *j)
 	char	quote;
 
 	quote = s[*i];
+    if (quote == '\'')
+        (*result)[*j] = '\"';
+    else
+        (*result)[*j] = '\'';
+    *j = *j + 1;
 	(*result)[*j] = s[*i];
-	*j = *j + 1;
-	*i = *i + 1;
+    increment_both(j, i);
 	while (s[*i] != quote)
 	{
 		(*result)[*j] = s[*i];
-		*j = *j + 1;
-		*i = *i + 1;
+        increment_both(j, i);
 	}
 	(*result)[*j] = s[*i];
-	*j = *j + 1;
-	*i = *i + 1;
+    increment_both(j, i);
+    if (quote == '\'')
+        (*result)[*j] = '\"';
+    else
+        (*result)[*j] = '\'';
+    *j = *j + 1;
 	return ;
 }
 

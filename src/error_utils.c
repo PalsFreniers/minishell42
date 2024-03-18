@@ -13,7 +13,7 @@
 
 int	check_character(char *buffer, int *j, bool *empty, bool *parasit)
 {
-	if (is_quote(buffer[*j]))
+	if (bis_quote(buffer, *j))
 	{
 		*empty = false;
 		if (find_next_quote(buffer, j, buffer[*j], 2) == -1)

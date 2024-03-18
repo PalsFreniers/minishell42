@@ -20,7 +20,7 @@ int	cross_and_count(char *buffer, int *c, int *i)
 			return (-1);
 		increment_both(c, i);
 	}
-	else if (is_quote(buffer[*i]))
+	else if (bis_quote(buffer, *i))
 	{
 		if (find_next_quote(buffer, i, buffer[*i], 1) == -1)
 			return (-1);
@@ -86,7 +86,7 @@ int	get_command_length(char *buffer, int i)
 	c = 0;
 	while (buffer[i] && buffer[i] != '|')
 	{
-		if (is_quote(buffer[i]))
+		if (bis_quote(buffer, i))
 		{
 			tempo = i;
 			find_next_quote(buffer, &i, buffer[i], 1);

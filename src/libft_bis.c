@@ -47,7 +47,7 @@ void	ft_str_append(char **begin, int *j, char *end)
 
 void	look_for_heredoc(char *command, int *i, t_com *comm)
 {
-	if (is_quote(command[*i]))
+	if (bis_quote(command, *i))
 		find_next_quote(command, i, command[*i], 1);
 	else if (command[*i] == '<' && command[*i + 1] == '<')
 	{

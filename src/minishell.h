@@ -27,6 +27,10 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 typedef struct s_dup_data
 {
@@ -294,5 +298,6 @@ bool				check_invalid_in_out(char *command, t_com *comm, int i);
 bool				no_dollar(char *s);
 void				free_all_main(int cpy, char **envp_cpy);
 void				print_escape(char *envp);
+bool                bis_quote(char *s, int i);
 
 #endif

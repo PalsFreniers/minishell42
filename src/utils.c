@@ -54,7 +54,7 @@ void	skip_undesired(char *command, int *i, int *reset, int *c)
 			*i = *i + 1;
 		skip_the_next_word(command, i);
 	}
-	else if (is_quote(command[*i]))
+	else if (bis_quote(command, *i))
 	{
 		if (*reset == 1)
 		{

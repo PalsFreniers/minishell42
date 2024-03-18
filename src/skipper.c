@@ -16,7 +16,7 @@ void	skip_the_word(char *s, int *i)
 {
 	while (s[*i] && !(is_whitespace(s[*i])))
 	{
-		if (is_quote(s[*i]))
+		if (bis_quote(s, *i))
 			find_next_quote(s, i, s[*i], 1);
 		else if (is_parasit(s[*i]))
 			return ;

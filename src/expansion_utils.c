@@ -40,7 +40,7 @@ int	treat_dollar_case_exp(char *usr_input, int *i, int *l,
 		*l = *l + 2;
 		return (0);
 	}
-	else if (is_quote(usr_input[*i + 1]) && !(*is_double_quote))
+	else if (bis_quote(usr_input, *i + 1) && !(*is_double_quote))
 	{
 		*i = *i + 1;
 		return (0);

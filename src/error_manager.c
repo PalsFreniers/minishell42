@@ -44,7 +44,7 @@ static int	parasit_only_treat(char *buffer)
 	i = 0;
 	while (buffer[i])
 	{
-		if (is_quote(buffer[i]))
+		if (bis_quote(buffer, i))
 			find_next_quote(buffer, &i, buffer[i], 1);
 		else if (is_parasit(buffer[i]))
 		{
@@ -94,7 +94,7 @@ int	check_usr_input_for_errors(char *input)
 		return (1);
 	while (input[i])
 	{
-		if (is_quote(input[i]))
+		if (bis_quote(input, i))
 		{
 			if (find_next_quote(input, &i, input[i], 2) == -1)
 				return (1);

@@ -42,7 +42,7 @@ void	error_exit_hd(char *input, int i)
 		return ;
 	while (j < i)
 	{
-		if (is_quote(input[j]))
+		if (bis_quote(input, j))
 			find_next_quote(input, &j, input[j], 1);
 		else if (input[j] == '<' && input[j + 1] == '<'
 			&& !is_parasit(check_for_next_char(input, j)))

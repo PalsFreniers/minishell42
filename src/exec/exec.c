@@ -95,7 +95,7 @@ void	exec(t_main *data, struct s_cmds_piped cmds, struct s_mainloop id,
 		exit(i);
 	}
 	deinit_thgg(data);
-	rl_clear_history();
+	clear_history();
 	if (is_builtin(cmd->exec))
 		exec_builtin_s(cmd, id.last);
 	exec_cmd(cmd);

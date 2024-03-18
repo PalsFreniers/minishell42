@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+#include <string.h>
+
 int	in_out_mana(char *command, t_com *comm, int last_heredoc_i)
 {
 	char	*error;

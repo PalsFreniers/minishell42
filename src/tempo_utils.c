@@ -17,7 +17,7 @@ int	get_heredocs(char *command, int *i, t_com *comm, int *j)
 	int	index_last_hd;
 
 	index_last_hd = 0;
-	if (is_quote(command[*i]))
+	if (bis_quote(command, *i))
 		find_next_quote(command, i, command[*i], 1);
 	if (command[*i] == '<' && command[*i + 1] == '<')
 	{

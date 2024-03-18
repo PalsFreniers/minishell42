@@ -23,7 +23,7 @@ static int	get_argc(char *command, int i)
 	while (command[i])
 	{
 		ch = command[i];
-		if (is_whitespace(ch) || is_parasit(ch) || is_quote(ch))
+		if (is_whitespace(ch) || is_parasit(ch) || bis_quote(command, i))
 			skip_undesired(command, &i, &reset, &c);
 		else if (is_alphanum(ch))
 		{
@@ -35,6 +35,8 @@ static int	get_argc(char *command, int i)
 			while (is_alphanum(command[i]))
 				++i;
 		}
+        else
+            i++;
 	}
 	return (c);
 }
@@ -45,7 +47,7 @@ static int	get_the_next_arg_length(char *command, int j, bool *has_program)
 	int	tempo;
 
 	length = 0;
-	if (is_quote(command[j]))
+	if (bis_quote(command, j))
 	{
 		tempo = j;
 		find_next_quote(command, &j, command[j], 1);
@@ -57,7 +59,7 @@ static int	get_the_next_arg_length(char *command, int j, bool *has_program)
 	while (command[j] && !(is_whitespace(command[j]))
 		&& !(is_parasit(command[j])))
 	{
-		if (is_quote(command[j]))
+		if (bis_quote(command, j))
 			return (length + get_the_next_arg_length(command, j, NULL));
 		++length;
 		++j;
@@ -83,7 +85,12 @@ char	*get_the_next_arg(char *command, int *i, bool *has_program)
 	j = 0;
 	while (j < length)
 	{
-		if (is_quote(command[*i]))
+        if (command[*i] == '\\' && is_quote(command[*i + 1]))
+        {
+            *i = *i + 1;
+            dup_and_get_next(&command, i, &argument, &j);
+        }
+		if (bis_quote(command, *i))
 		{
 			if (!(gtna_quote_case(command, i, &type_quote)))
 				dup_and_get_next(&command, i, &argument, &j);
@@ -109,7 +116,7 @@ int	get_an_argument(char *command, int *i, char **arguments, int *j)
 	else
 	{
 		arguments[*j] = get_the_next_arg(command, i, NULL);
-		while (is_quote(command[*i]))
+		while (bis_quote(command, *i))
 			*i = *i + 1;
 		if (!arguments[*j])
 			return (1);

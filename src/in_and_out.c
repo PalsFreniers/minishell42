@@ -35,7 +35,7 @@ void	has_input(char *command, t_com *comm, int last_index_hd, int i)
 {
 	while (command[i])
 	{
-		if (is_quote(command[i]))
+		if (bis_quote(command, i))
 			find_next_quote(command, &i, command[i], 1);
 		else if (command[i] == '<')
 		{
@@ -89,7 +89,7 @@ void	has_output(char *command, t_com *comm)
 	comm->output = NULL;
 	while (command[i])
 	{
-		if (is_quote(command[i]))
+		if (bis_quote(command, i))
 			find_next_quote(command, &i, command[i], 1);
 		else if (command[i] == '>')
 		{

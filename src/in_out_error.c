@@ -89,7 +89,7 @@ bool	check_invalid_in_out(char *command, t_com *comm, int i)
 {
 	while (command[i])
 	{
-		if (is_quote(command[i]))
+		if (bis_quote(command, i))
 		{
 			find_next_quote(command, &i, command[i], 1);
 		}

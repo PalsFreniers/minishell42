@@ -32,7 +32,7 @@ int	get_the_next_hd_length(char *command, int i)
 	int	length;
 
 	length = i;
-	if (is_quote(command[length]))
+	if (bis_quote(command, length))
 	{
 		gtnhl(command, &length);
 		return (length + 1 - i);

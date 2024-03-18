@@ -18,7 +18,7 @@ int	get_the_exp_name_l(char *command, int j)
 	int	tempo;
 
 	length = 0;
-	if (is_quote(command[j]))
+	if (bis_quote(command, j))
 	{
 		tempo = j;
 		find_next_quote(command, &j, command[j], 1);
@@ -28,10 +28,10 @@ int	get_the_exp_name_l(char *command, int j)
 		return (length);
 	}
 	while (command[j] && ((!(first_character_env_invalid(command[j]))
-				|| is_numeric(command[j])) || is_quote(command[j]))
+				|| is_numeric(command[j])) || bis_quote(command, j))
 		&& command[j] != '=')
 	{
-		if (is_quote(command[j]))
+		if (bis_quote(command, j))
 			return (length + get_the_exp_name_l(command, j));
 		++length;
 		++j;
@@ -54,7 +54,7 @@ char	*get_the_exp_name(char *command, int *i)
 	j = 0;
 	while (j < length)
 	{
-		if (is_quote(command[*i]))
+		if (bis_quote(command, *i))
 		{
 			if (!(gtna_quote_case(command, i, &type_quote)))
 				dup_and_get_next(&command, i, &argument, &j);

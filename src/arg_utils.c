@@ -27,9 +27,9 @@ void	skip_in_outs_hds(char *command, int *i)
 void	skip_ending_quotes(char *command, int *i, int length)
 {
 	(void)length;
-	if (is_quote(command[*i]))
+	if (bis_quote(command, *i))
 	{
-		while (is_quote(command[*i]))
+		while (bis_quote(command, *i))
 			*i = *i + 1;
 	}
 }

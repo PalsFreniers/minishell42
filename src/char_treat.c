@@ -40,7 +40,7 @@ bool	is_whitespace(char c)
 int	find_next_quote(char *buffer, int *i, char quote_type, int x)
 {
 	*i = *i + 1;
-	while (buffer[*i] && buffer[*i] != quote_type)
+	while (buffer[*i] && (buffer[*i] != quote_type || !bis_quote(buffer, *i)))
 		*i = *i + 1;
 	if (!buffer[*i])
 	{
@@ -57,6 +57,18 @@ bool	is_quote(char c)
 	if (c == '\'' || c == '\"')
 		return (1);
 	return (0);
+}
+
+bool    bis_quote(char *s, int i)
+{
+    if (s[i] == '\'' || s[i] == '\"')
+    {
+        if (i > 0)
+            if (s[i - 1] == '\\')
+                return (0);
+        return (1);
+    }
+    return (0);
 }
 
 bool	is_delimiter(char c)

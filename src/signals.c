@@ -28,7 +28,7 @@ void	catch_int(int sn)
 
 void	free_all_main(int cpy, char **envp_cpy)
 {
-	rl_clear_history();
+	clear_history();
 	free_double_char(envp_cpy);
 	close(cpy);
 }

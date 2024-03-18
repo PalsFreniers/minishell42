@@ -65,7 +65,7 @@ int	expansion_char_is_dollar(char *usr_input, int *i, t_data_e *exp, int *j)
 	}
 	else if (is_numeric(usr_input[*i + 1]))
 		*i = *i + 2;
-	else if (is_quote(usr_input[*i + 1]) && !exp->is_double_quote)
+	else if (bis_quote(usr_input, *i + 1) && !exp->is_double_quote)
 		*i = *i + 1;
 	else if (is_whitespace(usr_input[*i + 1])
 		|| first_character_env_invalid(usr_input[*i + 1]))
@@ -83,7 +83,7 @@ char	*get_the_test_env(char *usr_input, int *i)
 	*i = *i + 1;
 	k = *i;
 	test_env_name = NULL;
-	while (usr_input[*i] && !(is_quote(usr_input[*i]))
+	while (usr_input[*i] && !(bis_quote(usr_input, *i))
 		&& !(is_whitespace(usr_input[*i])) && !(is_parasit(usr_input[*i]))
 		&& !is_delimiter(usr_input[*i]))
 		*i = *i + 1;

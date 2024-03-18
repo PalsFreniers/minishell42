@@ -14,7 +14,7 @@
 
 void	should_add_quotes_child(const char *s, int *i, int *l, bool *reset)
 {
-	if (is_quote(s[*i]))
+	if (bis_quote((char *)s, *i))
     {
         *l = *l + 2;
         find_next_quote((char *) s, i, s[*i], 1);
@@ -55,10 +55,7 @@ void	quote_copy(const char *s, char **result, int *i, int *j)
 	char	quote;
 
 	quote = s[*i];
-    if (quote == '\'')
-        (*result)[*j] = '\"';
-    else
-        (*result)[*j] = '\'';
+    (*result)[*j] = '\\';
     *j = *j + 1;
 	(*result)[*j] = s[*i];
     increment_both(j, i);
@@ -67,19 +64,16 @@ void	quote_copy(const char *s, char **result, int *i, int *j)
 		(*result)[*j] = s[*i];
         increment_both(j, i);
 	}
+    (*result)[*j] = '\\';
+    *j = *j + 1;
 	(*result)[*j] = s[*i];
     increment_both(j, i);
-    if (quote == '\'')
-        (*result)[*j] = '\"';
-    else
-        (*result)[*j] = '\'';
-    *j = *j + 1;
 	return ;
 }
 
 void	ft_strdup_env_child(const char *s, t_dup_data *data, int *j, int *i)
 {
-	if (is_quote(s[*i]))
+	if (bis_quote((char *)s, *i))
 		quote_copy(s, &(data->result), i, j);
 	else if (is_whitespace(s[*i]))
 	{
@@ -92,7 +86,7 @@ void	ft_strdup_env_child(const char *s, t_dup_data *data, int *j, int *i)
 		dup_and_get_next((char **)&s, i, &data->result, j);
 		data->multiple_word = true;
 	}
-	else if (!(is_quote(s[*i])) && !(is_whitespace(s[*i])) && data->reset)
+	else if (!(bis_quote((char *)s, *i)) && !(is_whitespace(s[*i])) && data->reset)
 	{
 		data->result[*j] = '\'';
 		*j = *j + 1;

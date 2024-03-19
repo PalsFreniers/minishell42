@@ -35,7 +35,7 @@ void	exp_heredoc(char *usr_input, int *i, char *expanded, int *j)
 
 void	find_exp_parts(t_data_e *exp, char *usr_input, char **envp)
 {
-	if (usr_input[exp->i] == '\'' && !exp->is_double_quote)
+	if (usr_input[exp->i] == '\'' && !exp->is_double_quote && bis_quote(usr_input, exp->i))
 		exp_single_quote(usr_input, &exp->i, exp->expanded, &exp->j);
 	else if (usr_input[exp->i] == '\"')
 	{

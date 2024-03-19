@@ -29,6 +29,20 @@ t_bool	b_echo_option(char *arg, char *trailing)
 	return (FALSE);
 }
 
+int	get_options(int argc, char **args, char *trailing)
+{
+	int	i;
+
+	i = 0;
+	while (i < argc)
+	{
+		if (!b_echo_option(args[i], trailing))
+			break ;
+		i++;
+	}
+	return (i);
+}
+
 int	b_echo(int count, char **args, char **envp)
 {
 	int		i;
@@ -37,8 +51,8 @@ int	b_echo(int count, char **args, char **envp)
 	(void)envp;
 	i = 1;
 	trailing = '\n';
-	if (count > 1 && b_echo_option(args[1], &trailing))
-		i++;
+	if (count > 1)
+		i += get_options(count - 1, args + 1, &trailing);
 	while (i < count)
 	{
 		ft_printf("%s", args[i]);

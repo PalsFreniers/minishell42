@@ -18,7 +18,10 @@ int	cross_and_count(char *buffer, int *c, int *i)
 	{
 		if (check_for_empty(buffer, *i) == -1)
 			return (-1);
-		increment_both(c, i);
+        if (*i > 0 && buffer[*i - 1] != '\\')
+		    increment_both(c, i);
+        else
+            *i = *i + 1;
 	}
 	else if (bis_quote(buffer, *i))
 	{
@@ -84,7 +87,7 @@ int	get_command_length(char *buffer, int i)
 	int	tempo;
 
 	c = 0;
-	while (buffer[i] && buffer[i] != '|')
+	while (buffer[i] && (buffer[i] != '|' || (i > 0 && buffer[i - 1] == '\\')))
 	{
 		if (bis_quote(buffer, i))
 		{

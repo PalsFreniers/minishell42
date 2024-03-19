@@ -59,10 +59,12 @@ static int	get_the_next_arg_length(char *command, int j, bool *has_program)
 	while (command[j] && !(is_whitespace(command[j]))
 		&& !(is_parasit(command[j])))
 	{
-		if (bis_quote(command, j))
+        if (command[j] == '\\')
+            ++j;
+		else if (bis_quote(command, j))
 			return (length + get_the_next_arg_length(command, j, NULL));
-		++length;
-		++j;
+        else
+            increment_both(&j, &length);
 	}
 	if (has_program && length == 0)
 		*has_program = false;
@@ -85,12 +87,12 @@ char	*get_the_next_arg(char *command, int *i, bool *has_program)
 	j = 0;
 	while (j < length)
 	{
-        if (command[*i] == '\\' && is_quote(command[*i + 1]))
+        if (command[*i] == '\\' && (is_quote(command[*i + 1]) || command[*i + 1] == '|'))
         {
             *i = *i + 1;
             dup_and_get_next(&command, i, &argument, &j);
         }
-		if (bis_quote(command, *i))
+		else if (bis_quote(command, *i))
 		{
 			if (!(gtna_quote_case(command, i, &type_quote)))
 				dup_and_get_next(&command, i, &argument, &j);

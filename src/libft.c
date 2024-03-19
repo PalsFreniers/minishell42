@@ -38,16 +38,18 @@ void	should_add_quotes_child(const char *s, int *i, int *l, bool *reset)
 void	should_add_quotes(const char *s, char *cut, int *l)
 {
 	int		i;
-	bool	reset;
 
 	i = 0;
-	reset = false;
 	while (s[i] && cut[i] && s[i] == cut[i])
 		i++;
 	if (s[i] == '=')
 		i++;
 	while (s[i])
-		should_add_quotes_child(s, &i, l, &reset);
+    {
+        if (is_quote(s[i]) || s[i] == '|')
+            *l = *l + 1;
+        ++i;
+    }
 }
 
 void	quote_copy(const char *s, char **result, int *i, int *j)
@@ -73,30 +75,30 @@ void	quote_copy(const char *s, char **result, int *i, int *j)
 
 void	ft_strdup_env_child(const char *s, t_dup_data *data, int *j, int *i)
 {
-	if (is_quote(s[*i]))
+	if (is_quote(s[*i]) || s[*i] == '|')
     {
         data->result[*j] = '\\';
         *j = *j + 1;
         data->result[*j] = s[*i];
         increment_both(j, i);
     }
-	else if (is_whitespace(s[*i]))
-	{
-		if (!data->reset && data->multiple_word)
-		{
-			data->result[*j] = '\'';
-			*j = *j + 1;
-		}
-		data->reset = true;
-		dup_and_get_next((char **)&s, i, &data->result, j);
-		data->multiple_word = true;
-	}
-	else if (!(bis_quote((char *)s, *i)) && !(is_whitespace(s[*i])) && data->reset)
-	{
-		data->result[*j] = '\'';
-		*j = *j + 1;
-		data->reset = !data->reset;
-	}
+//	else if (is_whitespace(s[*i]))
+//	{
+//		if (!data->reset && data->multiple_word)
+//		{
+//			data->result[*j] = '\'';
+//			*j = *j + 1;
+//		}
+//		data->reset = true;
+//		dup_and_get_next((char **)&s, i, &data->result, j);
+//		data->multiple_word = true;
+//	}
+//	else if (!(bis_quote((char *)s, *i)) && !(is_whitespace(s[*i])) && data->reset)
+//	{
+//		data->result[*j] = '\'';
+//		*j = *j + 1;
+//		data->reset = !data->reset;
+//	}
 	else
 		dup_and_get_next((char **)&s, i, &data->result, j);
 }
@@ -118,8 +120,6 @@ char	*ft_strdup_env(const char *s, char *cut, int i, int j)
 		i++;
 	while (s[i])
 		ft_strdup_env_child(s, &data, &j, &i);
-	if (!data.reset && data.multiple_word)
-		data.result[j++] = '\'';
 	data.result[j] = '\0';
 	return (data.result);
 }

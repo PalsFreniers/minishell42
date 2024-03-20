@@ -6,12 +6,11 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/08 11:47:08 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/20 01:32:18 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 #include <string.h>
 
 int	in_out_mana(char *command, t_com *comm, int last_heredoc_i)
@@ -55,5 +54,14 @@ int	command_disection(char *command, t_com *comm)
 	if (!comm->has_heredoc)
 		last_heredoc_i = -1;
 	in_out_mana(command, comm, last_heredoc_i);
+	return (0);
+}
+
+bool	is_whitespace(char c)
+{
+	if (c == '\r' || c == ' ' || c == '\t')
+		return (1);
+	if (c == '\n' || c == '\v' || c == '\f')
+		return (1);
 	return (0);
 }

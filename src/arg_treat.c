@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/06 20:05:54 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/20 01:21:01 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ static int	get_argc(char *command, int i)
 			while (is_alphanum(command[i]))
 				++i;
 		}
-        else
-            i++;
+		else
+			i++;
 	}
 	return (c);
 }
@@ -44,87 +44,53 @@ static int	get_argc(char *command, int i)
 static int	get_the_next_arg_length(char *command, int j, bool *has_program)
 {
 	int	length;
-	int	tempo;
 
 	length = 0;
 	if (bis_quote(command, j))
-	{
-		tempo = j;
-		find_next_quote(command, &j, command[j], 1);
-		length = length + (j - tempo - 2);
-		if (!is_whitespace(command[j]))
-			return (length + get_the_next_arg_length(command, j, NULL));
-		return (length);
-	}
+		return (get_the_next_arg_length_quote_case(command, &j));
 	while (command[j] && !(is_whitespace(command[j]))
 		&& !(is_parasit(command[j])))
 	{
-        if (command[j] == '\\')
-            ++j;
+		if (command[j] == '\\')
+			++j;
 		else if (bis_quote(command, j))
 			return (length + get_the_next_arg_length(command, j, NULL));
-        else
-            increment_both(&j, &length);
+		else
+			increment_both(&j, &length);
 	}
 	if (has_program && length == 0)
 		*has_program = false;
 	return (length);
 }
 
-char	*get_the_next_arg(char *command, int *i, bool *has_program)
+int	get_the_next_arg_length_quote_case(char *command, int *j)
 {
-	char	*argument;
-	int		length;
-	char	type_quote;
-	int		j;
+	int	tempo;
+	int	length;
 
-	type_quote = 'a';
-	skip_in_outs_hds(command, i);
-	length = get_the_next_arg_length(command, *i, has_program);
-	argument = malloc((length + 1) * sizeof(char));
-	if (!argument)
-		return (NULL);
-	j = 0;
-	while (j < length)
-	{
-        if (command[*i] == '\\' && (is_quote(command[*i + 1]) || command[*i + 1] == '|'))
-        {
-            *i = *i + 1;
-            dup_and_get_next(&command, i, &argument, &j);
-        }
-		else if (bis_quote(command, *i))
-		{
-			if (!(gtna_quote_case(command, i, &type_quote)))
-				dup_and_get_next(&command, i, &argument, &j);
-		}
-		else
-			dup_and_get_next(&command, i, &argument, &j);
-	}
-	argument[j] = '\0';
-	skip_ending_quotes(command, i, length);
-	return (argument);
+	tempo = *j;
+	find_next_coat(command, j, command[*j], &tempo);
+	length = *j - tempo - 2;
+	if (!is_whitespace(command[*j]))
+		return (length + get_the_next_arg_length(command, *j, NULL));
+	return (length);
 }
 
-int	get_an_argument(char *command, int *i, char **arguments, int *j)
+char	*get_the_next_arg(char *command, int *i, bool *has_program)
 {
-	if (is_whitespace(command[*i]))
-		*i = *i + 1;
-	else if (is_parasit(command[*i]))
-	{
-		while (command[*i] && is_parasit(command[*i]))
-			*i = *i + 1;
-		skip_the_next_word(command, i);
-	}
-	else
-	{
-		arguments[*j] = get_the_next_arg(command, i, NULL);
-		while (bis_quote(command, *i))
-			*i = *i + 1;
-		if (!arguments[*j])
-			return (1);
-		*j = *j + 1;
-	}
-	return (0);
+	t_data_gtna	data;
+
+	data = init_gtna();
+	skip_in_outs_hds(command, i);
+	data.length = get_the_next_arg_length(command, *i, has_program);
+	data.argument = malloc((data.length + 1) * sizeof(char));
+	if (!data.argument)
+		return (NULL);
+	while (command[*i] && data.j < data.length)
+		get_the_next_arg_child(command, i, &data);
+	data.argument[data.j] = '\0';
+	skip_ending_quotes(command, i, data.length);
+	return (data.argument);
 }
 
 char	**get_the_arguments(char *command, int *i, char *program_name)

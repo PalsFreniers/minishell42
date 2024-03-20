@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   command_creation.c                                 :+:      :+:    :+:   */
+/*   comm_creat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/02/13 11:17:40 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/20 01:25:10 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ int	cross_and_count(char *buffer, int *c, int *i)
 	{
 		if (check_for_empty(buffer, *i) == -1)
 			return (-1);
-        if (*i > 0 && buffer[*i - 1] != '\\')
-		    increment_both(c, i);
-        else
-            *i = *i + 1;
+		if (*i > 0 && buffer[*i - 1] != '\\')
+			increment_both(c, i);
+		else
+			*i = *i + 1;
 	}
 	else if (bis_quote(buffer, *i))
 	{
@@ -87,7 +87,8 @@ int	get_command_length(char *buffer, int i)
 	int	tempo;
 
 	c = 0;
-	while (buffer[i] && (buffer[i] != '|' || (i > 0 && buffer[i - 1] == '\\')))
+	while (buffer[i] && (buffer[i] != '|'
+			|| (i > 0 && buffer[i - 1] == '\\')))
 	{
 		if (bis_quote(buffer, i))
 		{

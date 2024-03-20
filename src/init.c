@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 17:53:37 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/08 10:34:12 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/20 01:16:45 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "minishell.h"
@@ -101,4 +101,14 @@ t_main	*init_thgg(char **envp, char *o_usr_input)
 	if (!thgg->commands_data)
 		return (deinit_thgg(thgg));
 	return (thgg);
+}
+
+t_data_gtna	init_gtna(void)
+{
+	t_data_gtna	data;
+
+	data.argument = NULL;
+	data.j = 0;
+	data.type_quote = 'a';
+	return (data);
 }

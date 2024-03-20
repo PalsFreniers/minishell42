@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/11 05:40:47 by tdelage          ###   ########.fr       */
+/*   Updated: 2024/03/20 01:33:22 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,11 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <string.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-#include <string.h>
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 typedef struct s_dup_data
 {
@@ -108,6 +105,14 @@ typedef struct s_data_expand
 	int				j;
 }					t_data_e;
 
+typedef struct s_data_gtna
+{
+	char			*argument;
+	int				length;
+	char			type_quote;
+	int				j;
+}					t_data_gtna;
+
 typedef struct s_command
 {
 	int				command_id;
@@ -153,7 +158,7 @@ struct				s_cmd
 struct				s_cmds_piped
 {
 	t_bool			valid;
-	int				(*pipes)[2];
+	int		(*pipes)[2];
 	int				count;
 	struct s_cmd	**cmds;
 };
@@ -192,6 +197,8 @@ int					get_command_length(char *buffer, int i);
 char				*get_env(char **envp, char *extracted);
 int					find_next_quote(char *buffer, int *i, char quote_type,
 						int x);
+int					find_next_coat(char *buffer, int *i, char quote_type,
+						int *x);
 int					command_disection(char *command, t_com *comm);
 void				skip_to_the_next_word(char *s, int *i);
 void				skip_the_word(char *s, int *i);
@@ -298,6 +305,13 @@ bool				check_invalid_in_out(char *command, t_com *comm, int i);
 bool				no_dollar(char *s);
 void				free_all_main(int cpy, char **envp_cpy);
 void				print_escape(char *envp);
-bool                bis_quote(char *s, int i);
+bool				bis_quote(char *s, int i);
+bool				is_quote_o_pipe(char c);
+int					get_the_next_arg_length_quote_case(char *command, int *j);
+t_data_gtna			init_gtna(void);
+int					get_an_argument(char *command, int *i, char **arguments,
+						int *j);
+void				get_the_next_arg_child(char *command, int *i,
+						t_data_gtna *data);
 
 #endif

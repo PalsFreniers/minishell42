@@ -6,7 +6,7 @@
 /*   By: dosokin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/12 11:06:25 by dosokin           #+#    #+#             */
-/*   Updated: 2024/03/08 10:03:40 by dosokin          ###   ########.fr       */
+/*   Updated: 2024/03/20 01:20:24 by dosokin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,15 +28,6 @@ bool	is_alphanum(char c)
 		return (0);
 }
 
-bool	is_whitespace(char c)
-{
-	if (c == '\r' || c == ' ' || c == '\t')
-		return (1);
-	if (c == '\n' || c == '\v' || c == '\f')
-		return (1);
-	return (0);
-}
-
 int	find_next_quote(char *buffer, int *i, char quote_type, int x)
 {
 	*i = *i + 1;
@@ -52,6 +43,20 @@ int	find_next_quote(char *buffer, int *i, char quote_type, int x)
 	return (1);
 }
 
+int	find_next_coat(char *buffer, int *i, char quote_type, int *x)
+{
+	*i = *i + 1;
+	while (buffer[*i] && (buffer[*i] != quote_type || !bis_quote(buffer, *i)))
+	{
+		if (buffer[*i] == '\\' && (is_quote(buffer[*i + 1]) || buffer[*i
+					+ 1] == '|'))
+			*x = *x + 1;
+		*i = *i + 1;
+	}
+	*i = *i + 1;
+	return (1);
+}
+
 bool	is_quote(char c)
 {
 	if (c == '\'' || c == '\"')
@@ -59,27 +64,11 @@ bool	is_quote(char c)
 	return (0);
 }
 
-bool    bis_quote(char *s, int i)
+bool	is_quote_o_pipe(char c)
 {
-    if (s[i] == '\'' || s[i] == '\"')
-    {
-        if (i > 0)
-            if (s[i - 1] == '\\')
-                return (0);
-        return (1);
-    }
-    return (0);
-}
-
-bool	is_delimiter(char c)
-{
-	if (c == '_')
-		return (0);
-	if (c >= '0' && c <= '9')
-		return (0);
-	if (c >= 'a' && c <= 'z')
-		return (0);
-	if (c >= 'A' && c <= 'Z')
-		return (0);
-	return (1);
+	if (is_quote(c))
+		return (1);
+	if (c == '|')
+		return (1);
+	return (0);
 }

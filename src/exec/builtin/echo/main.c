@@ -21,7 +21,7 @@ t_bool	b_echo_option(char *arg, char *trailing)
 	i = 1;
 	while (arg[i] == 'n')
 		i++;
-	if (arg[i] == '\0')
+	if (arg[i] == '\0' && i > 1)
 	{
 		*trailing = 0;
 		return (TRUE);

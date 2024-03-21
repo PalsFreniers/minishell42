@@ -91,6 +91,8 @@ struct s_mainloop	print_export(char **envp)
 		return ((struct s_mainloop){1, 1});
 	while (envp[++i])
 	{
+		if (ft_strncmp(envp[i], "_=", 2) == 0)
+			continue ;
 		j = -1;
 		ft_putstr_fd("declare -x ", 1);
 		while (envp[i][++j] != '=' && envp[i][j])
